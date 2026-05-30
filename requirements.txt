@@ -6,6 +6,7 @@ requests
 pytrends
 praw
 ffmpeg-python
+openai
 openai-whisper
 schedule
 fal-client
