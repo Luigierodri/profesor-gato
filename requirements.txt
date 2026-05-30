@@ -8,6 +8,7 @@ praw
 ffmpeg-python
 openai
 openai-whisper
+faster-whisper
 schedule
 fal-client
 google-auth
