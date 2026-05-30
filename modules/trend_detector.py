@@ -13,12 +13,14 @@ Flujo de uso:
 """
 
 import sys
+import json
 import requests
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
+import anthropic
 from pytrends.request import TrendReq
-from config import NEWS_API_KEY
+from config import NEWS_API_KEY, ANTHROPIC_API_KEY, CLAUDE_MODEL
 
 GEOS_LATAM = ["mexico", "argentina", "colombia", "chile", "peru"]
 
@@ -168,6 +170,71 @@ def detectar_temas_del_dia() -> list[dict]:
         for i, c in enumerate(top, 1):
             print(f"  {i}. [{c['fuente']}] {c['tema'][:75]}")
     return top
+
+
+def seleccionar_angulo_educativo(tendencias: list[dict]) -> dict:
+    """
+    Dado el listado de tendencias del día, usa Claude para encontrar
+    el ángulo educativo más potente conectado a lo que ya está viral.
+
+    El canal explica historia, cultura, sociedad, economía, ciencia —
+    NO cubre noticias directas. El trend es el gancho de relevancia;
+    el ángulo educativo es lo que realmente se explica en el video.
+
+    Devuelve:
+        {
+          "angulo_educativo": str,   # tema real del video
+          "trend_conectado":  str,   # señal viral que lo dispara
+          "razon":            str,   # por qué tiene tracción hoy
+        }
+    """
+    if not tendencias:
+        return {"angulo_educativo": None, "trend_conectado": None, "razon": "sin tendencias"}
+
+    lista_str = "\n".join(
+        f"- [{c['fuente']}] {c['tema']} (score {c['score']})"
+        for c in tendencias[:10]
+    )
+
+    prompt = f"""Eres el productor del canal educativo "Profesor Gato" en YouTube Shorts (México/LATAM).
+
+El canal explica: historia, cultura, sociedad, economía, ciencia, fenómenos urbanos.
+NO hace videos de noticias directas — explica el PORQUÉ y el trasfondo de lo que pasa.
+
+Trending hoy en México/LATAM:
+{lista_str}
+
+Elige UN tema trending y formula el ÁNGULO EDUCATIVO más potente.
+El ángulo debe conectarse con algo que hoy está en boca de todos y explicar su trasfondo histórico, cultural, científico o económico.
+
+Ejemplos de conversión trend → ángulo educativo:
+- Trend: "Colombia elecciones mañana" → Ángulo: "¿Por qué Colombia ha cambiado tantas veces de constitución?"
+- Trend: "CDMX hundimiento" → Ángulo: "¿Por qué se está hundiendo la Ciudad de México?"
+- Trend: "Mundial 2026" → Ángulo: "¿Por qué México nunca pasa de cuartos de final en los Mundiales?"
+- Trend: "Taylor Swift tour" → Ángulo: "¿Por qué los conciertos se volvieron tan caros?"
+- Trend: "Milei economía Argentina" → Ángulo: "¿Qué es la dolarización y por qué asusta tanto?"
+
+Responde SOLO JSON válido, sin markdown:
+{{
+  "angulo_educativo": "la pregunta o afirmación del video en español",
+  "trend_conectado": "el trending topic que usas como gancho de relevancia",
+  "razon": "en una frase, por qué este ángulo tiene tracción hoy"
+}}"""
+
+    client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+    msg = client.messages.create(
+        model=CLAUDE_MODEL,
+        max_tokens=300,
+        messages=[{"role": "user", "content": prompt}],
+    )
+    raw = msg.content[0].text.strip()
+    if raw.startswith("```"):
+        raw = raw.split("```")[1].lstrip("json").strip()
+    resultado = json.loads(raw)
+    print(f"  Angulo educativo: {resultado['angulo_educativo']}")
+    print(f"  Trend conectado:  {resultado['trend_conectado']}")
+    print(f"  Razon:            {resultado['razon']}")
+    return resultado
 
 
 def sugerir_tema_interactivo() -> str:

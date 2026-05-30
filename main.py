@@ -43,7 +43,7 @@ load_dotenv()
 
 from modules.cost_monitor         import mostrar_saldo_inicial, registrar_run, mostrar_resumen_run
 from modules.cost_tracker         import init_session, session_summary
-from modules.trend_detector       import detectar_temas_del_dia
+from modules.trend_detector       import detectar_temas_del_dia, seleccionar_angulo_educativo
 from modules.script_generator     import generar_script
 from modules.voice_synthesizer    import generar_audios_por_paneles
 from modules.background_generator import generar_imagenes_por_paneles
@@ -165,6 +165,7 @@ def correr_pipeline(
 
     # ── PASO 1: DETECTAR TEMA ─────────────────────────────────────────────────
     banner("PASO 1 — Detectando tema del dia")
+    trend_hook = None
     if tema_manual:
         tema = tema_manual
         log.info(f"  Tema manual: {tema}")
@@ -174,14 +175,28 @@ def correr_pipeline(
             tema = "El efecto Cantillon: quien gana realmente con la inflacion"
             log.warning(f"Sin temas detectados. Usando respaldo: {tema}")
         else:
-            tema = temas[0]["tema"]
-            log.info(f"  Tema seleccionado: {tema}")
-            log.info(f"  Score: {temas[0].get('score', 'N/A')}")
+            log.info("  Seleccionando angulo educativo a partir de tendencias...")
+            try:
+                angulo = seleccionar_angulo_educativo(temas)
+                tema = angulo["angulo_educativo"] or temas[0]["tema"]
+                trend_hook = angulo.get("trend_conectado")
+                log.info(f"  Trend viral:      {trend_hook}")
+                log.info(f"  Angulo educativo: {tema}")
+                log.info(f"  Razon:            {angulo.get('razon', '')}")
+            except Exception as e:
+                log.warning(f"  seleccionar_angulo_educativo fallo ({e}) — usando top trend directo")
+                tema = temas[0]["tema"]
     run_log["tema"] = tema
+    run_log["trend_hook"] = trend_hook
 
     # ── PASO 2: GENERAR SCRIPT ────────────────────────────────────────────────
     banner("PASO 2 — Generando script (Claude Haiku)")
-    script = generar_script(tema)
+    contexto_trend = (
+        f"Hoy está trending en México/LATAM: '{trend_hook}'. "
+        "El video debe conectarse naturalmente a ese momento sin ser una noticia directa."
+        if trend_hook else ""
+    )
+    script = generar_script(tema, contexto_extra=contexto_trend)
     log.info(f"  Titulo:  {script['titulo']}")
     log.info(f"  Leccion: {script['leccion']}")
     total_w = (
