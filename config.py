@@ -21,7 +21,7 @@ VOICE_SETTINGS = {
 }
 
 # ─── ANTHROPIC ────────────────────────────────────────────────────────────────
-CLAUDE_MODEL        = "claude-haiku-4-5-20251001"
+CLAUDE_MODEL        = "claude-sonnet-4-6"
 SCRIPT_MAX_TOKENS   = 2048   # Aumentado para formato diálogo Gato+Bastet
 
 # ─── VIDEO ────────────────────────────────────────────────────────────────────
