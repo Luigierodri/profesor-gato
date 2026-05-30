@@ -57,7 +57,10 @@ CREDENTIALS_FILE = BASE_DIR / "credentials.json"
 TOKEN_FILE       = BASE_DIR / "token.json"
 COST_TRACKER     = LOGS_DIR / "cost_tracker.json"
 
-SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
+SCOPES = [
+    "https://www.googleapis.com/auth/youtube.upload",
+    "https://www.googleapis.com/auth/youtube.force-ssl",  # necesario para comentarios
+]
 
 # Hashtags fijos que van en todas las descripciones
 HASHTAGS_FIJOS = ["#ProfessorGato", "#Educación", "#HistoriaCurta", "#Shorts", "#Aprendizaje"]
@@ -65,7 +68,7 @@ HASHTAGS_FIJOS = ["#ProfessorGato", "#Educación", "#HistoriaCurta", "#Shorts", 
 YOUTUBE_CATEGORY_EDUCATION = "27"
 
 
-# ── Auth ───────────────────────────────────────────────────────────────────────
+# ── Auth ──────────────────────────────────────────────────────────────────────
 
 def obtener_credenciales() -> Credentials:
     """
@@ -180,7 +183,7 @@ def subir_a_youtube(ruta_video: Path, metadata: dict, dry_run: bool = False) -> 
     if dry_run:
         log.info("\n  [DRY RUN] No se sube nada.")
         log.info(f"  Descripción preview:\n{metadata['descripcion'][:200]}...")
-        return {"video_id": "DRY_RUN", "url": "https://youtu.be/DRY_RUN", "titulo": metadata["titulo"]}
+        return {"video_id": "DRY_RUN", "url": "https://youtu.be/DRY_RUN", "titulo": metadata["titulo"], "_youtube": None}
 
     creds   = obtener_credenciales()
     youtube = build("youtube", "v3", credentials=creds, cache_discovery=False)
@@ -232,7 +235,54 @@ def subir_a_youtube(ruta_video: Path, metadata: dict, dry_run: bool = False) -> 
     log.info(f"  URL:      {url}")
     log.info("=" * 60)
 
-    return {"video_id": video_id, "url": url, "titulo": metadata["titulo"]}
+    return {"video_id": video_id, "url": url, "titulo": metadata["titulo"], "_youtube": youtube}
+
+
+# ── Comentario del creador ────────────────────────────────────────────────────
+
+def publicar_comentario(youtube, video_id: str, metadata: dict, run_log: dict | None) -> str | None:
+    """
+    Publica un comentario del creador en el video recién subido.
+    Usa descripcion_social del script si está disponible, o un CTA genérico.
+    Devuelve el comment_id o None si falla.
+
+    Nota: la API de YouTube no permite pinear comentarios vía API v3.
+    Este comentario aparece con badge de Creador. Para pinearlo ir a YouTube Studio.
+    """
+    script = (run_log or {}).get("script", {})
+    desc_social = script.get("descripcion_social", "").strip()
+    hashtags    = " ".join(script.get("hashtags", []))
+
+    if desc_social:
+        texto = desc_social
+        if hashtags:
+            texto += f"\n\n{hashtags}"
+    else:
+        tema = metadata.get("tema", "este tema")
+        texto = (
+            f"¿Qué sabías tú sobre {tema}? "
+            f"Déjanos tu comentario 🐱\n\n{hashtags}"
+        ).strip()
+
+    try:
+        resp = youtube.commentThreads().insert(
+            part="snippet",
+            body={
+                "snippet": {
+                    "videoId": video_id,
+                    "topLevelComment": {
+                        "snippet": {"textOriginal": texto}
+                    },
+                }
+            },
+        ).execute()
+        comment_id = resp["id"]
+        log.info(f"  Comentario publicado (id={comment_id})")
+        log.info(f"  Texto: {texto[:80]}{'...' if len(texto) > 80 else ''}")
+        return comment_id
+    except Exception as e:
+        log.warning(f"  No se pudo publicar el comentario: {e}")
+        return None
 
 
 # ── Actualizar cost tracker ────────────────────────────────────────────────────
@@ -310,7 +360,11 @@ def main():
         log.error(f"Error de YouTube API: {e}")
         sys.exit(1)
 
-    # 4. Registrar en cost tracker
+    # 4. Publicar comentario del creador
+    if not args.dry_run and resultado.get("_youtube"):
+        publicar_comentario(resultado["_youtube"], resultado["video_id"], metadata, run_log)
+
+    # 5. Registrar en cost tracker
     if not args.dry_run:
         registrar_publicacion(ruta_video, resultado)
 
