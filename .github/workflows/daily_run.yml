@@ -21,7 +21,13 @@ jobs:
           cache: pip
 
       - name: Instalar ffmpeg
-        run: sudo apt-get install -y ffmpeg
+        run: |
+          for i in 1 2 3; do
+            sudo apt-get update --fix-missing && \
+            sudo apt-get install -y --fix-missing ffmpeg && break
+            echo "Intento $i fallido, reintentando en 15s..."
+            sleep 15
+          done
 
       - name: Instalar dependencias Python
         run: pip install -r requirements.txt
