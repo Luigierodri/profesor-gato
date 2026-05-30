@@ -9,6 +9,9 @@ jobs:
   run-pipeline:
     runs-on: ubuntu-latest
     timeout-minutes: 120
+    permissions:
+      contents: read
+      id-token: write   # requerido para Workload Identity Federation
 
     steps:
       - name: Checkout código
@@ -37,6 +40,12 @@ jobs:
 
       - name: Restaurar token.json (Google/YouTube OAuth)
         run: echo '${{ secrets.GOOGLE_TOKEN_JSON }}' > token.json
+
+      - name: Autenticar en GCP (Workload Identity Federation)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: 'projects/195684257108/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider'
+          service_account: 'profesor-gato@project-71cbc30b-23ca-40b4-a93.iam.gserviceaccount.com'
 
       - name: Ejecutar pipeline
         env:
