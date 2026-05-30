@@ -1,0 +1,57 @@
+name: Profesor Gato — Run Diario
+
+on:
+  schedule:
+    - cron: "0 13 * * *"   # 7:00am hora Ciudad de México (UTC-6)
+  workflow_dispatch:         # permite disparar manualmente desde GitHub
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Instalar Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Instalar ffmpeg
+        run: sudo apt-get install -y ffmpeg
+
+      - name: Instalar dependencias Python
+        run: pip install -r requirements.txt
+
+      - name: Restaurar credentials.json (Google/YouTube OAuth)
+        run: echo '${{ secrets.GOOGLE_CREDENTIALS_JSON }}' > credentials.json
+
+      - name: Restaurar token.json (Google/YouTube OAuth)
+        run: echo '${{ secrets.GOOGLE_TOKEN_JSON }}' > token.json
+
+      - name: Ejecutar pipeline
+        env:
+          PYTHONIOENCODING: utf-8
+          GOOGLE_CLOUD_PROJECT: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
+          GOOGLE_CLOUD_LOCATION: ${{ secrets.GOOGLE_CLOUD_LOCATION }}
+          FAL_API_KEY: ${{ secrets.FAL_API_KEY }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          KLING_ACCESS_KEY: ${{ secrets.KLING_ACCESS_KEY }}
+          KLING_SECRET_KEY: ${{ secrets.KLING_SECRET_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
+          SIEVEDANCE_API_KEY: ${{ secrets.SIEVEDANCE_API_KEY }}
+        run: python run_daily.py --now
+
+      - name: Subir logs como artefacto
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs-${{ github.run_id }}
+          path: logs/
+          retention-days: 30

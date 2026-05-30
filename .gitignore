@@ -1,0 +1,11 @@
+.env
+credentials.json
+token.json
+__pycache__/
+*.pyc
+output/
+logs/
+*.mp3
+*.mp4
+*.wav
+.claude/

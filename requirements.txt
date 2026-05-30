@@ -1,0 +1,14 @@
+anthropic
+pytz
+elevenlabs
+python-dotenv
+requests
+pytrends
+praw
+ffmpeg-python
+openai-whisper
+schedule
+fal-client
+google-auth
+google-auth-oauthlib
+google-api-python-client

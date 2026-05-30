@@ -1,0 +1,210 @@
+"""
+Módulo 3 — Sintetizador de Voz
+Convierte el guion del Profesor Gato a audio usando la voz clonada de Luigie en ElevenLabs.
+v4: Soporta generación por paneles (un audio por panel)
+"""
+
+import os
+import requests
+from datetime import datetime
+from pathlib import Path
+from config import (
+    ELEVENLABS_API_KEY, VOICE_ID, BASTET_VOICE_ID,
+    ELEVENLABS_MODEL, VOICE_SETTINGS, OUTPUT_DIR
+)
+from modules import cost_tracker
+
+BASTET_VOICE_SETTINGS = {
+    "stability":        0.40,
+    "similarity_boost": 0.75,
+    "style":            0.50,    # más expresiva que el Profe
+    "use_speaker_boost": True,
+}
+
+
+def generar_audio(guion: str, nombre_archivo: str = None) -> str:
+    """
+    Genera el archivo de audio a partir del guion.
+    
+    Args:
+        guion: Texto del guion del Profesor Gato
+        nombre_archivo: Nombre base del archivo (sin extensión). 
+                        Si no se da, usa timestamp.
+    
+    Returns:
+        Ruta completa al archivo .mp3 generado
+    """
+    if nombre_archivo is None:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        nombre_archivo = f"profesor_gato_{timestamp}"
+
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    ruta_audio = os.path.join(OUTPUT_DIR, f"{nombre_archivo}.mp3")
+
+    url = f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}"
+
+    headers = {
+        "Accept": "audio/mpeg",
+        "Content-Type": "application/json",
+        "xi-api-key": ELEVENLABS_API_KEY
+    }
+
+    payload = {
+        "text": guion,
+        "model_id": ELEVENLABS_MODEL,
+        "voice_settings": VOICE_SETTINGS
+    }
+
+    print(f"🎙️  Sintetizando voz con ElevenLabs...")
+    print(f"   Voice ID: {VOICE_ID}")
+    print(f"   Caracteres: {len(guion)}")
+
+    response = requests.post(url, json=payload, headers=headers)
+
+    if response.status_code != 200:
+        raise Exception(
+            f"Error ElevenLabs [{response.status_code}]: {response.text}"
+        )
+
+    with open(ruta_audio, "wb") as f:
+        f.write(response.content)
+
+    size_kb = os.path.getsize(ruta_audio) / 1024
+    print(f"✅ Audio generado: {ruta_audio} ({size_kb:.1f} KB)")
+    return ruta_audio
+
+
+def generar_audios_por_paneles(datos_comic: dict, carpeta_salida: str = None) -> list[dict]:
+    """
+    Genera un archivo de audio por cada panel del comic.
+    
+    Args:
+        datos_comic: Dict con estructura del comic (output de comic_parser)
+        carpeta_salida: Carpeta donde guardar los audios. 
+                        Si no se da, crea una carpeta en audio/ con el título.
+    
+    Returns:
+        Lista de dicts con info de cada panel + ruta del audio generado
+    """
+    titulo_limpio = (
+        datos_comic["titulo"]
+        .replace(" ", "_").replace("/", "-")
+        .replace(":", "").replace("?", "").replace("*", "")
+        .replace("<", "").replace(">", "").replace('"', "").replace("|", "")
+    )[:30]
+    
+    if carpeta_salida is None:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        carpeta_salida = f"audio/{titulo_limpio}_{timestamp}"
+    
+    Path(carpeta_salida).mkdir(parents=True, exist_ok=True)
+    
+    paneles = datos_comic["paneles"]
+    print(f"\n🎙️  Generando audio para {len(paneles)} paneles...")
+    print(f"   Título: {datos_comic['titulo']}")
+    print(f"   Carpeta: {carpeta_salida}\n")
+    
+    resultados = []
+    
+    for panel in paneles:
+        numero    = panel["numero"]
+        narracion = panel["narracion"]
+        speaker   = panel.get("speaker", "gato")
+
+        # Elegir voz según personaje
+        if speaker == "bastet":
+            voice_id       = BASTET_VOICE_ID
+            voice_settings = BASTET_VOICE_SETTINGS
+            speaker_label  = "BASTET"
+        else:
+            voice_id       = VOICE_ID
+            voice_settings = VOICE_SETTINGS
+            speaker_label  = "GATO"
+
+        nombre_archivo = f"panel_{numero:02d}"
+        ruta_audio = os.path.join(carpeta_salida, f"{nombre_archivo}.mp3")
+
+        print(f"  Panel {numero}/{len(paneles)} [{speaker_label}]: \"{narracion[:50]}...\"")
+
+        url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}"
+        headers = {
+            "Accept": "audio/mpeg",
+            "Content-Type": "application/json",
+            "xi-api-key": ELEVENLABS_API_KEY
+        }
+        payload = {
+            "text": narracion,
+            "model_id": ELEVENLABS_MODEL,
+            "voice_settings": voice_settings,
+        }
+
+        response = requests.post(url, json=payload, headers=headers)
+
+        if response.status_code != 200:
+            raise Exception(f"Error ElevenLabs panel {numero} [{response.status_code}]: {response.text}")
+
+        with open(ruta_audio, "wb") as f:
+            f.write(response.content)
+
+        duracion = obtener_duracion_audio(ruta_audio)
+        size_kb  = os.path.getsize(ruta_audio) / 1024
+
+        # Registrar costo ElevenLabs con caracteres reales
+        cost_tracker.registrar_voz(
+            ELEVENLABS_MODEL,
+            n_chars=len(narracion),
+            ctx=f"Panel {numero} [{speaker_label}]",
+        )
+
+        print(f"  panel_{numero:02d}.mp3 [{speaker_label}] {duracion:.1f}s ({size_kb:.1f} KB)")
+
+        resultados.append({
+            "numero":          numero,
+            "speaker":         speaker,
+            "narracion":       narracion,
+            "visual_pizarron": panel["visual_pizarron"],
+            "ruta_audio":      ruta_audio,
+            "duracion_real":   duracion,
+        })
+    
+    print(f"\n✅ {len(resultados)} audios generados en: {carpeta_salida}")
+    duracion_total = sum(p["duracion_real"] for p in resultados)
+    print(f"   Duración total del video: {duracion_total:.1f}s")
+    
+    return resultados
+
+
+def obtener_duracion_audio(ruta_audio: str) -> float:
+    """
+    Obtiene la duración del audio en segundos usando ffprobe.
+    Requiere FFmpeg instalado.
+    """
+    import subprocess
+    result = subprocess.run(
+        ["ffprobe", "-v", "error", "-show_entries",
+         "format=duration", "-of", "default=noprint_wrappers=1:nokey=1",
+         ruta_audio],
+        capture_output=True, text=True
+    )
+    return float(result.stdout.strip())
+
+
+if __name__ == "__main__":
+    import json
+    import sys
+
+    if len(sys.argv) < 2:
+        print("Uso: python modules/voice_synthesizer.py logs/comic_La_Tragedia_del_Mar_de_Aral.json")
+        sys.exit(1)
+
+    ruta_json = sys.argv[1]
+
+    with open(ruta_json, "r", encoding="utf-8") as f:
+        datos_comic = json.load(f)
+
+    resultados = generar_audios_por_paneles(datos_comic)
+
+    print("\n" + "="*50)
+    for p in resultados:
+        print(f"Panel {p['numero']}: {p['duracion_real']:.1f}s → {p['ruta_audio']}")
+    print("="*50)

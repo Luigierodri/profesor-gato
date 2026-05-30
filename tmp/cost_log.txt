@@ -1,0 +1,28 @@
+══════════════════════════════════════════════════════════════════
+PROFESOR GATO — Cost Log  |  2026-05-26 23:32:13
+Tema: La burbuja de los tulipanes en 1637
+══════════════════════════════════════════════════════════════════
+
+23:32:23  TOKENS   claude-haiku-4-5-20251001         1,256 in + 962 out tok         $  0.0049
+23:32:25  VOZ      eleven_multilingual_v2            191 chars — Panel 1 [GATO]    ~$  0.0344
+23:32:27  VOZ      eleven_multilingual_v2            113 chars — Panel 2 [BASTET]  ~$  0.0203
+23:32:29  VOZ      eleven_multilingual_v2            205 chars — Panel 3 [GATO]    ~$  0.0369
+23:32:31  VOZ      eleven_multilingual_v2            105 chars — Panel 4 [BASTET]  ~$  0.0189
+23:32:33  VOZ      eleven_multilingual_v2            212 chars — Panel 5 [GATO]    ~$  0.0382
+23:32:35  VOZ      eleven_multilingual_v2            235 chars — Panel 6 [GATO]    ~$  0.0423
+23:32:41  IMAGEN   imagen-4.0-fast-generate-001      1 imagen — Panel 1 (gato)      $  0.0200
+23:32:46  IMAGEN   imagen-4.0-fast-generate-001      1 imagen — Panel 2 (bastet)    $  0.0200
+23:32:50  IMAGEN   imagen-4.0-fast-generate-001      1 imagen — Panel 3 (gato)      $  0.0200
+23:32:54  IMAGEN   imagen-4.0-fast-generate-001      1 imagen — Panel 4 (bastet)    $  0.0200
+23:32:58  IMAGEN   imagen-4.0-fast-generate-001      1 imagen — Panel 5 (gato)      $  0.0200
+23:33:02  IMAGEN   imagen-4.0-fast-generate-001      1 imagen — Panel 6 (gato)      $  0.0200
+
+──────────────────────────────────────────────────────────────────
+RESUMEN POR TIPO
+  TOKENS    $   0.0049   (1 llamada)
+  VOZ      ~$   0.1910   (6 llamadas)
+  IMAGEN    $   0.1200   (6 llamadas)
+──────────────────────────────────────────────────────────────────
+  TOTAL SESIÓN:  $0.3158 USD (algunos valores son estimados — marcados con ~)
+  Duración sesión: 7m 30s
+══════════════════════════════════════════════════════════════════
