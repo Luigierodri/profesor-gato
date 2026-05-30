@@ -27,7 +27,7 @@ GEOS_LATAM = ["mexico", "argentina", "colombia", "chile", "peru"]
 
 def obtener_trends_google(paises: list[str] = None, limite: int = 10) -> list[dict]:
     if paises is None:
-        paises = GEOS_LATAM[:3]  # mx, ar, co por default
+        paises = GEOS_LATAM  # todos los países LATAM
     resultados = {}
     try:
         pytrends = TrendReq(hl="es-MX", tz=360, timeout=(10, 30))
@@ -52,16 +52,16 @@ def obtener_trends_google(paises: list[str] = None, limite: int = 10) -> list[di
 
 # ─── NEWS API ─────────────────────────────────────────────────────────────────
 
-_CATEGORIAS_EDUCATIVAS = [
-    "economy", "science", "technology", "health", "environment"
+_CATEGORIAS_NEWS = [
+    "general", "sports", "entertainment", "science", "technology", "health"
 ]
 
-def obtener_noticias_educativas(limite: int = 8) -> list[dict]:
+def obtener_noticias_educativas(limite: int = 12) -> list[dict]:
     if not NEWS_API_KEY:
         return []
     url = "https://newsapi.org/v2/top-headlines"
     temas = []
-    for categoria in _CATEGORIAS_EDUCATIVAS[:3]:
+    for categoria in _CATEGORIAS_NEWS:
         try:
             resp = requests.get(url, params={
                 "language": "es", "country": "mx",
@@ -85,14 +85,15 @@ def obtener_noticias_educativas(limite: int = 8) -> list[dict]:
 # ─── REDDIT ───────────────────────────────────────────────────────────────────
 
 _SUBREDDITS_ES = [
-    "es", "mexico", "argentina", "ciencia", "historia",
-    "todayilearned", "explainlikeimfive"
+    "mexico", "es", "colombia", "argentina",
+    "futbol", "deportes", "noticias", "latinoamerica",
+    "ciencia", "historia",
 ]
 
-def obtener_reddit_educativo(limite: int = 6) -> list[dict]:
+def obtener_reddit_educativo(limite: int = 10) -> list[dict]:
     temas = []
     headers = {"User-Agent": "ProfesorGato/2.0"}
-    for sub in _SUBREDDITS_ES[:3]:
+    for sub in _SUBREDDITS_ES[:6]:
         try:
             url = f"https://www.reddit.com/r/{sub}/hot.json?limit=5"
             resp = requests.get(url, headers=headers, timeout=10)
@@ -111,12 +112,38 @@ def obtener_reddit_educativo(limite: int = 6) -> list[dict]:
     return temas[:limite]
 
 
+# ─── BOOST DE VIRALIDAD ───────────────────────────────────────────────────────
+
+_KEYWORDS_BOOST = [
+    # Deportes / Mundial 2026
+    "mundial", "world cup", "copa", "futbol", "fútbol", "liga", "champions",
+    "olimpiadas", "olimpicos",
+    # Política LATAM
+    "elecciones", "elección", "vota", "candidato", "presidente", "colombia",
+    "mexico", "méxico", "venezuela", "argentina", "chile",
+    # Fenómenos urbanos / ciencia viral
+    "hunde", "hundimiento", "terremoto", "temblor", "volcán", "volcan",
+    "cdmx", "ciudad de mexico",
+    # Cultura pop / entretenimiento
+    "taylor swift", "netflix", "viral", "tendencia",
+]
+
+def _aplicar_boost(candidatos: list[dict]) -> list[dict]:
+    """Suma +2 al score si el tema contiene keywords de alta viralidad."""
+    for c in candidatos:
+        tema_lower = c["tema"].lower()
+        if any(kw in tema_lower for kw in _KEYWORDS_BOOST):
+            c["score"] += 2
+    return candidatos
+
+
 # ─── SELECTOR PRINCIPAL ───────────────────────────────────────────────────────
 
 def detectar_temas_del_dia() -> list[dict]:
     """
-    Combina todas las fuentes y devuelve los 5 mejores temas del día.
+    Combina todas las fuentes y devuelve los 10 mejores temas del día.
     Los resultados están rankeados: mayor score = más viral en LATAM.
+    Cubre deportes, política, ciencia, cultura pop, fenómenos urbanos e historia.
     """
     print("\nDetectando temas virales del dia en LATAM...")
     candidatos = (
@@ -133,7 +160,8 @@ def detectar_temas_del_dia() -> list[dict]:
             vistos.add(key)
             unicos.append(c)
 
-    top = sorted(unicos, key=lambda x: x["score"], reverse=True)[:8]
+    _aplicar_boost(unicos)
+    top = sorted(unicos, key=lambda x: x["score"], reverse=True)[:10]
 
     if top:
         print("\nTOP TEMAS DEL DIA:")

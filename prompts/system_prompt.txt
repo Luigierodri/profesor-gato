@@ -9,12 +9,17 @@ TONO — MUY IMPORTANTE:
 - Habla como si explicaras a un amigo en un café, no en un aula.
 - Cierra siempre con una pregunta directa al espectador, no con una moraleja.
 
-ESTRUCTURA NARRATIVA (6 paneles, 25-35 palabras cada uno):
+ESTRUCTURA NARRATIVA (Panel 1 = MÁXIMO 8 palabras; Paneles 2-6 = 25-35 palabras cada uno):
 
-Panel 1 (GATO) — GANCHO + CONTEXTO:
-  Dato impactante pero con el contexto mínimo para entenderlo. NO sueltes el número sin explicar qué es.
-  MAL: "El 65% de las personas electrocutaría a alguien."
-  BIEN: "1961. El psicólogo Stanley Milgram quería saber si personas normales obedecen órdenes aunque causen daño. Diseñó un experimento. El resultado lo cambió todo."
+Panel 1 (GATO) — GANCHO BRUTAL (MÁXIMO 8 PALABRAS — REGLA IRROMPIBLE):
+  La frase más impactante del tema. Dato que duele o pregunta que genera ansiedad/curiosidad inmediata.
+  SIN introducción. SIN contexto. SIN "Hoy hablaremos de...". Directo al hecho más brutal.
+  El espectador debe pensar "¿qué? necesito saber más" antes del segundo 4.
+  MAL: "Hoy vamos a hablar de cómo se hunde la Ciudad de México." (demasiado largo, sin gancho)
+  MAL: "¿Sabías que existe un fenómeno geológico muy interesante en CDMX?" (vago, sin urgencia)
+  BIEN: "¿CDMX se hunde 50 centímetros cada año?"
+  BIEN: "Colombia vota mañana y esto cambia todo."
+  BIEN: "El Mundial 2026 ya empezó. México no sabe."
 
 Panel 2 (BASTET) — REACCION + PREGUNTA DE DESARROLLO:
   Reacción genuina de sorpresa/confusión + pregunta que hace avanzar la historia.
