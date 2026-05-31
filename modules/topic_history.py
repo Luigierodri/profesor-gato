@@ -24,6 +24,14 @@ HIST_PATH = BASE_DIR / "data" / "topic_history.json"
 CAP_POR_EVENTO     = 3    # máximo de videos por evento de tendencia...
 VENTANA_CAP_DIAS   = 10   # ...dentro de esta ventana móvil de días
 VENTANA_DEDUP_DIAS = 30   # no repetir el mismo ángulo dentro de este rango
+VENTANA_CATEG_DIAS = 7    # ventana para balancear categorías
+
+# Taxonomía fija de categorías para rotar "un poco de todo".
+CATEGORIAS = [
+    "historia", "politica", "economia", "sociedad", "deportes",
+    "guerras_conflictos", "ciencia", "cultura_pop", "tecnologia",
+    "psicologia", "geografia", "salud", "arte", "filosofia",
+]
 
 
 def cargar() -> list[dict]:
@@ -75,14 +83,35 @@ def eventos_conocidos(hist: list[dict] = None, dias: int = VENTANA_DEDUP_DIAS) -
                    for e in _recientes(hist, dias) if e.get("evento")})
 
 
-def registrar(angulo: str, evento: str = "", trend: str = "", fecha: str = None) -> list[dict]:
+def categorias_recientes(hist: list[dict] = None, dias: int = VENTANA_CATEG_DIAS) -> list[str]:
+    """Categorías de los últimos `dias`, en orden cronológico (la última es la más reciente)."""
+    hist = cargar() if hist is None else hist
+    recientes = _recientes(hist, dias)
+    recientes.sort(key=lambda e: e.get("fecha", ""))
+    return [e["categoria"] for e in recientes if e.get("categoria")]
+
+
+def conteo_categorias(hist: list[dict] = None, dias: int = VENTANA_CATEG_DIAS) -> dict[str, int]:
+    """Cuántos videos por categoría en la ventana (para detectar las menos usadas)."""
+    hist = cargar() if hist is None else hist
+    counts = {c: 0 for c in CATEGORIAS}
+    for e in _recientes(hist, dias):
+        c = (e.get("categoria") or "").strip().lower()
+        if c:
+            counts[c] = counts.get(c, 0) + 1
+    return counts
+
+
+def registrar(angulo: str, evento: str = "", trend: str = "",
+              categoria: str = "", fecha: str = None) -> list[dict]:
     """Agrega una entrada al historial y lo guarda en disco."""
     hist = cargar()
     hist.append({
-        "fecha":  fecha or date.today().strftime("%Y-%m-%d"),
-        "angulo": (angulo or "").strip(),
-        "evento": (evento or "").strip().lower(),
-        "trend":  (trend or "").strip(),
+        "fecha":     fecha or date.today().strftime("%Y-%m-%d"),
+        "angulo":    (angulo or "").strip(),
+        "evento":    (evento or "").strip().lower(),
+        "categoria": (categoria or "").strip().lower(),
+        "trend":     (trend or "").strip(),
     })
     HIST_PATH.parent.mkdir(parents=True, exist_ok=True)
     HIST_PATH.write_text(json.dumps(hist, ensure_ascii=False, indent=2), encoding="utf-8")

@@ -255,6 +255,7 @@ def correr_pipeline(
             _frescos = [t for t in _TEMAS_RESPALDO if t not in _usados] or _TEMAS_RESPALDO
             tema = _frescos[_dia % len(_frescos)]
             evento_tag = "respaldo_atemporal"
+            categoria_tag = ""
             log.warning(f"Sin temas detectados. Usando respaldo rotativo (día {_dia}): {tema}")
         else:
             log.info("  Seleccionando angulo educativo a partir de tendencias...")
@@ -263,18 +264,22 @@ def correr_pipeline(
                 tema = angulo["angulo_educativo"] or temas[0]["tema"]
                 trend_hook = angulo.get("trend_conectado")
                 evento_tag = angulo.get("evento", "")
+                categoria_tag = angulo.get("categoria", "")
                 log.info(f"  Trend viral:      {trend_hook}")
                 log.info(f"  Angulo educativo: {tema}")
+                log.info(f"  Categoria:        {categoria_tag or '—'}")
                 log.info(f"  Razon:            {angulo.get('razon', '')}")
             except Exception as e:
                 log.warning(f"  seleccionar_angulo_educativo fallo ({e}) — usando top trend directo")
                 tema = temas[0]["tema"]
                 evento_tag = ""
+                categoria_tag = ""
 
         # Registrar en el historial para no repetir tema/ángulo en próximos días.
         try:
-            topic_history.registrar(angulo=tema, evento=evento_tag, trend=trend_hook or "")
-            log.info(f"  [historial] Tema registrado (evento: {evento_tag or '—'})")
+            topic_history.registrar(angulo=tema, evento=evento_tag,
+                                    categoria=categoria_tag, trend=trend_hook or "")
+            log.info(f"  [historial] Tema registrado (evento: {evento_tag or '—'}, categoría: {categoria_tag or '—'})")
         except Exception as e:
             log.warning(f"  [historial] No se pudo registrar el tema: {e}")
     run_log["tema"] = tema

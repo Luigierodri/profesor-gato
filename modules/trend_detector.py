@@ -208,6 +208,8 @@ def seleccionar_angulo_educativo(tendencias: list[dict]) -> dict:
     angulos_prev   = topic_history.angulos_recientes()
     eventos_tope   = topic_history.eventos_en_tope()
     eventos_vistos = topic_history.eventos_conocidos()
+    categs_recientes = topic_history.categorias_recientes()
+    conteo_categs    = topic_history.conteo_categorias()
 
     bloque_memoria = ""
     if angulos_prev:
@@ -229,6 +231,20 @@ def seleccionar_angulo_educativo(tendencias: list[dict]) -> dict:
             "\nTAGS DE EVENTO YA EN USO — si tu ángulo pertenece a uno de estos eventos, "
             "reutiliza EXACTAMENTE el mismo tag en el campo 'evento':\n  "
             + ", ".join(eventos_vistos) + "\n"
+        )
+
+    # Balance de categorías: rotar "un poco de todo".
+    categorias_lista = ", ".join(topic_history.CATEGORIAS)
+    if categs_recientes:
+        menos_usadas = sorted(topic_history.CATEGORIAS, key=lambda c: conteo_categs.get(c, 0))[:5]
+        bloque_memoria += (
+            f"\nCATEGORÍAS DE LOS ÚLTIMOS VIDEOS (más reciente al final): "
+            f"{', '.join(categs_recientes)}\n"
+            "BALANCEA LAS CATEGORÍAS: NO repitas la categoría del último video (idealmente "
+            "tampoco la de los 2 últimos). A lo largo de la semana debe haber variedad real "
+            "(historia, política, economía, sociedad, deportes, guerras/conflictos, ciencia...). "
+            f"Inclínate por una categoría POCO usada últimamente, por ejemplo: {', '.join(menos_usadas)}. "
+            "Prioriza un buen ángulo trending, pero usa el balance para desempatar.\n"
         )
 
     prompt = f"""Eres el productor del canal educativo "Profesor Gato" en YouTube Shorts (México/LATAM).
@@ -256,11 +272,15 @@ El campo "evento" es un tag corto en snake_case que agrupa videos del mismo suce
 (ej: "mundial_2026", "elecciones_colombia_2026", "hundimiento_cdmx"). Reutiliza el mismo
 tag para el mismo evento. Si es un tema atemporal, usa un tag temático (ej: "historia_roma").
 
+El campo "categoria" DEBE ser exactamente una de esta lista:
+  {categorias_lista}
+
 Responde SOLO JSON válido, sin markdown:
 {{
   "angulo_educativo": "la pregunta o afirmación del video en español",
   "trend_conectado": "el trending topic que usas como gancho de relevancia",
   "evento": "tag_en_snake_case",
+  "categoria": "una de la lista de categorías",
   "razon": "en una frase, por qué este ángulo tiene tracción hoy"
 }}"""
 
@@ -275,9 +295,11 @@ Responde SOLO JSON válido, sin markdown:
         raw = raw.split("```")[1].lstrip("json").strip()
     resultado = json.loads(raw)
     resultado.setdefault("evento", "")
+    resultado.setdefault("categoria", "")
     print(f"  Angulo educativo: {resultado['angulo_educativo']}")
     print(f"  Trend conectado:  {resultado.get('trend_conectado')}")
     print(f"  Evento (tag):     {resultado.get('evento')}")
+    print(f"  Categoria:        {resultado.get('categoria')}")
     print(f"  Razon:            {resultado.get('razon', '')}")
     return resultado
 
