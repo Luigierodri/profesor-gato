@@ -299,8 +299,14 @@ class VideoAssemblerV4:
         log.info(f"  ✅ {len(segments)} segmentos de subtítulos")
         return segments
 
-    def generar_ass(self, segments: list[dict]) -> Path:
-        """Genera archivo .ass de subtítulos estilo TikTok."""
+    def generar_ass(self, segments: list[dict], nombre_spans: list[dict] = None) -> Path:
+        """
+        Genera archivo .ass de subtítulos estilo TikTok.
+
+        nombre_spans: lista opcional de {'speaker', 'start', 'end'} para mostrar
+        un nameplate ("PROFESOR GATO" / "BASTET") durante cada panel, dejando claro
+        que son DOS presentadores y no un personaje que cambia.
+        """
         ass_path = self.tmp / "subtitles.ass"
 
         def ts(t):
@@ -310,6 +316,8 @@ class VideoAssemblerV4:
             cs = int((t - int(t)) * 100)
             return f"{h}:{m:02d}:{s:02d}.{cs:02d}"
 
+        # Name: gold para Gato, cian para Bastet → refuerza que son distintos.
+        # MarginV alto (250) los coloca por encima de los subtítulos (140).
         header = f"""[Script Info]
 ScriptType: v4.00+
 PlayResX: {VIDEO_WIDTH}
@@ -319,11 +327,19 @@ WrapStyle: 0
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
 Style: Default,Arial Black,{SUBTITLE_FONTSIZE},&H00FFFFFF,&H000000FF,&H00000000,&HAA000000,-1,0,0,0,100,100,2,0,3,4,2,2,40,40,140,1
+Style: NameGato,Arial Black,46,&H0000C8FF,&H000000FF,&H00000000,&HAA000000,-1,0,0,0,100,100,1,0,3,3,2,2,40,40,250,1
+Style: NameBastet,Arial Black,46,&H00FFD27F,&H000000FF,&H00000000,&HAA000000,-1,0,0,0,100,100,1,0,3,3,2,2,40,40,250,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 """
         lines = [header]
+        for span in (nombre_spans or []):
+            estilo = "NameBastet" if span["speaker"] == "bastet" else "NameGato"
+            nombre = "BASTET" if span["speaker"] == "bastet" else "PROFESOR GATO"
+            lines.append(
+                f"Dialogue: 0,{ts(span['start'])},{ts(span['end'])},{estilo},,0,0,0,,{nombre}"
+            )
         for seg in segments:
             lines.append(
                 f"Dialogue: 0,{ts(seg['start'])},{ts(seg['end'])},Default,,0,0,0,,{seg['text']}"
@@ -516,7 +532,18 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             rutas_audio = [p["ruta_audio"] for p in paneles]
             audio_completo = self.concatenar_audios(rutas_audio)
             segments = self.transcribir(audio_completo)
-            ass_file = self.generar_ass(segments)
+
+            # Spans de cada panel (para el nameplate del personaje que habla)
+            nombre_spans, t0 = [], 0.0
+            for p in paneles:
+                dur = self.get_duration(Path(p["ruta_audio"]))
+                nombre_spans.append({
+                    "speaker": p.get("speaker", "gato"),
+                    "start": t0, "end": t0 + dur,
+                })
+                t0 += dur
+
+            ass_file = self.generar_ass(segments, nombre_spans)
             video_subtitulado = self.quemar_subtitulos(video_base, ass_file)
 
             log.info("\n[4/5] Mezclando audio...")

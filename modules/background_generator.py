@@ -75,23 +75,28 @@ def _construir_prompt(visual_pizarron: str, location: str = "classroom") -> str:
     - location=<descripción>: escenario real relevante al tema (Paneles 2-5)
     El personaje se superpone en el assembler — NO debe aparecer en el fondo.
     """
+    # NOTA: los modelos de imagen ignoran los negativos con facilidad. Lo que más
+    # ayuda a NO meter personajes es pedir un PLANO AMPLIO de SOLO escenario; los
+    # negativos quedan como refuerzo. El personaje se superpone luego en el assembler.
     if location == "classroom":
         return (
             f"{_PIXEL_STYLE}. "
-            "Colorful classroom background: large blackboard centered on the wall, "
-            "chalk drawings and diagrams visible on the blackboard. "
+            "WIDE ESTABLISHING SHOT of an EMPTY classroom interior, scenery only. "
+            "Large blackboard centered on the wall with chalk drawings and diagrams. "
             f"The blackboard shows: {visual_pizarron}. "
-            "Bright educational classroom interior, desks and decorations in background. "
-            "EMPTY FOREGROUND — absolutely NO character, NO cat, NO animal, NO person, NO figure. "
+            "Desks and decorations in the background, bright educational room. "
+            "Completely empty of living beings: NO people, NO cats, NO animals, "
+            "NO characters, NO silhouettes, NO figures anywhere. "
             "NO text, NO numbers, NO letters anywhere in the image."
         )
     return (
         f"{_PIXEL_STYLE}. "
-        f"Real-world location: {location}. "
-        "Detailed pixel art environment, vivid atmospheric colors, wide establishing shot. "
-        "NO classroom, NO blackboard. "
-        f"Visual context for the scene: {visual_pizarron}. "
-        "EMPTY FOREGROUND — absolutely NO character, NO cat, NO animal, NO person, NO figure. "
+        f"WIDE ESTABLISHING SHOT of a real-world location: {location}. "
+        "Scenery, landscape and architecture only — like an empty postcard or backdrop. "
+        "Vivid atmospheric colors. NO classroom, NO blackboard. "
+        f"Visual context (as background scenery only): {visual_pizarron}. "
+        "Completely empty of living beings: NO people, NO cats, NO animals, "
+        "NO characters, NO silhouettes, NO crowds, NO figures anywhere. "
         "NO text, NO numbers, NO letters anywhere in the image."
     )
 
