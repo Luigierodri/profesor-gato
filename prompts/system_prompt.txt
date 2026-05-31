@@ -37,7 +37,7 @@ Panel 6 (GATO) — CIERRE CON PREGUNTA AL ESPECTADOR: 1-2 frases de reflexión +
   BIEN: "Milgram demostró que no necesitas ser malvado para hacer daño. Solo necesitas que alguien con autoridad te lo pida. ¿Tú habrías parado?"
 
 CAMPOS IMPORTANTES:
-- visual_pizarron: contexto visual del panel en INGLÉS, sin texto ni números. Figuras, objetos, diagramas relevantes a la escena.
+- visual_pizarron: qué se ve como contexto visual del panel, en INGLÉS, sin texto ni números. Solo figuras y diagramas.
 - location: escenario del fondo en INGLÉS. Regla estricta:
     Panel 1 → siempre "classroom"
     Paneles 2, 3, 4, 5 → lugar real relevante al tema, específico y visual. Ej:
@@ -47,12 +47,6 @@ CAMPOS IMPORTANTES:
       "ancient Aztec Tenochtitlan lake city aerial view"
       "New York Stock Exchange trading floor 1929"
     Panel 6 → siempre "classroom"
-- accion: qué está haciendo físicamente el personaje en INGLÉS. Descripción corta y visual. Ejemplos:
-    classroom panels → "pointing at blackboard with chalk", "sitting at desk looking shocked", "leaning forward dramatically"
-    location panels  → "exploring dark cave with lantern raised", "looking up at sinking buildings in awe",
-                       "running through ancient ruins", "examining a cracked map on a stone wall",
-                       "standing at market stall looking confused", "pointing at a crumbling monument"
-    Bastet siempre reacciona: "gasping with hands on cheeks", "grabbing Gato's arm in shock", "looking around nervously"
 - musica_mood: elige UNO según el tema:
     "clasica_dramatica"  → historia europea, política, guerras, revoluciones
     "epico_orquestal"    → imperios, batallas, civilizaciones antiguas, conquistas
@@ -70,11 +64,11 @@ Responde SOLO JSON valido, sin markdown:
   "ambiente_sonoro": "",
   "musica_mood": "",
   "paneles": [
-    {"numero": 1, "speaker": "gato",   "narracion": "", "visual_pizarron": "", "location": "classroom", "accion": ""},
-    {"numero": 2, "speaker": "bastet", "narracion": "", "visual_pizarron": "", "location": "",          "accion": ""},
-    {"numero": 3, "speaker": "gato",   "narracion": "", "visual_pizarron": "", "location": "",          "accion": ""},
-    {"numero": 4, "speaker": "bastet", "narracion": "", "visual_pizarron": "", "location": "",          "accion": ""},
-    {"numero": 5, "speaker": "gato",   "narracion": "", "visual_pizarron": "", "location": "",          "accion": ""},
-    {"numero": 6, "speaker": "gato",   "narracion": "", "visual_pizarron": "", "location": "classroom", "accion": ""}
+    {"numero": 1, "speaker": "gato",   "narracion": "", "visual_pizarron": "", "location": "classroom"},
+    {"numero": 2, "speaker": "bastet", "narracion": "", "visual_pizarron": "", "location": ""},
+    {"numero": 3, "speaker": "gato",   "narracion": "", "visual_pizarron": "", "location": ""},
+    {"numero": 4, "speaker": "bastet", "narracion": "", "visual_pizarron": "", "location": ""},
+    {"numero": 5, "speaker": "gato",   "narracion": "", "visual_pizarron": "", "location": ""},
+    {"numero": 6, "speaker": "gato",   "narracion": "", "visual_pizarron": "", "location": "classroom"}
   ]
 }

@@ -172,8 +172,42 @@ def correr_pipeline(
     else:
         temas = detectar_temas_del_dia()
         if not temas:
-            tema = "El efecto Cantillon: quien gana realmente con la inflacion"
-            log.warning(f"Sin temas detectados. Usando respaldo: {tema}")
+            _TEMAS_RESPALDO = [
+                "¿Por qué se hunde la Ciudad de México?",
+                "El experimento de Milgram: por qué la gente obedece órdenes crueles",
+                "¿Qué es la deuda nacional y por qué nunca se paga?",
+                "¿Por qué México nunca pasa de cuartos de final en Mundiales?",
+                "La paradoja de Fermi: ¿dónde están todos los extraterrestres?",
+                "¿Por qué los precios nunca bajan aunque baje la inflación?",
+                "El experimento de Stanford: cómo el poder corrompe en 6 días",
+                "¿Por qué Colombia tiene tantas constituciones?",
+                "La maldición del petróleo: por qué el oro negro destruye países",
+                "¿Por qué los ricos se hacen más ricos aunque no trabajen?",
+                "La tragedia de los comunes: por qué destruimos lo que es de todos",
+                "¿Por qué el Titanic realmente se hundió? (no fue el iceberg)",
+                "¿Qué pasó realmente con la economía de Venezuela?",
+                "El efecto Dunning-Kruger: por qué los ignorantes se creen expertos",
+                "¿Por qué Argentina entra en crisis económica cada 10 años?",
+                "La guerra del agua de Bolivia: cuando privatizaron la lluvia",
+                "¿Por qué el Imperio Romano realmente cayó?",
+                "¿Qué es el dinero y por qué vale lo que vale?",
+                "El sesgo de supervivencia: por qué aprendemos de los que ganaron",
+                "¿Por qué los países más felices del mundo están en el norte?",
+                "La historia del Cerro Rico de Potosí: la montaña que financió Europa",
+                "¿Por qué el sueño americano ya no existe?",
+                "La ilusión del libre mercado: quién realmente controla los precios",
+                "¿Por qué se inventaron las vacunas y quién intentó destruirlas?",
+                "¿Por qué las ciudades más inteligentes del mundo están en Asia?",
+                "¿Por qué África siendo tan rica tiene tanta pobreza?",
+                "El fenómeno FOMO: la economía del miedo a quedarse fuera",
+                "¿Qué es el PIB y por qué miente sobre el bienestar?",
+                "La historia de cómo una empresa se convirtió en el primer monopolio del mundo",
+                "¿Por qué el agua dulce será la próxima guerra mundial?",
+            ]
+            import datetime as _dt
+            _dia = _dt.date.today().timetuple().tm_yday
+            tema = _TEMAS_RESPALDO[_dia % len(_TEMAS_RESPALDO)]
+            log.warning(f"Sin temas detectados. Usando respaldo rotativo (día {_dia}): {tema}")
         else:
             log.info("  Seleccionando angulo educativo a partir de tendencias...")
             try:
