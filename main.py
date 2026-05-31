@@ -4,13 +4,14 @@ Genera automáticamente 1 video educativo por ejecución.
 
 FLUJO:
   1. Detecta tema del día (Google Trends / NewsAPI)
-  2. Genera guion con Claude — 6 paneles (Gato + Bastet)
-  3. Sintetiza voz por panel con ElevenLabs
-  4. Genera imagen pixel art por panel con gpt-image-2 (edit mode)
-  5. Anima imágenes con fal.ai Kling 1.6 (parallax)
-  5.5. Selecciona clip de personaje por panel (emotion-based)
-  6. Genera ambiente sonoro contextual
-  7. Ensambla: clip animado + personaje overlay + subtítulos + música → MP4 9:16
+  2. Verifica hechos del tema con búsqueda web (ficha de datos verificados)
+  2b. Genera guion con Claude (Sonnet 4.6) — 6 paneles (Gato + Bastet)
+  3. Estructura paneles + garantiza duración < 60s (Short válido)
+  4. Sintetiza voz por panel con ElevenLabs (retry + continuidad)
+  5. Genera imagen pixel art de fondo por panel (Imagen 4 → Imagen 3 → FLUX → gpt-image-1)
+  5.5. Anima imágenes con fal.ai Kling 1.6 (parallax)
+  6. Genera ambiente sonoro + música (Lyria 3; sin tracks estáticos por copyright)
+  7. Ensambla: fondo animado + personaje overlay (PNG fijo) + nameplate + subtítulos + música → MP4 9:16
 
 USO:
   python main.py                    # Detecta tema automáticamente
@@ -19,11 +20,13 @@ USO:
   python main.py --ref img.png      # Imagen de referencia personalizada
 
 COSTO ESTIMADO POR VIDEO:
-  - Script   (Claude Haiku):     ~$0.001
-  - Voz      (ElevenLabs × 6):  ~$0.010
-  - Imágenes (gpt-image-2 × 6): ~$0.240
+  - Verificación (web search):   ~$0.030
+  - Script   (Claude Sonnet):    ~$0.010
+  - Voz      (ElevenLabs × 6):   ~$0.010
+  - Imágenes (Imagen 4 × 6):     ~$0.120
   - Animación (Kling × 6):       ~$0.480
-  - Total:                       ~$0.731 por video
+  - Música   (Lyria 3):          ~$0.060
+  - Total:                       ~$0.71 por video
 """
 
 import os
@@ -51,7 +54,6 @@ from modules.background_generator import generar_imagenes_por_paneles
 from modules.video_animator       import animar_paneles
 from modules.video_assembler      import VideoAssemblerV4
 from modules.sound_generator      import generar_ambiente
-from modules.clip_selector        import elegir_clip_personaje
 from modules.music_generator      import generar_musica_lyria
 
 # ─── LOGGING ──────────────────────────────────────────────────────────────────
@@ -345,14 +347,6 @@ def correr_pipeline(
     run_log["clips_animados"] = animados
     log.info(f"  {animados}/{len(resultados_anim)} paneles animados")
 
-    # ── PASO 5.7: SELECCIONAR CLIPS DE PERSONAJE ──────────────────────────────
-    banner("PASO 5.7 — Seleccionando clips de personaje")
-    clips_personaje = []
-    for panel in datos_comic["paneles"]:
-        clip = elegir_clip_personaje(panel["numero"], panel.get("speaker", "gato"))
-        clips_personaje.append(clip)
-        log.info(f"  Panel {panel['numero']} [{panel.get('speaker','gato').upper()}]: {clip.name}")
-
     # ── PASO 5.8: AMBIENTE SONORO ─────────────────────────────────────────────
     banner("PASO 5.8 — Generando ambiente sonoro")
     ambiente_desc = script.get("ambiente_sonoro", "")
@@ -383,14 +377,13 @@ def correr_pipeline(
     banner("PASO 6 — Ensamblando video final")
     paneles = [
         {
-            "numero":         audio_r["numero"],
-            "speaker":        audio_r.get("speaker", "gato"),
-            "ruta_audio":     audio_r["ruta_audio"],
-            "ruta_imagen":    anim_r["ruta_imagen"],
-            "ruta_video":     anim_r["ruta_video"],
-            "clip_personaje": str(clip),
+            "numero":      audio_r["numero"],
+            "speaker":     audio_r.get("speaker", "gato"),
+            "ruta_audio":  audio_r["ruta_audio"],
+            "ruta_imagen": anim_r["ruta_imagen"],
+            "ruta_video":  anim_r["ruta_video"],
         }
-        for audio_r, anim_r, clip in zip(resultados_audio, resultados_anim, clips_personaje)
+        for audio_r, anim_r in zip(resultados_audio, resultados_anim)
     ]
 
     assembler  = VideoAssemblerV4(musica_mood=musica_mood)

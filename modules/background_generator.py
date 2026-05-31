@@ -14,7 +14,6 @@ Proyecto GCP: GOOGLE_CLOUD_PROJECT en .env
 
 import os
 import base64
-import random
 import logging
 import time
 import requests
@@ -34,38 +33,12 @@ IMAGES_DIR.mkdir(exist_ok=True)
 IMAGEN4_MODEL  = "imagen-4.0-fast-generate-001"
 IMAGEN3_MODEL  = "imagen-3.0-fast-generate-001"
 
-# Outfits del Profesor Gato — cambia por video
-_GATO_OUTFITS = [
-    "green jacket and dark red tie",
-    "black suit and white shirt",
-    "brown tweed jacket and bow tie",
-    "navy blazer and yellow tie",
-    "casual denim jacket",
-]
-
-# Outfits de Bastet — cambia por video
-_BASTET_OUTFITS = [
-    "golden headband, plaid skirt and green vest",
-    "golden headband, royal blue dress",
-    "golden headband, purple academic robe",
-    "golden headband, white blouse and red cardigan",
-    "golden headband, emerald green jacket",
-]
-
 # Estilo visual pixel art 16-bit
 _PIXEL_STYLE = (
     "16-bit pixel art style, retro videogame aesthetic, "
     "warm colors, detailed pixel shading, clean pixel outlines, "
     "educational game character art"
 )
-
-
-def _elegir_outfit(speaker: str, seed: int) -> str:
-    """Elige un outfit consistente para todo el video (mismo seed = mismo outfit)."""
-    rng = random.Random(seed)
-    if speaker == "bastet":
-        return rng.choice(_BASTET_OUTFITS)
-    return rng.choice(_GATO_OUTFITS)
 
 
 def _construir_prompt(visual_pizarron: str, location: str = "classroom") -> str:
@@ -162,7 +135,6 @@ def generar_imagen_panel(
     carpeta_salida: str,
     ruta_referencia: str,
     speaker: str = "gato",
-    outfit_seed: int = 0,
     location: str = "classroom",
 ) -> str:
     """
@@ -175,7 +147,6 @@ def generar_imagen_panel(
         carpeta_salida:  Carpeta de destino
         ruta_referencia: Ignorado (mantenido por compatibilidad)
         speaker:         "gato" o "bastet" (informativo, no afecta el fondo)
-        outfit_seed:     Ignorado (mantenido por compatibilidad)
         location:        "classroom" o lugar real para paneles del medio
     """
     prompt = _construir_prompt(visual_pizarron, location)
@@ -272,12 +243,10 @@ def generar_imagenes_por_paneles(
         carpeta_salida = f"images/{titulo_limpio}_{timestamp}"
 
     paneles = datos_comic["paneles"]
-    outfit_seed = hash(datos_comic.get("titulo", "")) & 0xFFFFFF
 
     log.info(f"Generando {len(paneles)} imagenes (Imagen4 → Imagen3 → FLUX → OpenAI) pixel art...")
     log.info(f"  Titulo:      {datos_comic['titulo']}")
     log.info(f"  Carpeta:     {carpeta_salida}")
-    log.info(f"  Outfit seed: {outfit_seed}")
 
     resultados = []
     for panel in paneles:
@@ -288,7 +257,7 @@ def generar_imagenes_por_paneles(
         location = panel.get("location", "classroom")
         ruta_imagen = generar_imagen_panel(
             visual, numero, carpeta_salida,
-            ruta_referencia, speaker, outfit_seed, location
+            ruta_referencia, speaker, location
         )
         resultados.append({
             "numero":          numero,
