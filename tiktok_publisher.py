@@ -49,6 +49,7 @@ CLIENT_KEY     = os.getenv("TIKTOK_CLIENT_KEY")
 CLIENT_SECRET  = os.getenv("TIKTOK_CLIENT_SECRET")
 REFRESH_TOKEN  = os.getenv("TIKTOK_REFRESH_TOKEN")
 
+REDIRECT_URI   = "https://www.tiktok.com/auth/redirect/"
 TOKEN_URL      = "https://open.tiktokapis.com/v2/oauth/token/"
 INIT_URL       = "https://open.tiktokapis.com/v2/post/publish/video/init/"
 STATUS_URL     = "https://open.tiktokapis.com/v2/post/publish/status/fetch/"
