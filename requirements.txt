@@ -3,7 +3,6 @@ pytz
 elevenlabs
 python-dotenv
 requests
-pytrends
 praw
 ffmpeg-python
 openai

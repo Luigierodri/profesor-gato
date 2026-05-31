@@ -64,6 +64,7 @@ jobs:
           TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
           TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
           TIKTOK_REFRESH_TOKEN: ${{ secrets.TIKTOK_REFRESH_TOKEN }}
+          GOOGLE_DRIVE_FOLDER_ID: ${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
         run: python run_daily.py --now
 
       - name: Subir logs como artefacto
@@ -73,3 +74,12 @@ jobs:
           name: logs-${{ github.run_id }}
           path: logs/
           retention-days: 30
+
+      - name: Subir video como artefacto
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: video-${{ github.run_id }}
+          path: videos/*.mp4
+          retention-days: 30
+          if-no-files-found: warn

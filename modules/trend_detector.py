@@ -14,42 +14,48 @@ Flujo de uso:
 
 import sys
 import json
+import xml.etree.ElementTree as ET
 import requests
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
 import anthropic
-from pytrends.request import TrendReq
 from config import NEWS_API_KEY, ANTHROPIC_API_KEY, CLAUDE_MODEL
 
-GEOS_LATAM = ["mexico", "argentina", "colombia", "chile", "peru"]
+# Códigos de país para el RSS de Google Trends (no usa pytrends — funciona desde CI)
+_GEOS_LATAM = {"MX": "méxico", "AR": "argentina", "CO": "colombia", "CL": "chile", "PE": "perú"}
 
 
-# ─── GOOGLE TRENDS ────────────────────────────────────────────────────────────
+# ─── GOOGLE TRENDS RSS ────────────────────────────────────────────────────────
 
-def obtener_trends_google(paises: list[str] = None, limite: int = 10) -> list[dict]:
+def obtener_trends_google(paises: dict = None, limite: int = 10) -> list[dict]:
+    """
+    Lee el RSS público de Google Trends por país.
+    No requiere autenticación ni cookies — funciona desde GitHub Actions.
+    URL: https://trends.google.com/trending/rss?geo=MX
+    """
     if paises is None:
-        paises = GEOS_LATAM  # todos los países LATAM
+        paises = _GEOS_LATAM
     resultados = {}
-    try:
-        pytrends = TrendReq(hl="es-MX", tz=360, timeout=(10, 30))
-        for pais in paises:
-            try:
-                df = pytrends.trending_searches(pn=pais)
-                for tema in df[0].tolist():
-                    resultados[tema] = resultados.get(tema, 0) + 1
-            except Exception:
-                pass
-        # Score = cuántos países comparten el trending
-        temas = [
-            {"tema": t, "fuente": "Google Trends", "score": 3 + v, "paises": v}
-            for t, v in sorted(resultados.items(), key=lambda x: -x[1])
-        ]
-        print(f"  Google Trends: {len(temas)} temas de {len(paises)} países")
-        return temas[:limite]
-    except Exception as e:
-        print(f"  Google Trends error: {e}")
-        return []
+    headers = {"User-Agent": "Mozilla/5.0 (compatible; ProfesorGato/1.0)"}
+    for geo, nombre in paises.items():
+        try:
+            url = f"https://trends.google.com/trending/rss?geo={geo}"
+            resp = requests.get(url, headers=headers, timeout=15)
+            resp.raise_for_status()
+            root = ET.fromstring(resp.content)
+            for item in root.findall(".//item"):
+                titulo = (item.findtext("title") or "").strip()
+                if titulo and len(titulo) > 3:
+                    resultados[titulo] = resultados.get(titulo, 0) + 1
+        except Exception as e:
+            print(f"  Google Trends RSS ({geo}) error: {e}")
+    temas = [
+        {"tema": t, "fuente": "Google Trends RSS", "score": 3 + v, "paises": v}
+        for t, v in sorted(resultados.items(), key=lambda x: -x[1])
+    ]
+    print(f"  Google Trends RSS: {len(temas)} temas de {len(paises)} países")
+    return temas[:limite]
 
 
 # ─── NEWS API ─────────────────────────────────────────────────────────────────

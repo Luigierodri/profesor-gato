@@ -37,6 +37,7 @@ if hasattr(sys.stdout, "reconfigure"):
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
+import google.auth
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from googleapiclient.errors import HttpError
@@ -321,6 +322,52 @@ def registrar_publicacion(ruta_video: Path, resultado: dict) -> None:
         log.warning(f"  No se pudo actualizar cost_tracker.json: {e}")
 
 
+# ── Fallback: subir a Google Drive ─────────────────────────────────────────────
+
+def subir_a_drive(ruta_video: Path, metadata: dict) -> dict | None:
+    """
+    Sube el video a Google Drive usando las credenciales del entorno
+    (funciona con Workload Identity Federation en GitHub Actions o con
+    Application Default Credentials en local).
+
+    Requiere la variable de entorno GOOGLE_DRIVE_FOLDER_ID con el ID de
+    una carpeta de Drive compartida con la cuenta de servicio.
+    Devuelve {"drive_id": ..., "drive_url": ...} o None si falla.
+    """
+    folder_id = os.getenv("GOOGLE_DRIVE_FOLDER_ID", "").strip()
+    if not folder_id:
+        log.info("  Drive: GOOGLE_DRIVE_FOLDER_ID no configurado — omitiendo backup.")
+        return None
+
+    log.info("=" * 60)
+    log.info("  GOOGLE DRIVE BACKUP — Profesor Gato")
+    log.info("=" * 60)
+    try:
+        creds, _ = google.auth.default(
+            scopes=["https://www.googleapis.com/auth/drive.file"]
+        )
+        drive = build("drive", "v3", credentials=creds, cache_discovery=False)
+
+        file_meta = {
+            "name":    ruta_video.name,
+            "parents": [folder_id],
+            "description": metadata.get("titulo", ruta_video.stem),
+        }
+        media = MediaFileUpload(str(ruta_video), mimetype="video/mp4", resumable=True)
+        resultado = (
+            drive.files()
+            .create(body=file_meta, media_body=media, fields="id,webViewLink")
+            .execute()
+        )
+        drive_id  = resultado.get("id", "")
+        drive_url = resultado.get("webViewLink", f"https://drive.google.com/file/d/{drive_id}/view")
+        log.info(f"  ✅ Subido a Drive: {drive_url}")
+        return {"drive_id": drive_id, "drive_url": drive_url}
+    except Exception as e:
+        log.warning(f"  Drive fallback falló: {e}")
+        return None
+
+
 # ── Entry point ────────────────────────────────────────────────────────────────
 
 def main():
@@ -353,19 +400,29 @@ def main():
             "tema":        ruta_video.stem,
         }
 
-    # 3. Subir
+    # 3. Subir a YouTube; si falla → fallback Drive
+    resultado = None
     try:
         resultado = subir_a_youtube(ruta_video, metadata, dry_run=args.dry_run)
     except HttpError as e:
         log.error(f"Error de YouTube API: {e}")
+        log.warning("YouTube rechazó el video — intentando Google Drive como respaldo...")
+        drive_result = subir_a_drive(ruta_video, metadata)
+        if drive_result:
+            log.info(f"  📂 Video disponible en Drive: {drive_result['drive_url']}")
+        else:
+            log.warning(
+                f"  ⚠️  Sin Drive configurado. El video está disponible como artefacto "
+                f"de GitHub Actions por 30 días."
+            )
         sys.exit(1)
 
     # 4. Publicar comentario del creador
-    if not args.dry_run and resultado.get("_youtube"):
+    if not args.dry_run and resultado and resultado.get("_youtube"):
         publicar_comentario(resultado["_youtube"], resultado["video_id"], metadata, run_log)
 
     # 5. Registrar en cost tracker
-    if not args.dry_run:
+    if not args.dry_run and resultado:
         registrar_publicacion(ruta_video, resultado)
 
     return resultado
