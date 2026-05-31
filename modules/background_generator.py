@@ -62,15 +62,24 @@ def _construir_prompt(visual_pizarron: str, location: str = "classroom") -> str:
             "NO characters, NO silhouettes, NO figures anywhere. "
             "NO text, NO numbers, NO letters anywhere in the image."
         )
+    # IMPORTANTE: fuera del salón NO inyectamos `visual_pizarron`. Ese campo trae
+    # diagramas/íconos/etiquetas (p.ej. "podiums labeled 1970 1986 2026",
+    # "football icons") que el modelo renderiza como texto basura y objetos
+    # incoherentes (calendarios con años erróneos, balones equivocados). El fondo
+    # debe ser SOLO un plano limpio del lugar; la info la dan narración y subtítulos.
     return (
         f"{_PIXEL_STYLE}. "
-        f"WIDE ESTABLISHING SHOT of a real-world location: {location}. "
-        "Scenery, landscape and architecture only — like an empty postcard or backdrop. "
+        f"WIDE ESTABLISHING SHOT of this setting: {location}. "
+        "Clean scenery, landscape and architecture only — like an empty postcard or backdrop. "
         "Vivid atmospheric colors. NO classroom, NO blackboard. "
-        f"Visual context (as background scenery only): {visual_pizarron}. "
         "Completely empty of living beings: NO people, NO cats, NO animals, "
         "NO characters, NO silhouettes, NO crowds, NO figures anywhere. "
-        "NO text, NO numbers, NO letters anywhere in the image."
+        "NO floating objects, NO diagrams, NO icons. "
+        # El modelo no sabe escribir: cualquier nombre/letrero sale como texto basura.
+        # Forzamos que TODA superficie escribible esté en blanco.
+        "All signs, banners, billboards, scoreboards and screens are completely BLANK and empty. "
+        "Absolutely NO readable words, NO names, NO logos, NO text, NO numbers, "
+        "NO letters, NO dates, NO writing of any kind anywhere in the image."
     )
 
 

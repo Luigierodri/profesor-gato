@@ -49,12 +49,16 @@ CAMPOS IMPORTANTES:
 - visual_pizarron: qué se ve como contexto visual del panel, en INGLÉS, sin texto ni números. Solo figuras y diagramas.
 - location: escenario del fondo en INGLÉS. Regla estricta:
     Panel 1 → siempre "classroom"
-    Paneles 2, 3, 4, 5 → lugar real relevante al tema, específico y visual. Ej:
-      "Ángel de la Independencia monument Mexico City street at dusk"
-      "underground metro station CDMX flooded tunnels"
-      "Colombian Congress building Bogotá plaza"
-      "ancient Aztec Tenochtitlan lake city aerial view"
-      "New York Stock Exchange trading floor 1929"
+    Paneles 2, 3, 4, 5 → DESCRIPCIÓN VISUAL del lugar (arquitectura, paisaje,
+      época, luz, atmósfera), relevante al tema. NUNCA uses nombres propios de
+      lugares/equipos/marcas ni nada que implique texto o letreros: el modelo de
+      imagen los dibuja como texto basura. Describe CÓMO SE VE, no cómo se llama.
+      BIEN: "large modern soccer stadium exterior, sweeping white curved roof, sunny day, wide angle"
+      BIEN: "tall independence victory column monument on a city avenue at dusk, golden light"
+      BIEN: "grand 1920s stock exchange trading hall interior, marble columns, vintage atmosphere"
+      BIEN: "ancient lake city with pyramids and canals, aerial view, misty morning"
+      MAL (nombres propios → texto basura): "Estadio Akron Zapopan Guadalajara",
+        "Ángel de la Independencia", "New York Stock Exchange"
     Panel 6 → siempre "classroom"
 - musica_mood: elige UNO según el tema:
     "clasica_dramatica"  → historia europea, política, guerras, revoluciones
