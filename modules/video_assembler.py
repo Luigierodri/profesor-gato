@@ -19,6 +19,8 @@ from pathlib import Path
 from datetime import datetime
 from faster_whisper import WhisperModel
 
+from config import ALLOW_STATIC_MUSIC
+
 log = logging.getLogger("video_assembler")
 logging.basicConfig(level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s", datefmt="%H:%M:%S")
@@ -394,6 +396,11 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
                 .filter("afade", type="out",
                         start_time=max(0, duracion - FADE_DURATION), duration=FADE_DURATION)
             )
+        elif not ALLOW_STATIC_MUSIC:
+            # Lyria falló y los tracks estáticos están desactivados por riesgo de
+            # copyright (Content ID bloqueó un Short). Video sin música de fondo.
+            log.warning("  ⚠️  Sin Lyria y música estática desactivada (copyright) — "
+                        "video SIN música de fondo. Activa ALLOW_STATIC_MUSIC=true para forzarla.")
         else:
             music_files = []
             if MUSIC_DIR.exists():

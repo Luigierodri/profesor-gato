@@ -30,6 +30,18 @@ VIDEO_HEIGHT        = 1920   # Vertical 9:16
 VIDEO_FPS           = 30
 SIEVEDANCE_API_KEY  = os.getenv("SIEVEDANCE_API_KEY", "")   # Agregar cuando tengas acceso
 
+# Duración máxima para que YouTube lo trate como Short (debe ser < 60s).
+# Usamos 57s de margen; si la narración se pasa, se acelera ligeramente (atempo).
+MAX_SHORT_DURATION  = 57.0
+
+# ─── COPYRIGHT / MÚSICA ───────────────────────────────────────────────────────
+# Los tracks estáticos de assets/music/ se descargaron de SoundCloud buscando
+# "no copyright", pero NO están verificados contra Content ID de YouTube
+# (ej. "Bella Ciao", grabaciones clásicas) → causaron el bloqueo del Short.
+# Por defecto solo se usa música generada por Lyria 3 (original, segura).
+# Si Lyria falla, el video va SIN música de fondo (mejor que bloqueado).
+ALLOW_STATIC_MUSIC  = os.getenv("ALLOW_STATIC_MUSIC", "false").lower() == "true"
+
 # ─── RUTAS ────────────────────────────────────────────────────────────────────
 OUTPUT_DIR          = "output"
 LOGS_DIR            = "logs"

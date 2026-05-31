@@ -189,6 +189,41 @@ def obtener_duracion_audio(ruta_audio: str) -> float:
     return float(result.stdout.strip())
 
 
+def ajustar_duracion_total(resultados: list[dict], max_seg: float) -> list[dict]:
+    """
+    Garantiza que la suma de los audios no supere max_seg (para que el video
+    sea un Short válido < 60s). Si se pasa, acelera TODOS los audios con
+    atempo (preserva el tono) por el mismo factor, manteniendo la sincronía.
+
+    Modifica los MP3 in-place y actualiza 'duracion_real'. Devuelve la lista.
+    """
+    import subprocess
+
+    total = sum(r["duracion_real"] for r in resultados)
+    if total <= max_seg:
+        print(f"⏱️  Duración total {total:.1f}s ≤ {max_seg:.0f}s — OK para Short")
+        return resultados
+
+    factor = total / max_seg  # >1 → hay que acelerar
+    factor = min(factor, 1.5)  # tope de seguridad; atempo soporta hasta 2.0
+    print(f"⏱️  Duración {total:.1f}s > {max_seg:.0f}s — acelerando audios ×{factor:.3f}")
+
+    for r in resultados:
+        ruta = r["ruta_audio"]
+        tmp_out = ruta + ".fast.mp3"
+        subprocess.run(
+            ["ffmpeg", "-y", "-i", ruta, "-filter:a", f"atempo={factor:.4f}",
+             "-c:a", "libmp3lame", "-q:a", "2", tmp_out],
+            capture_output=True,
+        )
+        os.replace(tmp_out, ruta)
+        r["duracion_real"] = obtener_duracion_audio(ruta)
+
+    nuevo_total = sum(r["duracion_real"] for r in resultados)
+    print(f"⏱️  Nueva duración total: {nuevo_total:.1f}s")
+    return resultados
+
+
 if __name__ == "__main__":
     import json
     import sys

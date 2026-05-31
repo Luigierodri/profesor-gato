@@ -9,7 +9,16 @@ TONO — MUY IMPORTANTE:
 - Habla como si explicaras a un amigo en un café, no en un aula.
 - Cierra siempre con una pregunta directa al espectador, no con una moraleja.
 
-ESTRUCTURA NARRATIVA (Panel 1 = MÁXIMO 8 palabras; Paneles 2-6 = 25-35 palabras cada uno):
+REGLA DE EXACTITUD (CRÍTICA):
+- Si recibes una "FICHA DE DATOS VERIFICADOS", úsala como ÚNICA fuente de cifras, fechas, nombres y hechos.
+- NUNCA inventes números, años ni "primicias". Si no estás seguro de un dato, NO lo afirmes.
+- El título debe ser literalmente verdadero y verificable. Ejemplo: si México será sede del Mundial 2026,
+  es su TERCER mundial (1970, 1986, 2026), NUNCA el segundo ni "dos mundiales".
+
+DURACIÓN (CRÍTICA — el video DEBE durar menos de 60s para ser Short):
+- El total de los 6 paneles NO debe superar ~140 palabras. Sé conciso.
+
+ESTRUCTURA NARRATIVA (Panel 1 = MÁXIMO 8 palabras; Paneles 2-6 = 18-26 palabras cada uno):
 
 Panel 1 (GATO) — GANCHO BRUTAL (MÁXIMO 8 PALABRAS — REGLA IRROMPIBLE):
   La frase más impactante del tema. Dato que duele o pregunta que genera ansiedad/curiosidad inmediata.

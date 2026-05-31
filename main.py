@@ -45,7 +45,7 @@ from modules.cost_monitor         import mostrar_saldo_inicial, registrar_run, m
 from modules.cost_tracker         import init_session, session_summary
 from modules.trend_detector       import detectar_temas_del_dia, seleccionar_angulo_educativo
 from modules.script_generator     import generar_script
-from modules.voice_synthesizer    import generar_audios_por_paneles
+from modules.voice_synthesizer    import generar_audios_por_paneles, ajustar_duracion_total
 from modules.background_generator import generar_imagenes_por_paneles
 from modules.video_animator       import animar_paneles
 from modules.video_assembler      import VideoAssemblerV4
@@ -290,9 +290,14 @@ def correr_pipeline(
     # ── PASO 4: SINTETIZAR VOZ ────────────────────────────────────────────────
     banner("PASO 4 — Sintetizando voz (ElevenLabs)")
     resultados_audio = generar_audios_por_paneles(datos_comic)
+    # Garantizar que el video sea un Short válido (< 60s): si la narración se
+    # pasa, se aceleran los audios ligeramente para no superar MAX_SHORT_DURATION.
+    from config import MAX_SHORT_DURATION
+    resultados_audio = ajustar_duracion_total(resultados_audio, MAX_SHORT_DURATION)
     run_log["costos"]["audio_usd"] = 0.010
     run_log["audios"] = [r["ruta_audio"] for r in resultados_audio]
-    log.info(f"  {len(resultados_audio)} audios generados")
+    run_log["duracion_audio_s"] = round(sum(r["duracion_real"] for r in resultados_audio), 1)
+    log.info(f"  {len(resultados_audio)} audios generados ({run_log['duracion_audio_s']}s total)")
 
     if skip_video:
         run_log["status"] = "success_audio_only"
