@@ -15,11 +15,41 @@ from config import (
 from modules import cost_tracker
 
 BASTET_VOICE_SETTINGS = {
-    "stability":        0.20,   # muy baja = voz más variable e impredecible, más natural
-    "similarity_boost": 0.60,   # menor = menos "pegada" al preset, suena más orgánica
-    "style":            0.80,   # alta = más emoción, reacciones más genuinas
+    "stability":        0.40,   # subido de 0.20: <0.30 en multilingual_v2 causa glitches/cortes
+    "similarity_boost": 0.70,
+    "style":            0.55,   # expresiva pero estable
     "use_speaker_boost": True,
 }
+
+
+def _pad_trailing(ruta_audio: str, segundos: float = 0.08):
+    """Añade un silencio corto al final del MP3 (suaviza uniones entre paneles)."""
+    import subprocess
+    tmp_out = ruta_audio + ".pad.mp3"
+    r = subprocess.run(
+        ["ffmpeg", "-y", "-i", ruta_audio, "-af", f"apad=pad_dur={segundos}",
+         "-c:a", "libmp3lame", "-q:a", "2", tmp_out],
+        capture_output=True,
+    )
+    if r.returncode == 0 and os.path.exists(tmp_out):
+        os.replace(tmp_out, ruta_audio)
+
+
+def _post_elevenlabs(url: str, headers: dict, payload: dict, intentos: int = 3):
+    """POST a ElevenLabs con reintentos y backoff. Valida que el MP3 no venga vacío."""
+    import time
+    ultimo = None
+    for i in range(intentos):
+        try:
+            r = requests.post(url, json=payload, headers=headers, timeout=90)
+            if r.status_code == 200 and len(r.content) > 2000:  # mp3 mínimamente válido
+                return r
+            ultimo = f"[{r.status_code}] {r.text[:200]}"
+        except Exception as e:
+            ultimo = str(e)
+        if i < intentos - 1:
+            time.sleep(2 ** i)  # backoff: 1s, 2s
+    raise Exception(f"ElevenLabs falló tras {intentos} intentos: {ultimo}")
 
 
 def generar_audio(guion: str, nombre_archivo: str = None) -> str:
@@ -105,8 +135,8 @@ def generar_audios_por_paneles(datos_comic: dict, carpeta_salida: str = None) ->
     print(f"   Carpeta: {carpeta_salida}\n")
     
     resultados = []
-    
-    for panel in paneles:
+
+    for idx, panel in enumerate(paneles):
         numero    = panel["numero"]
         narracion = panel["narracion"]
         speaker   = panel.get("speaker", "gato")
@@ -136,17 +166,25 @@ def generar_audios_por_paneles(datos_comic: dict, carpeta_salida: str = None) ->
             "text": narracion,
             "model_id": ELEVENLABS_MODEL,
             "voice_settings": voice_settings,
+            # Continuidad de prosodia: contexto del panel anterior y siguiente
+            "previous_text": paneles[idx - 1]["narracion"] if idx > 0 else None,
+            "next_text":     paneles[idx + 1]["narracion"] if idx < len(paneles) - 1 else None,
         }
 
-        response = requests.post(url, json=payload, headers=headers)
-
-        if response.status_code != 200:
-            raise Exception(f"Error ElevenLabs panel {numero} [{response.status_code}]: {response.text}")
+        response = _post_elevenlabs(url, headers, payload)
 
         with open(ruta_audio, "wb") as f:
             f.write(response.content)
 
+        # Pad de 80 ms de silencio al final → suaviza la unión entre paneles
+        # (evita "pops"). Como el mismo archivo alimenta video y audio, no desincroniza.
+        _pad_trailing(ruta_audio, 0.08)
+
         duracion = obtener_duracion_audio(ruta_audio)
+        if duracion < 0.3:
+            raise Exception(
+                f"Audio panel {numero} sospechosamente corto ({duracion:.2f}s) — posible glitch"
+            )
         size_kb  = os.path.getsize(ruta_audio) / 1024
 
         # Registrar costo ElevenLabs con caracteres reales
