@@ -1,14 +1,18 @@
 # 🐱 Profesor Gato — Plan de Correcciones (análisis Opus)
 
-Esta carpeta la generó **Opus** tras revisar TODO el proyecto. La idea es que tú la abras
-y la ejecutes con **Sonnet** (más barato), para no gastar tokens caros de Opus en escribir código.
+> **ACTUALIZACIÓN (30 may, 23:50):** Opus ya NO solo planeó — **implementó y commiteó las 6 correcciones**
+> en la rama `fix/calidad-y-copyright`. 👉 **Empieza por [`05-COMO-RETOMAR-MANANA.md`](05-COMO-RETOMAR-MANANA.md).**
 
-## Cómo usar esta carpeta
+Esta carpeta la generó **Opus** tras revisar TODO el proyecto. El plan original era ejecutarlo con
+Sonnet, pero pediste usar todos los créditos de la sesión, así que Opus lo implementó directo.
 
-1. Abre una sesión con el modelo **Sonnet 4.6** (`/model` → Sonnet).
-2. Pega el contenido de **`04-prompt-para-sonnet.md`** como primer mensaje.
-3. Sonnet leerá los archivos de esta carpeta y ejecutará las tareas en orden.
-4. Tú vas marcando lo que se completa.
+## Cómo retomar
+
+1. Lee **`05-COMO-RETOMAR-MANANA.md`** (qué quedó hecho, qué falta, y que el run diario está PAUSADO).
+2. Prueba un video completo y revísalo.
+3. Si convence: merge a master + reactivar el workflow.
+
+Los archivos 01-04 son el análisis y el plan técnico original (referencia).
 
 ## Archivos
 
