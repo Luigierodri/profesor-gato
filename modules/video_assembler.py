@@ -492,12 +492,10 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             log.info("\n[1/5] Creando clips por panel...")
             clips = []
             for panel in paneles:
-                speaker = panel.get("speaker", "gato")
-                clip = self.crear_clip_con_overlay(
+                clip = self.crear_clip_panel(
                     panel["ruta_imagen"],
                     panel["ruta_audio"],
                     panel["numero"],
-                    speaker=speaker,
                     ruta_video=panel.get("ruta_video"),
                 )
                 clips.append(clip)

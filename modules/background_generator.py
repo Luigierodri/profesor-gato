@@ -68,31 +68,41 @@ def _elegir_outfit(speaker: str, seed: int) -> str:
     return rng.choice(_GATO_OUTFITS)
 
 
-def _construir_prompt(visual_pizarron: str, location: str = "classroom") -> str:
+_CHAR_GATO   = "orange tabby cat professor with round glasses"
+_CHAR_BASTET = "young calico cat with golden headband"
+
+def _construir_prompt(
+    visual_pizarron: str,
+    location: str = "classroom",
+    speaker: str = "gato",
+    outfit: str = "",
+    accion: str = "",
+) -> str:
     """
-    Genera el prompt para el FONDO del panel.
-    - location="classroom": salón de clases con pizarrón (Panel 1 y 6)
-    - location=<descripción>: escenario real relevante al tema (Paneles 2-5)
-    El personaje se superpone en el assembler — NO debe aparecer en el fondo.
+    Genera el prompt de imagen completo: personaje en escena actuando.
+    El personaje ya NO se superpone en el assembler — está dentro de la imagen generada.
     """
+    char_base = _CHAR_GATO if speaker != "bastet" else _CHAR_BASTET
+    char_desc = f"{char_base} wearing {outfit}" if outfit else char_base
+    action    = accion if accion else ("teaching at blackboard" if location == "classroom" else "standing and observing")
+
     if location == "classroom":
         return (
             f"{_PIXEL_STYLE}. "
-            "Colorful classroom background: large blackboard centered on the wall, "
-            "chalk drawings and diagrams visible on the blackboard. "
-            f"The blackboard shows: {visual_pizarron}. "
-            "Bright educational classroom interior, desks and decorations in background. "
-            "EMPTY FOREGROUND — absolutely NO character, NO cat, NO animal, NO person, NO figure. "
+            "Colorful classroom scene. "
+            f"{char_desc}, {action}, centered in frame. "
+            "Large blackboard on the back wall showing: "
+            f"{visual_pizarron}. "
+            "Bright educational classroom interior, desks in background. "
             "NO text, NO numbers, NO letters anywhere in the image."
         )
     return (
         f"{_PIXEL_STYLE}. "
         f"Real-world location: {location}. "
-        "Detailed pixel art environment, vivid atmospheric colors, wide establishing shot. "
-        "NO classroom, NO blackboard. "
-        f"Visual context for the scene: {visual_pizarron}. "
-        "EMPTY FOREGROUND — absolutely NO character, NO cat, NO animal, NO person, NO figure. "
-        "NO text, NO numbers, NO letters anywhere in the image."
+        f"{char_desc}, {action}, visible in the scene. "
+        f"Environment details: {visual_pizarron}. "
+        "Vivid atmospheric pixel art, wide shot showing character and location. "
+        "NO classroom, NO blackboard, NO text, NO numbers, NO letters."
     )
 
 
@@ -159,21 +169,24 @@ def generar_imagen_panel(
     speaker: str = "gato",
     outfit_seed: int = 0,
     location: str = "classroom",
+    accion: str = "",
 ) -> str:
     """
     Genera una imagen para un panel con Imagen 4 (fallback: Imagen 3 → FLUX → OpenAI).
-    Estilo pixel art 16-bit.
+    El personaje aparece dentro de la imagen en la acción indicada.
 
     Args:
-        visual_pizarron: Qué se ve en la pizarrón / contexto visual de la escena
+        visual_pizarron: Contexto visual de la escena (objetos, ambiente)
         numero_panel:    Número del panel
         carpeta_salida:  Carpeta de destino
         ruta_referencia: Ignorado (mantenido por compatibilidad)
         speaker:         "gato" o "bastet"
-        outfit_seed:     Seed para que el outfit sea igual en todos los paneles del video
-        location:        "classroom" o descripción de lugar real para paneles del medio
+        outfit_seed:     Seed para outfit consistente en todo el video
+        location:        "classroom" o lugar real para paneles del medio
+        accion:          Qué está haciendo físicamente el personaje en la escena
     """
-    prompt = _construir_prompt(visual_pizarron, location)
+    outfit = _elegir_outfit(speaker, outfit_seed)
+    prompt = _construir_prompt(visual_pizarron, location, speaker, outfit, accion)
 
     Path(carpeta_salida).mkdir(parents=True, exist_ok=True)
     output_path = Path(carpeta_salida) / f"panel_{numero_panel:02d}.png"
@@ -281,9 +294,10 @@ def generar_imagenes_por_paneles(
         speaker = panel.get("speaker", "gato")
 
         location = panel.get("location", "classroom")
+        accion   = panel.get("accion", "")
         ruta_imagen = generar_imagen_panel(
             visual, numero, carpeta_salida,
-            ruta_referencia, speaker, outfit_seed, location
+            ruta_referencia, speaker, outfit_seed, location, accion
         )
         resultados.append({
             "numero":          numero,
