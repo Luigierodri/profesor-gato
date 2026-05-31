@@ -15,9 +15,9 @@ from config import (
 from modules import cost_tracker
 
 BASTET_VOICE_SETTINGS = {
-    "stability":        0.40,
-    "similarity_boost": 0.75,
-    "style":            0.50,    # más expresiva que el Profe
+    "stability":        0.20,   # muy baja = voz más variable e impredecible, más natural
+    "similarity_boost": 0.60,   # menor = menos "pegada" al preset, suena más orgánica
+    "style":            0.80,   # alta = más emoción, reacciones más genuinas
     "use_speaker_boost": True,
 }
 

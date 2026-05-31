@@ -68,18 +68,29 @@ def _elegir_outfit(speaker: str, seed: int) -> str:
     return rng.choice(_GATO_OUTFITS)
 
 
-def _construir_prompt(visual_pizarron: str) -> str:
+def _construir_prompt(visual_pizarron: str, location: str = "classroom") -> str:
     """
     Genera el prompt para el FONDO del panel.
-    El Profesor Gato y Bastet se superponen como PNG oficial en el assembler
-    — NO deben aparecer en el fondo generado por IA.
+    - location="classroom": salón de clases con pizarrón (Panel 1 y 6)
+    - location=<descripción>: escenario real relevante al tema (Paneles 2-5)
+    El personaje se superpone en el assembler — NO debe aparecer en el fondo.
     """
+    if location == "classroom":
+        return (
+            f"{_PIXEL_STYLE}. "
+            "Colorful classroom background: large blackboard centered on the wall, "
+            "chalk drawings and diagrams visible on the blackboard. "
+            f"The blackboard shows: {visual_pizarron}. "
+            "Bright educational classroom interior, desks and decorations in background. "
+            "EMPTY FOREGROUND — absolutely NO character, NO cat, NO animal, NO person, NO figure. "
+            "NO text, NO numbers, NO letters anywhere in the image."
+        )
     return (
         f"{_PIXEL_STYLE}. "
-        "Colorful classroom background: large blackboard centered on the wall, "
-        "chalk drawings and diagrams visible on the blackboard. "
-        f"The blackboard shows: {visual_pizarron}. "
-        "Bright educational classroom interior, desks and decorations in background. "
+        f"Real-world location: {location}. "
+        "Detailed pixel art environment, vivid atmospheric colors, wide establishing shot. "
+        "NO classroom, NO blackboard. "
+        f"Visual context for the scene: {visual_pizarron}. "
         "EMPTY FOREGROUND — absolutely NO character, NO cat, NO animal, NO person, NO figure. "
         "NO text, NO numbers, NO letters anywhere in the image."
     )
@@ -147,25 +158,27 @@ def generar_imagen_panel(
     ruta_referencia: str,
     speaker: str = "gato",
     outfit_seed: int = 0,
+    location: str = "classroom",
 ) -> str:
     """
     Genera una imagen para un panel con Imagen 4 (fallback: Imagen 3 → FLUX → OpenAI).
     Estilo pixel art 16-bit.
 
     Args:
-        visual_pizarron: Qué se ve en la pizarrón (en inglés, sin texto/números)
+        visual_pizarron: Qué se ve en la pizarrón / contexto visual de la escena
         numero_panel:    Número del panel
         carpeta_salida:  Carpeta de destino
         ruta_referencia: Ignorado (mantenido por compatibilidad)
         speaker:         "gato" o "bastet"
         outfit_seed:     Seed para que el outfit sea igual en todos los paneles del video
+        location:        "classroom" o descripción de lugar real para paneles del medio
     """
-    prompt = _construir_prompt(visual_pizarron)
+    prompt = _construir_prompt(visual_pizarron, location)
 
     Path(carpeta_salida).mkdir(parents=True, exist_ok=True)
     output_path = Path(carpeta_salida) / f"panel_{numero_panel:02d}.png"
 
-    log.info(f"  [{speaker.upper()}] Panel {numero_panel}: \"{visual_pizarron[:55]}...\"")
+    log.info(f"  [{speaker.upper()}] Panel {numero_panel}: \"{visual_pizarron[:55]}...\" [{location}]")
 
     img_data = None
     errores  = {}
@@ -267,9 +280,10 @@ def generar_imagenes_por_paneles(
         visual  = panel["visual_pizarron"]
         speaker = panel.get("speaker", "gato")
 
+        location = panel.get("location", "classroom")
         ruta_imagen = generar_imagen_panel(
             visual, numero, carpeta_salida,
-            ruta_referencia, speaker, outfit_seed
+            ruta_referencia, speaker, outfit_seed, location
         )
         resultados.append({
             "numero":          numero,

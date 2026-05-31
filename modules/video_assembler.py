@@ -124,7 +124,7 @@ class VideoAssemblerV4:
                 .filter("format", "rgba")
                 .filter("geq",
                         r="r(X,Y)", g="g(X,Y)", b="b(X,Y)",
-                        a="if(lte(r(X,Y)+g(X,Y)+b(X,Y),20),0,255)")
+                        a="if(lte(r(X,Y),8)*lte(g(X,Y),8)*lte(b(X,Y),8),0,255)")
                 .filter("setpts", "PTS-STARTPTS")
             )
             # x=(W-w)/2 → centrado horizontal; y=H-h-20 → pegado al borde inferior
