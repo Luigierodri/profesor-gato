@@ -47,6 +47,7 @@ load_dotenv()
 from modules.cost_monitor         import mostrar_saldo_inicial, registrar_run, mostrar_resumen_run
 from modules.cost_tracker         import init_session, session_summary
 from modules.trend_detector       import detectar_temas_del_dia, seleccionar_angulo_educativo
+from modules                       import topic_history
 from modules.fact_checker         import generar_ficha_datos
 from modules.script_generator     import generar_script
 from modules.voice_synthesizer    import generar_audios_por_paneles, ajustar_duracion_total
@@ -249,7 +250,11 @@ def correr_pipeline(
             ]
             import datetime as _dt
             _dia = _dt.date.today().timetuple().tm_yday
-            tema = _TEMAS_RESPALDO[_dia % len(_TEMAS_RESPALDO)]
+            # Respaldo rotativo que SALTA los temas usados recientemente.
+            _usados = set(topic_history.angulos_recientes())
+            _frescos = [t for t in _TEMAS_RESPALDO if t not in _usados] or _TEMAS_RESPALDO
+            tema = _frescos[_dia % len(_frescos)]
+            evento_tag = "respaldo_atemporal"
             log.warning(f"Sin temas detectados. Usando respaldo rotativo (día {_dia}): {tema}")
         else:
             log.info("  Seleccionando angulo educativo a partir de tendencias...")
@@ -257,12 +262,21 @@ def correr_pipeline(
                 angulo = seleccionar_angulo_educativo(temas)
                 tema = angulo["angulo_educativo"] or temas[0]["tema"]
                 trend_hook = angulo.get("trend_conectado")
+                evento_tag = angulo.get("evento", "")
                 log.info(f"  Trend viral:      {trend_hook}")
                 log.info(f"  Angulo educativo: {tema}")
                 log.info(f"  Razon:            {angulo.get('razon', '')}")
             except Exception as e:
                 log.warning(f"  seleccionar_angulo_educativo fallo ({e}) — usando top trend directo")
                 tema = temas[0]["tema"]
+                evento_tag = ""
+
+        # Registrar en el historial para no repetir tema/ángulo en próximos días.
+        try:
+            topic_history.registrar(angulo=tema, evento=evento_tag, trend=trend_hook or "")
+            log.info(f"  [historial] Tema registrado (evento: {evento_tag or '—'})")
+        except Exception as e:
+            log.warning(f"  [historial] No se pudo registrar el tema: {e}")
     run_log["tema"] = tema
     run_log["trend_hook"] = trend_hook
 

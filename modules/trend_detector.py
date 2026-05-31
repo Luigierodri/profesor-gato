@@ -21,6 +21,7 @@ if hasattr(sys.stdout, "reconfigure"):
 
 import anthropic
 from config import NEWS_API_KEY, ANTHROPIC_API_KEY, CLAUDE_MODEL
+from modules import topic_history
 
 # Códigos de país para el RSS de Google Trends (no usa pytrends — funciona desde CI)
 _GEOS_LATAM = {"MX": "méxico", "AR": "argentina", "CO": "colombia", "CL": "chile", "PE": "perú"}
@@ -191,16 +192,44 @@ def seleccionar_angulo_educativo(tendencias: list[dict]) -> dict:
         {
           "angulo_educativo": str,   # tema real del video
           "trend_conectado":  str,   # señal viral que lo dispara
+          "evento":           str,   # tag canónico del evento (snake_case)
           "razon":            str,   # por qué tiene tracción hoy
         }
     """
     if not tendencias:
-        return {"angulo_educativo": None, "trend_conectado": None, "razon": "sin tendencias"}
+        return {"angulo_educativo": None, "trend_conectado": None, "evento": "", "razon": "sin tendencias"}
 
     lista_str = "\n".join(
         f"- [{c['fuente']}] {c['tema']} (score {c['score']})"
         for c in tendencias[:10]
     )
+
+    # ── Memoria de temas: evitar repetir ángulos y saturar eventos ──────────────
+    angulos_prev   = topic_history.angulos_recientes()
+    eventos_tope   = topic_history.eventos_en_tope()
+    eventos_vistos = topic_history.eventos_conocidos()
+
+    bloque_memoria = ""
+    if angulos_prev:
+        lista_ang = "\n".join(f"  - {a}" for a in angulos_prev[-15:])
+        bloque_memoria += (
+            "\nÁNGULOS YA PUBLICADOS RECIENTEMENTE — está PROHIBIDO repetirlos o "
+            "hacer uno casi igual. Si reutilizas el mismo evento, el ángulo DEBE ser "
+            f"claramente distinto (otro enfoque, otra arista):\n{lista_ang}\n"
+        )
+    if eventos_tope:
+        bloque_memoria += (
+            "\nEVENTOS SATURADOS — ya alcanzaron su tope de videos en los últimos "
+            f"{topic_history.VENTANA_CAP_DIAS} días. NO elijas un ángulo de estos eventos, "
+            f"escoge OTRO tema distinto aunque esté menos arriba en trending:\n  "
+            + ", ".join(eventos_tope) + "\n"
+        )
+    if eventos_vistos:
+        bloque_memoria += (
+            "\nTAGS DE EVENTO YA EN USO — si tu ángulo pertenece a uno de estos eventos, "
+            "reutiliza EXACTAMENTE el mismo tag en el campo 'evento':\n  "
+            + ", ".join(eventos_vistos) + "\n"
+        )
 
     prompt = f"""Eres el productor del canal educativo "Profesor Gato" en YouTube Shorts (México/LATAM).
 
@@ -209,37 +238,47 @@ NO hace videos de noticias directas — explica el PORQUÉ y el trasfondo de lo 
 
 Trending hoy en México/LATAM:
 {lista_str}
-
-Elige UN tema trending y formula el ÁNGULO EDUCATIVO más potente.
-El ángulo debe conectarse con algo que hoy está en boca de todos y explicar su trasfondo histórico, cultural, científico o económico.
+{bloque_memoria}
+Elige UN tema trending y formula el ÁNGULO EDUCATIVO más potente, RESPETANDO las reglas
+de arriba (no repetir ángulos, no usar eventos saturados, variar el enfoque).
+El ángulo debe conectarse con algo que hoy está en boca de todos y explicar su trasfondo
+histórico, cultural, científico o económico. Si TODO lo trending ya está agotado o saturado,
+propón un tema educativo atemporal y potente que NO esté en la lista de ángulos ya publicados.
 
 Ejemplos de conversión trend → ángulo educativo:
 - Trend: "Colombia elecciones mañana" → Ángulo: "¿Por qué Colombia ha cambiado tantas veces de constitución?"
 - Trend: "CDMX hundimiento" → Ángulo: "¿Por qué se está hundiendo la Ciudad de México?"
-- Trend: "Mundial 2026" → Ángulo: "¿Por qué México nunca pasa de cuartos de final en los Mundiales?"
+- Trend: "Mundial 2026" → varía el ángulo entre videos: "El Azteca, único estadio con 3 Mundiales" /
+  "La derrama económica que deja un Mundial" / "Los problemas sociales detrás de organizar un Mundial"
 - Trend: "Taylor Swift tour" → Ángulo: "¿Por qué los conciertos se volvieron tan caros?"
-- Trend: "Milei economía Argentina" → Ángulo: "¿Qué es la dolarización y por qué asusta tanto?"
+
+El campo "evento" es un tag corto en snake_case que agrupa videos del mismo suceso
+(ej: "mundial_2026", "elecciones_colombia_2026", "hundimiento_cdmx"). Reutiliza el mismo
+tag para el mismo evento. Si es un tema atemporal, usa un tag temático (ej: "historia_roma").
 
 Responde SOLO JSON válido, sin markdown:
 {{
   "angulo_educativo": "la pregunta o afirmación del video en español",
   "trend_conectado": "el trending topic que usas como gancho de relevancia",
+  "evento": "tag_en_snake_case",
   "razon": "en una frase, por qué este ángulo tiene tracción hoy"
 }}"""
 
     client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
     msg = client.messages.create(
         model=CLAUDE_MODEL,
-        max_tokens=300,
+        max_tokens=350,
         messages=[{"role": "user", "content": prompt}],
     )
     raw = msg.content[0].text.strip()
     if raw.startswith("```"):
         raw = raw.split("```")[1].lstrip("json").strip()
     resultado = json.loads(raw)
+    resultado.setdefault("evento", "")
     print(f"  Angulo educativo: {resultado['angulo_educativo']}")
-    print(f"  Trend conectado:  {resultado['trend_conectado']}")
-    print(f"  Razon:            {resultado['razon']}")
+    print(f"  Trend conectado:  {resultado.get('trend_conectado')}")
+    print(f"  Evento (tag):     {resultado.get('evento')}")
+    print(f"  Razon:            {resultado.get('razon', '')}")
     return resultado
 
 
