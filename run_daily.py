@@ -186,13 +186,12 @@ def correr_pipeline() -> RunResult:
     if not pipeline_ok:
         log.info(f"\n⚠ Pipeline terminó con errores (exit={exit_code}) — intentando publicar de todos modos")
 
-    # ── PUBLISHER.PY ─────────────────────────────────────────────────────────
-    log.info("\n▶ Fase publicación: publisher.py")
+    # ── PUBLISHER.PY (YouTube) ────────────────────────────────────────────────
+    log.info("\n▶ Fase publicación: publisher.py (YouTube)")
     pub_code, pub_lineas = _correr_proceso([PYTHON, "publisher.py"], "publisher")
 
     if pub_code == 0:
         resultado.pasos_ok.append("publisher")
-        # Extraer URL del output
         for l in pub_lineas:
             if "youtu.be/" in l:
                 partes = l.split("youtu.be/")
@@ -204,6 +203,15 @@ def correr_pipeline() -> RunResult:
     else:
         resultado.pasos_fail.append("publisher")
         log.info(f"  ⚠ publisher.py terminó con exit={pub_code}")
+
+    # ── TIKTOK_PUBLISHER.PY ───────────────────────────────────────────────────
+    log.info("\n▶ Fase publicación: tiktok_publisher.py")
+    tiktok_code, _ = _correr_proceso([PYTHON, "tiktok_publisher.py"], "tiktok_publisher")
+    if tiktok_code == 0:
+        resultado.pasos_ok.append("tiktok_publisher")
+    else:
+        resultado.pasos_fail.append("tiktok_publisher")
+        log.info(f"  ⚠ tiktok_publisher.py terminó con exit={tiktok_code} (no bloquea)")
 
     resultado.fin = datetime.now(MEX_TZ).strftime("%H:%M:%S")
     log.info(resultado.resumen())
