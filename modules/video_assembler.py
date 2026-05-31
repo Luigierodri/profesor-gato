@@ -114,17 +114,13 @@ class VideoAssemblerV4:
                 .filter("setpts", "PTS-STARTPTS")
             )
 
-        # Personaje: PNG oficial con fondo negro removido, centrado en la base del frame.
-        # Usamos geq en lugar de colorkey: evalúa R+G+B por pixel y solo hace
-        # transparente lo que es negro puro (suma ≤ 20/765), sin afectar colores oscuros.
+        # Personaje: PNG RGBA con fondo ya transparente (convertido por floodfill).
+        # El canal alpha del PNG se usa directamente — sin keying ni geq.
         if char_png.exists():
             char = (
                 ffmpeg.input(str(char_png), loop=1, framerate=VIDEO_FPS, t=duracion)
                 .filter("scale", CHAR_PNG_WIDTH, -2)
                 .filter("format", "rgba")
-                .filter("geq",
-                        r="r(X,Y)", g="g(X,Y)", b="b(X,Y)",
-                        a="if(lte(r(X,Y),8)*lte(g(X,Y),8)*lte(b(X,Y),8),0,255)")
                 .filter("setpts", "PTS-STARTPTS")
             )
             # x=(W-w)/2 → centrado horizontal; y=H-h-20 → pegado al borde inferior
