@@ -44,6 +44,7 @@ load_dotenv()
 from modules.cost_monitor         import mostrar_saldo_inicial, registrar_run, mostrar_resumen_run
 from modules.cost_tracker         import init_session, session_summary
 from modules.trend_detector       import detectar_temas_del_dia, seleccionar_angulo_educativo
+from modules.fact_checker         import generar_ficha_datos
 from modules.script_generator     import generar_script
 from modules.voice_synthesizer    import generar_audios_por_paneles, ajustar_duracion_total
 from modules.background_generator import generar_imagenes_por_paneles
@@ -263,14 +264,23 @@ def correr_pipeline(
     run_log["tema"] = tema
     run_log["trend_hook"] = trend_hook
 
-    # ── PASO 2: GENERAR SCRIPT ────────────────────────────────────────────────
-    banner("PASO 2 — Generando script (Claude Haiku)")
+    # ── PASO 2: VERIFICAR HECHOS (web search) ─────────────────────────────────
+    banner("PASO 2 — Verificando hechos (web search)")
+    ficha_datos = generar_ficha_datos(tema)
+    if ficha_datos:
+        log.info(f"  Ficha de datos verificados:\n{ficha_datos[:400]}...")
+    else:
+        log.warning("  Sin ficha verificada — el guion se genera sin verificación web")
+    run_log["ficha_datos"] = ficha_datos
+
+    # ── PASO 2b: GENERAR SCRIPT ───────────────────────────────────────────────
+    banner("PASO 2b — Generando script (Claude)")
     contexto_trend = (
         f"Hoy está trending en México/LATAM: '{trend_hook}'. "
         "El video debe conectarse naturalmente a ese momento sin ser una noticia directa."
         if trend_hook else ""
     )
-    script = generar_script(tema, contexto_extra=contexto_trend)
+    script = generar_script(tema, contexto_extra=contexto_trend, datos_verificados=ficha_datos)
     log.info(f"  Titulo:  {script['titulo']}")
     log.info(f"  Leccion: {script['leccion']}")
     total_w = (

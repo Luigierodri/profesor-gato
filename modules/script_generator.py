@@ -14,20 +14,28 @@ def cargar_system_prompt() -> str:
         return f.read()
 
 
-def generar_script(tema: str, contexto_extra: str = "") -> dict:
+def generar_script(tema: str, contexto_extra: str = "", datos_verificados: str = "") -> dict:
     """
     Genera el guion completo del Profesor Gato para un tema dado.
-    
+
     Args:
         tema: El tema del video (ej. "La inflación en México 2026")
         contexto_extra: Info adicional opcional (ej. dato trending de Polymarket)
-    
+        datos_verificados: Ficha de datos verificados (web search) que Claude debe
+                           usar como ÚNICA fuente de cifras/fechas/hechos.
+
     Returns:
         dict con titulo, guion, leccion, hashtags, descripcion_social, prompt_visual
     """
     client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
     user_message = f"Crea un video educativo sobre: {tema}"
+    if datos_verificados:
+        user_message += (
+            "\n\nFICHA DE DATOS VERIFICADOS (úsala como ÚNICA fuente de cifras, "
+            "fechas, nombres y hechos; NO inventes nada fuera de esto):\n"
+            f"{datos_verificados}"
+        )
     if contexto_extra:
         user_message += f"\n\nContexto adicional relevante hoy: {contexto_extra}"
 
