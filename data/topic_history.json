@@ -5,5 +5,12 @@
     "evento": "mundial_2026",
     "categoria": "deportes",
     "trend": "Mundial 2026"
+  },
+  {
+    "fecha": "2026-06-01",
+    "angulo": "¿Por qué el tipo de cambio del peso mexicano sube y baja tan seguido?",
+    "evento": "economia_peso_mexicano",
+    "categoria": "economia",
+    "trend": "tipo de cambio"
   }
 ]
