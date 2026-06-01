@@ -12,5 +12,12 @@
     "evento": "economia_peso_mexicano",
     "categoria": "economia",
     "trend": "tipo de cambio"
+  },
+  {
+    "fecha": "2026-06-01",
+    "angulo": "¿Por qué WhatsApp se convirtió en el servicio de mensajería dominante en México y América Latina pero no en el mundo?",
+    "evento": "cultura_whatsapp_latam",
+    "categoria": "sociedad",
+    "trend": "whatsapp"
   }
 ]
