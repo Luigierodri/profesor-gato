@@ -19,5 +19,12 @@
     "evento": "cultura_whatsapp_latam",
     "categoria": "sociedad",
     "trend": "whatsapp"
+  },
+  {
+    "fecha": "2026-06-02",
+    "angulo": "¿Por qué la NASA sigue siendo la agencia espacial más poderosa del mundo si ya no lleva astronautas al espacio por sí sola?",
+    "evento": "historia_nasa",
+    "categoria": "ciencia",
+    "trend": "nasa"
   }
 ]
