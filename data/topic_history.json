@@ -26,5 +26,12 @@
     "evento": "historia_nasa",
     "categoria": "ciencia",
     "trend": "nasa"
+  },
+  {
+    "fecha": "2026-06-03",
+    "angulo": "¿Por qué Argentina domina el tenis latinoamericano pero nunca ha ganado un Grand Slam?",
+    "evento": "tenis_argentina_historia",
+    "categoria": "historia",
+    "trend": "argentina vs / flavio cobolli"
   }
 ]
