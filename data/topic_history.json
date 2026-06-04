@@ -33,5 +33,12 @@
     "evento": "tenis_argentina_historia",
     "categoria": "historia",
     "trend": "argentina vs / flavio cobolli"
+  },
+  {
+    "fecha": "2026-06-04",
+    "angulo": "¿Por qué Persépolis se convirtió en el cómic más importante sobre vivir bajo una dictadura?",
+    "evento": "arte_persepolis_satrapi",
+    "categoria": "arte",
+    "trend": "persepolis"
   }
 ]
