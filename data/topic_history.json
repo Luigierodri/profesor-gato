@@ -47,5 +47,12 @@
     "evento": "cultura_indio_solari",
     "categoria": "cultura_pop",
     "trend": "indio solari"
+  },
+  {
+    "fecha": "2026-06-05",
+    "angulo": "¿Por qué Xbox lleva años perdiendo la guerra de las consolas y aun así Microsoft no se rinde?",
+    "evento": "tecnologia_xbox_microsoft",
+    "categoria": "tecnologia",
+    "trend": "xbox cloud gaming"
   }
 ]
