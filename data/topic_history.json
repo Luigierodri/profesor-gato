@@ -40,5 +40,12 @@
     "evento": "arte_persepolis_satrapi",
     "categoria": "arte",
     "trend": "persepolis"
+  },
+  {
+    "fecha": "2026-06-05",
+    "angulo": "¿Por qué Indio Solari es el rockero más peligroso de Argentina? La historia detrás de sus recitales multitudinarios y las tragedias que generan",
+    "evento": "cultura_indio_solari",
+    "categoria": "cultura_pop",
+    "trend": "indio solari"
   }
 ]
