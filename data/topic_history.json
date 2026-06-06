@@ -54,5 +54,12 @@
     "evento": "tecnologia_xbox_microsoft",
     "categoria": "tecnologia",
     "trend": "xbox cloud gaming"
+  },
+  {
+    "fecha": "2026-06-06",
+    "angulo": "¿Por qué los países se extraditan criminales entre sí y quién decide cuándo México entrega a alguien?",
+    "evento": "politica_extradicion_mexico",
+    "categoria": "politica",
+    "trend": "extradición"
   }
 ]
