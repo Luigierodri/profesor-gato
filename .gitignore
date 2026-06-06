@@ -5,6 +5,14 @@ __pycache__/
 *.pyc
 output/
 logs/
+# Intermedios generados por cada run (regenerados siempre; NO versionar).
+# Se conservan los PNG de referencia en la raíz de images/.
+images/*/
+audio/
+videos/
+tmp/*.mp3
+tmp/*.wav
+tmp/*.mp4
 *.mp4
 *.wav
 *.mp3

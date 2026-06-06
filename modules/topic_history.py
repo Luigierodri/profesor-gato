@@ -91,6 +91,15 @@ def categorias_recientes(hist: list[dict] = None, dias: int = VENTANA_CATEG_DIAS
     return [e["categoria"] for e in recientes if e.get("categoria")]
 
 
+def geos_recientes(hist: list[dict] = None, dias: int = VENTANA_CATEG_DIAS) -> list[str]:
+    """Geos de los últimos `dias` ('mexico'/'latam'), en orden cronológico.
+    Sirve para balancear: ~1 de cada 3 videos debe ser específico de México (38% de la audiencia)."""
+    hist = cargar() if hist is None else hist
+    recientes = _recientes(hist, dias)
+    recientes.sort(key=lambda e: e.get("fecha", ""))
+    return [e.get("geo", "latam") for e in recientes]
+
+
 def conteo_categorias(hist: list[dict] = None, dias: int = VENTANA_CATEG_DIAS) -> dict[str, int]:
     """Cuántos videos por categoría en la ventana (para detectar las menos usadas)."""
     hist = cargar() if hist is None else hist
@@ -103,7 +112,7 @@ def conteo_categorias(hist: list[dict] = None, dias: int = VENTANA_CATEG_DIAS) -
 
 
 def registrar(angulo: str, evento: str = "", trend: str = "",
-              categoria: str = "", fecha: str = None) -> list[dict]:
+              categoria: str = "", geo: str = "latam", fecha: str = None) -> list[dict]:
     """Agrega una entrada al historial y lo guarda en disco."""
     hist = cargar()
     hist.append({
@@ -111,6 +120,7 @@ def registrar(angulo: str, evento: str = "", trend: str = "",
         "angulo":    (angulo or "").strip(),
         "evento":    (evento or "").strip().lower(),
         "categoria": (categoria or "").strip().lower(),
+        "geo":       (geo or "latam").strip().lower(),
         "trend":     (trend or "").strip(),
     })
     HIST_PATH.parent.mkdir(parents=True, exist_ok=True)

@@ -254,15 +254,22 @@ def publicar_comentario(youtube, video_id: str, metadata: dict, run_log: dict | 
     desc_social = script.get("descripcion_social", "").strip()
     hashtags    = " ".join(script.get("hashtags", []))
 
+    # CTA de suscripción fijo: convierte espectadores en suscriptores (conversión actual ~0.5%).
+    # Pinea este comentario en YouTube Studio para máxima visibilidad.
+    cta_suscripcion = (
+        "🐱 Si esto te voló la cabeza, suscríbete: subimos un dato que te cambia "
+        "la forma de ver el mundo CADA DÍA a las 7am. No te lo pierdas."
+    )
+
     if desc_social:
-        texto = desc_social
+        texto = f"{desc_social}\n\n{cta_suscripcion}"
         if hashtags:
             texto += f"\n\n{hashtags}"
     else:
         tema = metadata.get("tema", "este tema")
         texto = (
-            f"¿Qué sabías tú sobre {tema}? "
-            f"Déjanos tu comentario 🐱\n\n{hashtags}"
+            f"¿Tú ya lo sabías? Cuéntanos en los comentarios 👇\n\n"
+            f"{cta_suscripcion}\n\n{hashtags}"
         ).strip()
 
     try:

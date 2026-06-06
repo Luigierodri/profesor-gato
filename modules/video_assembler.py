@@ -37,8 +37,8 @@ MUSIC_VOLUME         = 0.10
 EFFECTS_VOLUME       = 0.15
 NARRATION_VOLUME     = 1.0
 FADE_DURATION        = 0.5
-SUBTITLE_FONTSIZE    = 58
-SUBTITLE_WORDS_PER_CHUNK = 4
+SUBTITLE_FONTSIZE    = 66   # más grande = más legible en móvil (83% de la audiencia)
+SUBTITLE_WORDS_PER_CHUNK = 3   # 3 palabras/chunk = lectura más rápida, estilo TikTok
 
 # Assets oficiales de personajes (PNG con fondo negro)
 CHAR_PNGS = {
@@ -246,7 +246,7 @@ WrapStyle: 0
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Default,Arial Black,{SUBTITLE_FONTSIZE},&H00FFFFFF,&H000000FF,&H00000000,&HAA000000,-1,0,0,0,100,100,2,0,3,4,2,2,40,40,140,1
+Style: Default,Arial Black,{SUBTITLE_FONTSIZE},&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,-1,0,0,0,100,100,1,0,1,5,3,8,80,80,520,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text

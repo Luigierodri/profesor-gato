@@ -124,6 +124,10 @@ def obtener_reddit_educativo(limite: int = 10) -> list[dict]:
 # ─── BOOST DE VIRALIDAD ───────────────────────────────────────────────────────
 
 _KEYWORDS_BOOST = [
+    # Economía personal / dinero — NUESTRA VETA MÁS VIRAL ("¿Quién gana con la inflación?")
+    "inflación", "inflacion", "precio", "precios", "gasolina", "salario",
+    "salarios", "peso", "dólar", "dolar", "renta", "tasa", "deuda", "deudas",
+    "impuesto", "impuestos", "canasta", "crédito", "credito", "hipoteca",
     # Deportes / Mundial 2026
     "mundial", "world cup", "copa", "futbol", "fútbol", "liga", "champions",
     "olimpiadas", "olimpicos",
@@ -210,6 +214,7 @@ def seleccionar_angulo_educativo(tendencias: list[dict]) -> dict:
     eventos_vistos = topic_history.eventos_conocidos()
     categs_recientes = topic_history.categorias_recientes()
     conteo_categs    = topic_history.conteo_categorias()
+    geos_recientes   = topic_history.geos_recientes()
 
     bloque_memoria = ""
     if angulos_prev:
@@ -247,6 +252,11 @@ def seleccionar_angulo_educativo(tendencias: list[dict]) -> dict:
             "Prioriza un buen ángulo trending, pero usa el balance para desempatar.\n"
         )
 
+    # Balance geográfico: ~1 de cada 3 videos debe ser específico de México (38% de la audiencia).
+    geos_str = ", ".join(geos_recientes[-6:]) if geos_recientes else "—"
+    ultimos_geo = geos_recientes[-3:]
+    falta_mexico = "mexico" not in ultimos_geo  # ninguno de los últimos 3 fue de México
+
     prompt = f"""Eres el productor del canal educativo "Profesor Gato" en YouTube Shorts (México/LATAM).
 
 El canal explica: historia, cultura, sociedad, economía, ciencia, fenómenos urbanos.
@@ -255,6 +265,23 @@ NO hace videos de noticias directas — explica el PORQUÉ y el trasfondo de lo 
 Trending hoy en México/LATAM:
 {lista_str}
 {bloque_memoria}
+PERFIL DE VIDEO GANADOR (criterio FUERTE de selección — es lo que más retiene y se comparte):
+Nuestro video más viral fue "¿Quién gana con la inflación?" — tuvo 4× más vistas que el segundo. Su ADN:
+  - Toca el DINERO / BOLSILLO del espectador (precios, ahorros, deudas, salarios, vivienda, gasolina).
+  - Tiene CONTROVERSIA IMPLÍCITA: alguien gana mientras otro pierde ("ellos vs. tú").
+  - Es COTIDIANO: el espectador lo vive cada semana, no es abstracto ni lejano.
+  - El ángulo se formula como PREGUNTA.
+Cuando un trend lo permita, INCLÍNATE por ángulos de economía personal / "quién gana, quién pierde" /
+"cómo te afecta a ti directamente". Es nuestra veta más rentable: úsala como criterio fuerte de desempate
+(la audiencia es 25-54 años, le importa su dinero y cómo funciona el mundo).
+
+ENFOQUE GEOGRÁFICO (México es el 38% de la audiencia):
+Geos de los últimos videos (más reciente al final): {geos_str}
+Mantén una mezcla pan-LATAM, pero ~1 de cada 3 videos debe ser ESPECÍFICAMENTE MEXICANO
+(historia, economía, política o sociedad de México).
+{"⚠️ Ninguno de los últimos videos fue de México — HOY prioriza un ángulo mexicano." if falta_mexico else "Ya hubo un ángulo mexicano reciente — hoy puedes ir pan-LATAM o global."}
+Marca el campo "geo" como "mexico" si el ángulo es específico de México, o "latam" si es regional/global.
+
 Elige UN tema trending y formula el ÁNGULO EDUCATIVO más potente, RESPETANDO las reglas
 de arriba (no repetir ángulos, no usar eventos saturados, variar el enfoque).
 El ángulo debe conectarse con algo que hoy está en boca de todos y explicar su trasfondo
@@ -281,6 +308,7 @@ Responde SOLO JSON válido, sin markdown:
   "trend_conectado": "el trending topic que usas como gancho de relevancia",
   "evento": "tag_en_snake_case",
   "categoria": "una de la lista de categorías",
+  "geo": "mexico o latam",
   "razon": "en una frase, por qué este ángulo tiene tracción hoy"
 }}"""
 
@@ -296,10 +324,12 @@ Responde SOLO JSON válido, sin markdown:
     resultado = json.loads(raw)
     resultado.setdefault("evento", "")
     resultado.setdefault("categoria", "")
+    resultado.setdefault("geo", "latam")
     print(f"  Angulo educativo: {resultado['angulo_educativo']}")
     print(f"  Trend conectado:  {resultado.get('trend_conectado')}")
     print(f"  Evento (tag):     {resultado.get('evento')}")
     print(f"  Categoria:        {resultado.get('categoria')}")
+    print(f"  Geo:              {resultado.get('geo')}")
     print(f"  Razon:            {resultado.get('razon', '')}")
     return resultado
 
