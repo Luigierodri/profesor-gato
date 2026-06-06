@@ -61,5 +61,13 @@
     "evento": "politica_extradicion_mexico",
     "categoria": "politica",
     "trend": "extradición"
+  },
+  {
+    "fecha": "2026-06-06",
+    "angulo": "¿Por qué México tiene dos equipos en la Copa del Mundo pero la mayoría de los mexicanos no pueden pagar un boleto?",
+    "evento": "mundial_2026",
+    "categoria": "economia",
+    "geo": "mexico",
+    "trend": "portugal - chile / argentina vs / francia vs argentina (partidos del Mundial en curso)"
   }
 ]
