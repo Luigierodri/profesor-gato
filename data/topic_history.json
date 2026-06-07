@@ -85,5 +85,13 @@
     "categoria": "geografia",
     "geo": "latam",
     "trend": "argentina fc"
+  },
+  {
+    "fecha": "2026-06-07",
+    "angulo": "¿Por qué Mónaco existe como país independiente y cómo vive de no cobrar impuestos?",
+    "evento": "historia_monaco",
+    "categoria": "historia",
+    "geo": "latam",
+    "trend": "monaco f1"
   }
 ]
