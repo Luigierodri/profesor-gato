@@ -77,5 +77,13 @@
     "categoria": "economia",
     "geo": "latam",
     "trend": "vinícius júnior"
+  },
+  {
+    "fecha": "2026-06-07",
+    "angulo": "¿Por qué Argentina sigue siendo la fábrica de futbolistas más grande del mundo y quién se enriquece con eso?",
+    "evento": "futbol_argentina_exportacion",
+    "categoria": "geografia",
+    "geo": "latam",
+    "trend": "argentina fc"
   }
 ]
