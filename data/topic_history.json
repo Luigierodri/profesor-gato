@@ -69,5 +69,13 @@
     "categoria": "economia",
     "geo": "mexico",
     "trend": "portugal - chile / argentina vs / francia vs argentina (partidos del Mundial en curso)"
+  },
+  {
+    "fecha": "2026-06-07",
+    "angulo": "¿Por qué Vinícius Júnior vale más de mil millones de pesos y quién se queda con ese dinero cuando un jugador se transfiere?",
+    "evento": "futbol_transferencias_dinero",
+    "categoria": "economia",
+    "geo": "latam",
+    "trend": "vinícius júnior"
   }
 ]
