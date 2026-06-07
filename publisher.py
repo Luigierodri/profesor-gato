@@ -60,7 +60,8 @@ COST_TRACKER     = LOGS_DIR / "cost_tracker.json"
 
 SCOPES = [
     "https://www.googleapis.com/auth/youtube.upload",
-    "https://www.googleapis.com/auth/youtube.force-ssl",  # necesario para comentarios
+    "https://www.googleapis.com/auth/youtube.force-ssl",       # necesario para comentarios
+    "https://www.googleapis.com/auth/yt-analytics.readonly",   # loop de métricas (performance_analyzer)
 ]
 
 # Hashtags fijos que van en todas las descripciones
@@ -431,6 +432,21 @@ def main():
     # 5. Registrar en cost tracker
     if not args.dry_run and resultado:
         registrar_publicacion(ruta_video, resultado)
+
+    # 6. Registro PERSISTENTE para el loop de métricas (data/performance.json)
+    if not args.dry_run and resultado and resultado["video_id"] != "DRY_RUN":
+        try:
+            from modules.performance_analyzer import registrar_video
+            paneles = (run_log or {}).get("script", {}).get("paneles", [])
+            gancho = paneles[0].get("narracion", "") if paneles else ""
+            registrar_video(
+                resultado["video_id"], resultado["titulo"],
+                categoria=(run_log or {}).get("categoria", ""),
+                evento=(run_log or {}).get("evento", ""),
+                gancho=gancho,
+            )
+        except Exception as e:
+            log.warning(f"  No se pudo registrar en performance.json: {e}")
 
     return resultado
 

@@ -30,9 +30,10 @@ VIDEO_HEIGHT        = 1920   # Vertical 9:16
 VIDEO_FPS           = 30
 SIEVEDANCE_API_KEY  = os.getenv("SIEVEDANCE_API_KEY", "")   # Agregar cuando tengas acceso
 
-# Duración máxima para que YouTube lo trate como Short (debe ser < 60s).
-# Usamos 57s de margen; si la narración se pasa, se acelera ligeramente (atempo).
-MAX_SHORT_DURATION  = 57.0
+# Objetivo de compresión cuando un guion se pasa de largo (debe quedar < 60s).
+# La banda libre real es hasta 59s (ver ajustar_duracion_total): solo se acelera
+# si se supera eso, y se comprime a 58s (suave) para no sonar robótico.
+MAX_SHORT_DURATION  = 58.0
 
 # ─── COPYRIGHT / MÚSICA ───────────────────────────────────────────────────────
 # Los tracks estáticos de assets/music/ se descargaron de SoundCloud buscando

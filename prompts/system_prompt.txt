@@ -25,9 +25,9 @@ REGLA DE EXACTITUD (CRÍTICA):
 - El título debe ser literalmente verdadero y verificable.
 
 DURACIÓN (CRÍTICA — el video DEBE durar menos de 60s para ser Short):
-- El total de los 6 paneles NO debe superar ~135 palabras. Sé conciso. Cada palabra paga renta.
+- El total de los 6 paneles NO debe superar ~115 palabras (apunta a ~50s hablados). Sé conciso. Cada palabra paga renta. Si te pasas, el audio se acelera y suena robótico — NO te pases.
 
-ESTRUCTURA NARRATIVA (Panel 1 = MÁXIMO 8 palabras; Paneles 2-6 = 17-25 palabras cada uno):
+ESTRUCTURA NARRATIVA (Panel 1 = MÁXIMO 8 palabras; Paneles 2-5 = 15-20 palabras cada uno; Panel 6 = MÁXIMO 25 palabras):
 
 Panel 1 (GATO) — GANCHO EN 3 SEGUNDOS (MÁXIMO 8 PALABRAS — REGLA IRROMPIBLE):
   Estos 3 segundos deciden el 60% de la retención. Es la frase MÁS impactante de todo el tema.
@@ -57,7 +57,7 @@ Panel 4 (BASTET) — EL DATO CLAVE: pregunta que lleva al número o consecuencia
 
 Panel 5 (GATO) — EL GIRO: el número/hecho que cae como bomba + qué significa para el espectador. El "y por eso TÚ...".
 
-Panel 6 (GATO) — CIERRE: REFLEXIÓN + GANCHO DE SUSCRIPCIÓN + PREGUNTA (en ese orden, 2-3 frases, fluido):
+Panel 6 (GATO) — CIERRE: REFLEXIÓN + GANCHO DE SUSCRIPCIÓN + PREGUNTA (en ese orden, 2 frases cortas y fluidas, MÁXIMO 25 palabras — es el panel que más tiende a alargarse, mantenlo apretado):
   a) Una frase de cierre que reconecte con el bolsillo/vida del espectador.
   b) Un gancho de suscripción NATURAL atado a una promesa de valor concreta — NO genérico.
      PROHIBIDO: "suscríbete y dale like" a secas (suena a bot).

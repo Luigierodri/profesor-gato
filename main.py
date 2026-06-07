@@ -283,8 +283,18 @@ def correr_pipeline(
             log.warning(f"Sin temas detectados. Usando respaldo rotativo (día {_dia}): {tema}")
         else:
             log.info("  Seleccionando angulo educativo a partir de tendencias...")
+            # Loop de aprendizaje: refresca métricas reales y genera lecciones.
+            aprendizajes = ""
             try:
-                angulo = seleccionar_angulo_educativo(temas)
+                from modules.performance_analyzer import refrescar_metricas, bloque_aprendizajes
+                refrescar_metricas()
+                aprendizajes = bloque_aprendizajes()
+                if aprendizajes:
+                    log.info("  [performance] aplicando lecciones de desempeño al selector de ángulo")
+            except Exception as e:
+                log.warning(f"  [performance] no disponible ({e}) — selector sin lecciones")
+            try:
+                angulo = seleccionar_angulo_educativo(temas, aprendizajes=aprendizajes)
                 tema = angulo["angulo_educativo"] or temas[0]["tema"]
                 trend_hook = angulo.get("trend_conectado")
                 evento_tag = angulo.get("evento", "")
@@ -312,6 +322,8 @@ def correr_pipeline(
             log.warning(f"  [historial] No se pudo registrar el tema: {e}")
     run_log["tema"] = tema
     run_log["trend_hook"] = trend_hook
+    run_log["categoria"] = categoria_tag
+    run_log["evento"] = evento_tag
 
     # ── PASO 2: VERIFICAR HECHOS (web search) ─────────────────────────────────
     banner("PASO 2 — Verificando hechos (web search)")

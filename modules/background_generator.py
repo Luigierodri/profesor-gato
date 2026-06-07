@@ -75,9 +75,11 @@ def _construir_prompt(visual_pizarron: str, location: str = "classroom") -> str:
         "Completely empty of living beings: NO people, NO cats, NO animals, "
         "NO characters, NO silhouettes, NO crowds, NO figures anywhere. "
         "NO floating objects, NO diagrams, NO icons. "
-        # El modelo no sabe escribir: cualquier nombre/letrero sale como texto basura.
-        # Forzamos que TODA superficie escribible esté en blanco.
-        "All signs, banners, billboards, scoreboards and screens are completely BLANK and empty. "
+        # El modelo no sabe escribir: cualquier letrero sale como texto basura.
+        # Antes los pedíamos "en blanco" pero quedaban carteles vacíos (se ve raro);
+        # ahora pedimos que NO existan letreros en la escena.
+        "NO signs, NO banners, NO billboards, NO scoreboards, NO posters, NO screens "
+        "anywhere — the scene has no signage at all. "
         "Absolutely NO readable words, NO names, NO logos, NO text, NO numbers, "
         "NO letters, NO dates, NO writing of any kind anywhere in the image."
     )

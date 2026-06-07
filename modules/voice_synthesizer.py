@@ -227,24 +227,28 @@ def obtener_duracion_audio(ruta_audio: str) -> float:
     return float(result.stdout.strip())
 
 
-def ajustar_duracion_total(resultados: list[dict], max_seg: float) -> list[dict]:
+def ajustar_duracion_total(resultados: list[dict], max_seg: float,
+                           ceiling: float = 59.0) -> list[dict]:
     """
-    Garantiza que la suma de los audios no supere max_seg (para que el video
-    sea un Short válido < 60s). Si se pasa, acelera TODOS los audios con
-    atempo (preserva el tono) por el mismo factor, manteniendo la sincronía.
+    Garantiza que el video sea un Short válido (< 60s) SIN dañar la naturalidad
+    del audio. Hay una banda libre: cualquier duración ≤ ceiling (59s) se deja
+    intacta (un Short de 58-59s es perfectamente válido y suena natural). Solo
+    si se supera el ceiling se aceleran TODOS los audios con atempo (preserva el
+    tono) hasta max_seg, manteniendo la sincronía. Acelerar es lo que hacía sonar
+    robótico el cierre, así que se evita salvo que sea estrictamente necesario.
 
     Modifica los MP3 in-place y actualiza 'duracion_real'. Devuelve la lista.
     """
     import subprocess
 
     total = sum(r["duracion_real"] for r in resultados)
-    if total <= max_seg:
-        print(f"⏱️  Duración total {total:.1f}s ≤ {max_seg:.0f}s — OK para Short")
+    if total <= ceiling:
+        print(f"⏱️  Duración total {total:.1f}s ≤ {ceiling:.0f}s — OK para Short (sin acelerar)")
         return resultados
 
     factor = total / max_seg  # >1 → hay que acelerar
     factor = min(factor, 1.5)  # tope de seguridad; atempo soporta hasta 2.0
-    print(f"⏱️  Duración {total:.1f}s > {max_seg:.0f}s — acelerando audios ×{factor:.3f}")
+    print(f"⏱️  Duración {total:.1f}s > {ceiling:.0f}s — acelerando audios ×{factor:.3f} (objetivo {max_seg:.0f}s)")
 
     for r in resultados:
         ruta = r["ruta_audio"]

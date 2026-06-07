@@ -183,7 +183,7 @@ def detectar_temas_del_dia() -> list[dict]:
     return top
 
 
-def seleccionar_angulo_educativo(tendencias: list[dict]) -> dict:
+def seleccionar_angulo_educativo(tendencias: list[dict], aprendizajes: str = "") -> dict:
     """
     Dado el listado de tendencias del día, usa Claude para encontrar
     el ángulo educativo más potente conectado a lo que ya está viral.
@@ -274,7 +274,7 @@ Nuestro video más viral fue "¿Quién gana con la inflación?" — tuvo 4× má
 Cuando un trend lo permita, INCLÍNATE por ángulos de economía personal / "quién gana, quién pierde" /
 "cómo te afecta a ti directamente". Es nuestra veta más rentable: úsala como criterio fuerte de desempate
 (la audiencia es 25-54 años, le importa su dinero y cómo funciona el mundo).
-
+{(chr(10) + aprendizajes + chr(10)) if aprendizajes else ""}
 ENFOQUE GEOGRÁFICO (México es el 38% de la audiencia):
 Geos de los últimos videos (más reciente al final): {geos_str}
 Mantén una mezcla pan-LATAM, pero ~1 de cada 3 videos debe ser ESPECÍFICAMENTE MEXICANO
