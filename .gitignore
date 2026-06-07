@@ -8,6 +8,9 @@ logs/
 # Intermedios generados por cada run (regenerados siempre; NO versionar).
 # Se conservan los PNG de referencia en la raíz de images/.
 images/*/
+# Excepción: las poses de los personajes SÍ se versionan (las usa el runner).
+!images/personajes/
+!images/personajes/**
 audio/
 videos/
 tmp/*.mp3

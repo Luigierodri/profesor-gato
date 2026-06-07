@@ -95,6 +95,27 @@ def guardar_log(datos: dict):
     log.info(f"Log guardado: {ruta.name}")
 
 
+# Poses por personaje + default por posición de panel (respaldo si Claude no la da)
+_POSES_VALIDAS = {
+    "gato":   {"gancho", "explica", "revela", "cierre"},
+    "bastet": {"sorpresa", "pregunta", "preocupada", "eureka"},
+}
+_POSE_DEFAULT = {
+    ("gato", 1): "gancho", ("gato", 3): "explica",
+    ("gato", 5): "revela", ("gato", 6): "cierre",
+    ("bastet", 2): "sorpresa", ("bastet", 4): "preocupada",
+}
+_POSE_GENERICA = {"gato": "explica", "bastet": "pregunta"}
+
+
+def _pose_valida(speaker: str, numero: int, pose: str | None) -> str:
+    """Devuelve una pose válida: la de Claude si lo es, si no el default por panel."""
+    speaker = speaker if speaker in _POSES_VALIDAS else "gato"
+    if pose and pose in _POSES_VALIDAS[speaker]:
+        return pose
+    return _POSE_DEFAULT.get((speaker, numero), _POSE_GENERICA[speaker])
+
+
 def script_a_paneles(script: dict) -> dict:
     """
     Claude genera los paneles directamente en el JSON (campo 'paneles').
@@ -106,10 +127,11 @@ def script_a_paneles(script: dict) -> dict:
             p.setdefault("numero", i)
             p.setdefault("speaker", "gato")
             p.setdefault("visual_pizarron", "educational blackboard with diagrams")
+            p["pose"] = _pose_valida(p["speaker"], p["numero"], p.get("pose"))
             p["duracion_aprox"] = max(4, round(len(p["narracion"].split()) / 3))
         log.info(f"  Paneles: {len(paneles)} (generados por Claude)")
         for p in paneles:
-            log.info(f"    Panel {p['numero']} [{p['speaker'].upper()}]: ~{p['duracion_aprox']}s — {p['narracion'][:55]}...")
+            log.info(f"    Panel {p['numero']} [{p['speaker'].upper()}/{p['pose']}]: ~{p['duracion_aprox']}s — {p['narracion'][:55]}...")
         return {
             "titulo":      script["titulo"],
             "paneles":     paneles,
@@ -131,6 +153,7 @@ def script_a_paneles(script: dict) -> dict:
     paneles = [
         {
             "numero": i, "speaker": "gato",
+            "pose": _pose_valida("gato", i, None),
             "narracion": " ".join(gr),
             "visual_pizarron": f"{pv} panel {i}",
             "duracion_aprox": max(4, round(len(" ".join(gr).split()) / 3)),
@@ -399,10 +422,12 @@ def correr_pipeline(
 
     # ── PASO 6: ENSAMBLAR VIDEO ───────────────────────────────────────────────
     banner("PASO 6 — Ensamblando video final")
+    poses_por_numero = {p["numero"]: p.get("pose") for p in datos_comic["paneles"]}
     paneles = [
         {
             "numero":      audio_r["numero"],
             "speaker":     audio_r.get("speaker", "gato"),
+            "pose":        poses_por_numero.get(audio_r["numero"]),
             "ruta_audio":  audio_r["ruta_audio"],
             "ruta_imagen": anim_r["ruta_imagen"],
             "ruta_video":  anim_r["ruta_video"],

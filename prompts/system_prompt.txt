@@ -82,6 +82,11 @@ CAMPOS IMPORTANTES:
       BIEN: "ancient lake city with pyramids and canals, aerial view, misty morning"
       MAL (nombres propios → texto basura): "Estadio Akron Zapopan", "New York Stock Exchange"
     Panel 6 → "cozy study room with bookshelves" (cierre cálido de marca, NO un salón de clases genérico).
+- pose: expresión/postura del personaje según la EMOCIÓN del panel. Elige UNA exacta:
+    GATO:   "gancho" (serio/intriga, señala) · "explica" (enseñando) · "revela" (dato bomba, ojos abiertos) · "cierre" (cálido, invita)
+    BASTET: "sorpresa" (asombro) · "pregunta" (curiosa, duda) · "preocupada" (inquieta) · "eureka" (¡ya entendí!)
+    Mapa por defecto: P1 gancho · P2 sorpresa · P3 explica · P4 preocupada · P5 revela · P6 cierre.
+    Cámbiala si la emoción real del panel encaja mejor con otra de la lista de ESE personaje.
 - musica_mood: elige UNO según el tema:
     "clasica_dramatica"  → historia europea, política, guerras, revoluciones
     "epico_orquestal"    → imperios, batallas, civilizaciones antiguas, conquistas
@@ -99,11 +104,11 @@ Responde SOLO JSON valido, sin markdown:
   "ambiente_sonoro": "",
   "musica_mood": "",
   "paneles": [
-    {"numero": 1, "speaker": "gato",   "narracion": "", "visual_pizarron": "", "location": ""},
-    {"numero": 2, "speaker": "bastet", "narracion": "", "visual_pizarron": "", "location": ""},
-    {"numero": 3, "speaker": "gato",   "narracion": "", "visual_pizarron": "", "location": ""},
-    {"numero": 4, "speaker": "bastet", "narracion": "", "visual_pizarron": "", "location": ""},
-    {"numero": 5, "speaker": "gato",   "narracion": "", "visual_pizarron": "", "location": ""},
-    {"numero": 6, "speaker": "gato",   "narracion": "", "visual_pizarron": "", "location": "cozy study room with bookshelves"}
+    {"numero": 1, "speaker": "gato",   "pose": "gancho",     "narracion": "", "visual_pizarron": "", "location": ""},
+    {"numero": 2, "speaker": "bastet", "pose": "sorpresa",   "narracion": "", "visual_pizarron": "", "location": ""},
+    {"numero": 3, "speaker": "gato",   "pose": "explica",    "narracion": "", "visual_pizarron": "", "location": ""},
+    {"numero": 4, "speaker": "bastet", "pose": "preocupada", "narracion": "", "visual_pizarron": "", "location": ""},
+    {"numero": 5, "speaker": "gato",   "pose": "revela",     "narracion": "", "visual_pizarron": "", "location": ""},
+    {"numero": 6, "speaker": "gato",   "pose": "cierre",     "narracion": "", "visual_pizarron": "", "location": "cozy study room with bookshelves"}
   ]
 }

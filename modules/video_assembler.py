@@ -40,12 +40,29 @@ FADE_DURATION        = 0.5
 SUBTITLE_FONTSIZE    = 66   # más grande = más legible en móvil (83% de la audiencia)
 SUBTITLE_WORDS_PER_CHUNK = 3   # 3 palabras/chunk = lectura más rápida, estilo TikTok
 
-# Assets oficiales de personajes (PNG con fondo negro)
+# Assets oficiales de personajes (PNG raíz = respaldo si la pose no existe)
 CHAR_PNGS = {
     "gato":   BASE_DIR / "images" / "profesor_gato_fondo_negro.png",
     "bastet": BASE_DIR / "images" / "bastet_fondo_negro.png",
 }
+# Poses rotables: images/personajes/<speaker>/<speaker>_<pose>.png
+CHAR_DIR = BASE_DIR / "images" / "personajes"
+POSES_VALIDAS = {
+    "gato":   {"gancho", "explica", "revela", "cierre"},
+    "bastet": {"sorpresa", "pregunta", "preocupada", "eureka"},
+}
 CHAR_PNG_WIDTH = int(VIDEO_WIDTH * 0.45)  # 486px — ~45% del ancho
+
+
+def resolver_char_png(speaker: str, pose: str = None) -> Path:
+    """PNG del personaje según la pose; cae al PNG raíz si la pose no es válida
+    o el archivo aún no existe."""
+    speaker = speaker if speaker in POSES_VALIDAS else "gato"
+    if pose and pose in POSES_VALIDAS[speaker]:
+        p = CHAR_DIR / speaker / f"{speaker}_{pose}.png"
+        if p.exists():
+            return p
+    return CHAR_PNGS.get(speaker, CHAR_PNGS["gato"])
 
 
 class VideoAssemblerV4:
@@ -71,6 +88,7 @@ class VideoAssemblerV4:
         numero: int,
         speaker: str = "gato",
         ruta_video: str = None,
+        pose: str = None,
     ) -> Path:
         """
         Crea el clip de panel con:
@@ -81,7 +99,7 @@ class VideoAssemblerV4:
         """
         duracion = self.get_duration(Path(ruta_audio))
         out      = self.tmp / f"clip_{numero:02d}.mp4"
-        char_png = CHAR_PNGS.get(speaker, CHAR_PNGS["gato"])
+        char_png = resolver_char_png(speaker, pose)
 
         # Fondo: clip Veo o Ken Burns
         if ruta_video:
@@ -433,6 +451,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
                     panel["numero"],
                     speaker=panel.get("speaker", "gato"),
                     ruta_video=panel.get("ruta_video"),
+                    pose=panel.get("pose"),
                 )
                 clips.append(clip)
 
