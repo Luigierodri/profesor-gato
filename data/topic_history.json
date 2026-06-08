@@ -93,5 +93,13 @@
     "categoria": "historia",
     "geo": "latam",
     "trend": "monaco f1"
+  },
+  {
+    "fecha": "2026-06-08",
+    "angulo": "¿Por qué México clasifica al Mundial casi siempre pero nunca pasa de cuartos de final?",
+    "evento": "mundial_2026",
+    "categoria": "deportes",
+    "geo": "mexico",
+    "trend": "mexico vs sudafrica"
   }
 ]
