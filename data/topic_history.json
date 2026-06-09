@@ -101,5 +101,13 @@
     "categoria": "deportes",
     "geo": "mexico",
     "trend": "mexico vs sudafrica"
+  },
+  {
+    "fecha": "2026-06-09",
+    "angulo": "¿Por qué China puede destruir empresas como Alibaba y nadie la detiene?",
+    "evento": "economia_china_empresas",
+    "categoria": "economia",
+    "geo": "latam",
+    "trend": "alibaba group"
   }
 ]

@@ -14,7 +14,7 @@
       "comentarios": 0,
       "compartidos": 2,
       "subs_ganados": 4,
-      "actualizado": "2026-06-08T16:44:48.914614+00:00"
+      "actualizado": "2026-06-09T15:51:24.000249+00:00"
     }
   },
   {
@@ -32,7 +32,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 2,
-      "actualizado": "2026-06-08T16:44:48.914632+00:00"
+      "actualizado": "2026-06-09T15:51:24.000271+00:00"
     }
   },
   {
@@ -43,14 +43,14 @@
     "evento": "",
     "gancho": "",
     "metricas": {
-      "vistas": 313,
+      "vistas": 312,
       "retencion_pct": 65.0,
       "duracion_media_s": 30.0,
       "likes": 8,
       "comentarios": 1,
       "compartidos": 1,
       "subs_ganados": 2,
-      "actualizado": "2026-06-08T16:44:48.914639+00:00"
+      "actualizado": "2026-06-09T15:51:24.000278+00:00"
     }
   },
   {
@@ -68,7 +68,7 @@
       "comentarios": 1,
       "compartidos": 1,
       "subs_ganados": 1,
-      "actualizado": "2026-06-08T16:44:48.914645+00:00"
+      "actualizado": "2026-06-09T15:51:24.000284+00:00"
     }
   },
   {
@@ -79,14 +79,14 @@
     "evento": "",
     "gancho": "",
     "metricas": {
-      "vistas": 199,
+      "vistas": 201,
       "retencion_pct": 50.3,
       "duracion_media_s": 37.0,
       "likes": 8,
       "comentarios": 0,
       "compartidos": 0,
       "subs_ganados": 2,
-      "actualizado": "2026-06-08T16:44:48.914651+00:00"
+      "actualizado": "2026-06-09T15:51:24.000289+00:00"
     }
   },
   {
@@ -104,7 +104,7 @@
       "comentarios": 1,
       "compartidos": 2,
       "subs_ganados": 2,
-      "actualizado": "2026-06-08T16:44:48.914656+00:00"
+      "actualizado": "2026-06-09T15:51:24.000294+00:00"
     }
   },
   {
@@ -122,7 +122,7 @@
       "comentarios": 0,
       "compartidos": 0,
       "subs_ganados": 0,
-      "actualizado": "2026-06-08T16:44:48.914661+00:00"
+      "actualizado": "2026-06-09T15:51:24.000299+00:00"
     }
   },
   {
@@ -140,7 +140,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-08T16:44:48.914666+00:00"
+      "actualizado": "2026-06-09T15:51:24.000303+00:00"
     }
   },
   {
@@ -151,14 +151,14 @@
     "evento": "",
     "gancho": "",
     "metricas": {
-      "vistas": 63,
-      "retencion_pct": 55.6,
-      "duracion_media_s": 31.0,
+      "vistas": 69,
+      "retencion_pct": 51.8,
+      "duracion_media_s": 29.0,
       "likes": 5,
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-08T16:44:48.914672+00:00"
+      "actualizado": "2026-06-09T15:51:24.000307+00:00"
     }
   },
   {
@@ -177,6 +177,15 @@
     "categoria": "deportes",
     "evento": "mundial_2026",
     "gancho": "México clasifica más que Francia... y nunca llega lejos.",
+    "metricas": {}
+  },
+  {
+    "video_id": "Ue-ZAmzC_jM",
+    "fecha": "2026-06-09",
+    "titulo": "¿Por qué China puede destruir empresas como Alibaba?",
+    "categoria": "economia",
+    "evento": "economia_china_empresas",
+    "gancho": "China destruyó al hombre más rico del país. En público.",
     "metricas": {}
   }
 ]
