@@ -14,7 +14,7 @@
       "comentarios": 0,
       "compartidos": 2,
       "subs_ganados": 4,
-      "actualizado": "2026-06-09T15:51:24.000249+00:00"
+      "actualizado": "2026-06-10T16:31:16.657538+00:00"
     }
   },
   {
@@ -32,7 +32,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 2,
-      "actualizado": "2026-06-09T15:51:24.000271+00:00"
+      "actualizado": "2026-06-10T16:31:16.657556+00:00"
     }
   },
   {
@@ -50,7 +50,7 @@
       "comentarios": 1,
       "compartidos": 1,
       "subs_ganados": 2,
-      "actualizado": "2026-06-09T15:51:24.000278+00:00"
+      "actualizado": "2026-06-10T16:31:16.657563+00:00"
     }
   },
   {
@@ -68,7 +68,7 @@
       "comentarios": 1,
       "compartidos": 1,
       "subs_ganados": 1,
-      "actualizado": "2026-06-09T15:51:24.000284+00:00"
+      "actualizado": "2026-06-10T16:31:16.657568+00:00"
     }
   },
   {
@@ -86,7 +86,7 @@
       "comentarios": 0,
       "compartidos": 0,
       "subs_ganados": 2,
-      "actualizado": "2026-06-09T15:51:24.000289+00:00"
+      "actualizado": "2026-06-10T16:31:16.657573+00:00"
     }
   },
   {
@@ -104,7 +104,7 @@
       "comentarios": 1,
       "compartidos": 2,
       "subs_ganados": 2,
-      "actualizado": "2026-06-09T15:51:24.000294+00:00"
+      "actualizado": "2026-06-10T16:31:16.657578+00:00"
     }
   },
   {
@@ -122,7 +122,7 @@
       "comentarios": 0,
       "compartidos": 0,
       "subs_ganados": 0,
-      "actualizado": "2026-06-09T15:51:24.000299+00:00"
+      "actualizado": "2026-06-10T16:31:16.657583+00:00"
     }
   },
   {
@@ -140,7 +140,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-09T15:51:24.000303+00:00"
+      "actualizado": "2026-06-10T16:31:16.657587+00:00"
     }
   },
   {
@@ -158,7 +158,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-09T15:51:24.000307+00:00"
+      "actualizado": "2026-06-10T16:31:16.657591+00:00"
     }
   },
   {
@@ -168,7 +168,16 @@
     "categoria": "historia",
     "evento": "historia_monaco",
     "gancho": "Mónaco existe porque un hombre se disfrazó de monje.",
-    "metricas": {}
+    "metricas": {
+      "vistas": 21,
+      "retencion_pct": 71.0,
+      "duracion_media_s": 41.0,
+      "likes": 3,
+      "comentarios": 0,
+      "compartidos": 1,
+      "subs_ganados": 0,
+      "actualizado": "2026-06-10T16:31:16.657597+00:00"
+    }
   },
   {
     "video_id": "ADbSkogYqtg",
@@ -186,6 +195,15 @@
     "categoria": "economia",
     "evento": "economia_china_empresas",
     "gancho": "China destruyó al hombre más rico del país. En público.",
+    "metricas": {}
+  },
+  {
+    "video_id": "AMSxjIDsRpI",
+    "fecha": "2026-06-10",
+    "titulo": "¿Los agujeros negros rompen el tiempo de verdad?",
+    "categoria": "ciencia",
+    "evento": "ciencia_agujeros_negros",
+    "gancho": "Hay un lugar donde el tiempo literalmente se detiene.",
     "metricas": {}
   }
 ]
