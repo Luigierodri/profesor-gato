@@ -14,7 +14,7 @@
       "comentarios": 0,
       "compartidos": 2,
       "subs_ganados": 4,
-      "actualizado": "2026-06-10T16:31:16.657538+00:00"
+      "actualizado": "2026-06-11T16:45:37.463920+00:00"
     }
   },
   {
@@ -32,7 +32,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 2,
-      "actualizado": "2026-06-10T16:31:16.657556+00:00"
+      "actualizado": "2026-06-11T16:45:37.463940+00:00"
     }
   },
   {
@@ -50,7 +50,7 @@
       "comentarios": 1,
       "compartidos": 1,
       "subs_ganados": 2,
-      "actualizado": "2026-06-10T16:31:16.657563+00:00"
+      "actualizado": "2026-06-11T16:45:37.463947+00:00"
     }
   },
   {
@@ -68,7 +68,7 @@
       "comentarios": 1,
       "compartidos": 1,
       "subs_ganados": 1,
-      "actualizado": "2026-06-10T16:31:16.657568+00:00"
+      "actualizado": "2026-06-11T16:45:37.463953+00:00"
     }
   },
   {
@@ -79,14 +79,14 @@
     "evento": "",
     "gancho": "",
     "metricas": {
-      "vistas": 201,
+      "vistas": 202,
       "retencion_pct": 50.3,
       "duracion_media_s": 37.0,
       "likes": 8,
       "comentarios": 0,
       "compartidos": 0,
       "subs_ganados": 2,
-      "actualizado": "2026-06-10T16:31:16.657573+00:00"
+      "actualizado": "2026-06-11T16:45:37.463959+00:00"
     }
   },
   {
@@ -104,7 +104,7 @@
       "comentarios": 1,
       "compartidos": 2,
       "subs_ganados": 2,
-      "actualizado": "2026-06-10T16:31:16.657578+00:00"
+      "actualizado": "2026-06-11T16:45:37.463964+00:00"
     }
   },
   {
@@ -115,14 +115,14 @@
     "evento": "",
     "gancho": "",
     "metricas": {
-      "vistas": 72,
-      "retencion_pct": 53.6,
+      "vistas": 73,
+      "retencion_pct": 53.5,
       "duracion_media_s": 27.0,
       "likes": 6,
       "comentarios": 0,
       "compartidos": 0,
       "subs_ganados": 0,
-      "actualizado": "2026-06-10T16:31:16.657583+00:00"
+      "actualizado": "2026-06-11T16:45:37.463969+00:00"
     }
   },
   {
@@ -140,7 +140,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-10T16:31:16.657587+00:00"
+      "actualizado": "2026-06-11T16:45:37.463974+00:00"
     }
   },
   {
@@ -158,7 +158,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-10T16:31:16.657591+00:00"
+      "actualizado": "2026-06-11T16:45:37.463979+00:00"
     }
   },
   {
@@ -169,14 +169,14 @@
     "evento": "historia_monaco",
     "gancho": "Mónaco existe porque un hombre se disfrazó de monje.",
     "metricas": {
-      "vistas": 21,
-      "retencion_pct": 71.0,
-      "duracion_media_s": 41.0,
+      "vistas": 25,
+      "retencion_pct": 67.1,
+      "duracion_media_s": 38.0,
       "likes": 3,
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-10T16:31:16.657597+00:00"
+      "actualizado": "2026-06-11T16:45:37.463984+00:00"
     }
   },
   {
@@ -186,7 +186,16 @@
     "categoria": "deportes",
     "evento": "mundial_2026",
     "gancho": "México clasifica más que Francia... y nunca llega lejos.",
-    "metricas": {}
+    "metricas": {
+      "vistas": 3,
+      "retencion_pct": 47.3,
+      "duracion_media_s": 24.0,
+      "likes": 1,
+      "comentarios": 0,
+      "compartidos": 1,
+      "subs_ganados": 0,
+      "actualizado": "2026-06-11T16:45:37.463989+00:00"
+    }
   },
   {
     "video_id": "Ue-ZAmzC_jM",
@@ -204,6 +213,15 @@
     "categoria": "ciencia",
     "evento": "ciencia_agujeros_negros",
     "gancho": "Hay un lugar donde el tiempo literalmente se detiene.",
+    "metricas": {}
+  },
+  {
+    "video_id": "50nkrryj4Ws",
+    "fecha": "2026-06-11",
+    "titulo": "¿Por qué organizar el Mundial arruina a los países?",
+    "categoria": "economia",
+    "evento": "mundial_2026",
+    "gancho": "El Mundial genera miles de millones. El país sede recibe cero.",
     "metricas": {}
   }
 ]

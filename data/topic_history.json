@@ -117,5 +117,13 @@
     "categoria": "ciencia",
     "geo": "latam",
     "trend": "agujero negro"
+  },
+  {
+    "fecha": "2026-06-11",
+    "angulo": "¿Por qué organizar un Mundial destroza las finanzas de un país mientras las FIFA se lleva las ganancias?",
+    "evento": "mundial_2026",
+    "categoria": "economia",
+    "geo": "latam",
+    "trend": "fifa world cup 2026 / copa mundial de la fifa 2026"
   }
 ]
