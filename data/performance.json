@@ -14,7 +14,7 @@
       "comentarios": 0,
       "compartidos": 2,
       "subs_ganados": 4,
-      "actualizado": "2026-06-11T16:45:37.463920+00:00"
+      "actualizado": "2026-06-12T16:12:21.513172+00:00"
     }
   },
   {
@@ -32,7 +32,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 2,
-      "actualizado": "2026-06-11T16:45:37.463940+00:00"
+      "actualizado": "2026-06-12T16:12:21.513191+00:00"
     }
   },
   {
@@ -50,7 +50,7 @@
       "comentarios": 1,
       "compartidos": 1,
       "subs_ganados": 2,
-      "actualizado": "2026-06-11T16:45:37.463947+00:00"
+      "actualizado": "2026-06-12T16:12:21.513198+00:00"
     }
   },
   {
@@ -68,7 +68,7 @@
       "comentarios": 1,
       "compartidos": 1,
       "subs_ganados": 1,
-      "actualizado": "2026-06-11T16:45:37.463953+00:00"
+      "actualizado": "2026-06-12T16:12:21.513204+00:00"
     }
   },
   {
@@ -86,7 +86,7 @@
       "comentarios": 0,
       "compartidos": 0,
       "subs_ganados": 2,
-      "actualizado": "2026-06-11T16:45:37.463959+00:00"
+      "actualizado": "2026-06-12T16:12:21.513210+00:00"
     }
   },
   {
@@ -104,7 +104,7 @@
       "comentarios": 1,
       "compartidos": 2,
       "subs_ganados": 2,
-      "actualizado": "2026-06-11T16:45:37.463964+00:00"
+      "actualizado": "2026-06-12T16:12:21.513215+00:00"
     }
   },
   {
@@ -122,7 +122,7 @@
       "comentarios": 0,
       "compartidos": 0,
       "subs_ganados": 0,
-      "actualizado": "2026-06-11T16:45:37.463969+00:00"
+      "actualizado": "2026-06-12T16:12:21.513220+00:00"
     }
   },
   {
@@ -140,7 +140,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-11T16:45:37.463974+00:00"
+      "actualizado": "2026-06-12T16:12:21.513225+00:00"
     }
   },
   {
@@ -158,7 +158,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-11T16:45:37.463979+00:00"
+      "actualizado": "2026-06-12T16:12:21.513229+00:00"
     }
   },
   {
@@ -169,14 +169,14 @@
     "evento": "historia_monaco",
     "gancho": "Mónaco existe porque un hombre se disfrazó de monje.",
     "metricas": {
-      "vistas": 25,
-      "retencion_pct": 67.1,
-      "duracion_media_s": 38.0,
+      "vistas": 31,
+      "retencion_pct": 195.3,
+      "duracion_media_s": 113.0,
       "likes": 3,
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-11T16:45:37.463984+00:00"
+      "actualizado": "2026-06-12T16:12:21.513234+00:00"
     }
   },
   {
@@ -187,14 +187,14 @@
     "evento": "mundial_2026",
     "gancho": "México clasifica más que Francia... y nunca llega lejos.",
     "metricas": {
-      "vistas": 3,
-      "retencion_pct": 47.3,
-      "duracion_media_s": 24.0,
-      "likes": 1,
+      "vistas": 6,
+      "retencion_pct": 31.4,
+      "duracion_media_s": 16.0,
+      "likes": 2,
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-11T16:45:37.463989+00:00"
+      "actualizado": "2026-06-12T16:12:21.513239+00:00"
     }
   },
   {
@@ -204,7 +204,16 @@
     "categoria": "economia",
     "evento": "economia_china_empresas",
     "gancho": "China destruyó al hombre más rico del país. En público.",
-    "metricas": {}
+    "metricas": {
+      "vistas": 15,
+      "retencion_pct": 56.5,
+      "duracion_media_s": 32.0,
+      "likes": 1,
+      "comentarios": 0,
+      "compartidos": 2,
+      "subs_ganados": 0,
+      "actualizado": "2026-06-12T16:12:21.513244+00:00"
+    }
   },
   {
     "video_id": "AMSxjIDsRpI",
@@ -222,6 +231,15 @@
     "categoria": "economia",
     "evento": "mundial_2026",
     "gancho": "El Mundial genera miles de millones. El país sede recibe cero.",
+    "metricas": {}
+  },
+  {
+    "video_id": "qAiFSYM1-wE",
+    "fecha": "2026-06-12",
+    "titulo": "¿Por qué Facebook sigue siendo el rey en México?",
+    "categoria": "sociedad",
+    "evento": "cultura_facebook_mexico",
+    "gancho": "Facebook está muy muerto… con 93 millones de usuarios en México.",
     "metricas": {}
   }
 ]

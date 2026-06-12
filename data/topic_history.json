@@ -125,5 +125,13 @@
     "categoria": "economia",
     "geo": "latam",
     "trend": "fifa world cup 2026 / copa mundial de la fifa 2026"
+  },
+  {
+    "fecha": "2026-06-12",
+    "angulo": "¿Por qué Facebook sigue siendo el rey de internet en México aunque todo el mundo diga que está muerto?",
+    "evento": "cultura_facebook_mexico",
+    "categoria": "sociedad",
+    "geo": "mexico",
+    "trend": "facebook"
   }
 ]
