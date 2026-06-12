@@ -27,23 +27,32 @@ Devuelve una FICHA DE DATOS VERIFICADOS en español, en viñetas, con:
 - Si un dato es incierto, discutido o no lo confirmas, dilo explícitamente.
 
 NO inventes nada. Si no encuentras un dato, escribe "[no verificado]".
-Máximo 12 viñetas. Empieza directamente con las viñetas, sin preámbulo."""
+Máximo {max_vinetas} viñetas. Empieza directamente con las viñetas, sin preámbulo."""
 
 
-def generar_ficha_datos(tema: str) -> str:
+def generar_ficha_datos(tema: str, max_uses: int = 3, max_vinetas: int = 12,
+                        max_tokens: int = 1000, enfoque: str = "") -> str:
     """
     Devuelve una ficha breve de datos verificados sobre el tema usando web search.
     Si la búsqueda web no está disponible o falla, devuelve "" (el pipeline sigue,
     aunque sin verificación — script_generator lo maneja).
+
+    Los defaults son los de los Shorts (~$0.03/video). El ensayo LARGO pide más
+    (max_uses=6, max_vinetas=20, max_tokens=2000, enfoque con los ángulos del
+    outline) porque vive o muere por los datos.
     """
     client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+
+    prompt = _FICHA_PROMPT.replace("{max_vinetas}", str(max_vinetas)).format(tema=tema)
+    if (enfoque or "").strip():
+        prompt += f"\n\nENFOCA la búsqueda en estos ángulos:\n{enfoque.strip()}"
 
     try:
         msg = client.messages.create(
             model=CLAUDE_MODEL,
-            max_tokens=1000,
-            tools=[{"type": "web_search_20250305", "name": "web_search", "max_uses": 3}],
-            messages=[{"role": "user", "content": _FICHA_PROMPT.format(tema=tema)}],
+            max_tokens=max_tokens,
+            tools=[{"type": "web_search_20250305", "name": "web_search", "max_uses": max_uses}],
+            messages=[{"role": "user", "content": prompt}],
         )
     except Exception as e:
         log.warning(f"  [FactCheck] búsqueda web no disponible ({e}) — guion sin verificar")

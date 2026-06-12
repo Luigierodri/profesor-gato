@@ -85,12 +85,14 @@ def _construir_prompt(visual_pizarron: str, location: str = "classroom") -> str:
     )
 
 
-def _generar_con_imagen_vertex(model: str, prompt: str) -> bytes:
-    """imagen-X via Vertex AI predict endpoint (devuelve bytesBase64Encoded)."""
+def _generar_con_imagen_vertex(model: str, prompt: str, aspect: str = "1:1") -> bytes:
+    """imagen-X via Vertex AI predict endpoint (devuelve bytesBase64Encoded).
+    `aspect` default "1:1" = comportamiento de los Shorts intacto; el ensayo
+    largo pide "16:9"."""
     url = vertex_url(model, "predict")
     payload = {
         "instances": [{"prompt": prompt}],
-        "parameters": {"sampleCount": 1, "aspectRatio": "1:1"},
+        "parameters": {"sampleCount": 1, "aspectRatio": aspect},
     }
     resp = requests.post(url, json=payload, headers=vertex_headers(), timeout=120)
     if resp.status_code == 429:
@@ -106,7 +108,7 @@ def _generar_con_imagen_vertex(model: str, prompt: str) -> bytes:
     return base64.b64decode(img_b64)
 
 
-def _generar_con_flux_schnell(prompt: str) -> bytes:
+def _generar_con_flux_schnell(prompt: str, image_size: str = "square_hd") -> bytes:
     # fal_client usa FAL_KEY; nuestro .env lo expone como FAL_API_KEY
     fal_key = os.getenv("FAL_API_KEY") or os.getenv("FAL_KEY")
     if not fal_key:
@@ -117,7 +119,7 @@ def _generar_con_flux_schnell(prompt: str) -> bytes:
         "fal-ai/flux/schnell",
         arguments={
             "prompt": prompt,
-            "image_size": "square_hd",
+            "image_size": image_size,
             "num_images": 1,
             "num_inference_steps": 4,
         },
@@ -279,6 +281,59 @@ def generar_imagenes_por_paneles(
 
     log.info(f"  {len(resultados)} imagenes generadas en: {carpeta_salida}")
     return resultados
+
+
+# ─── ENSAYO LARGO (16:9) — aditivo, los Shorts no usan nada de esto ──────────
+
+def _construir_prompt_essay(location: str) -> str:
+    """Prompt del fondo 16:9 del ensayo: misma identidad pixel art del canal,
+    plano cinematográfico amplio, sin seres vivos ni texto (el personaje y las
+    tarjetas de datos se superponen en el assembler)."""
+    return (
+        f"{_PIXEL_STYLE}. "
+        f"WIDE CINEMATIC ESTABLISHING SHOT of this setting: {location}. "
+        "Clean scenery, landscape and architecture only — like an empty postcard or backdrop. "
+        "Vivid atmospheric colors, dramatic cinematic lighting. "
+        "Completely empty of living beings: NO people, NO cats, NO animals, "
+        "NO characters, NO silhouettes, NO crowds, NO figures anywhere. "
+        "NO floating objects, NO diagrams, NO icons. "
+        "NO signs, NO banners, NO billboards, NO scoreboards, NO posters, NO screens "
+        "anywhere — the scene has no signage at all. "
+        "Absolutely NO readable words, NO names, NO logos, NO text, NO numbers, "
+        "NO letters, NO dates, NO writing of any kind anywhere in the image."
+    )
+
+
+def generar_imagen_essay(location: str, output_path) -> str:
+    """Genera UN fondo 16:9 para el ensayo (Imagen4 → Imagen3 → FLUX → OpenAI)."""
+    prompt = _construir_prompt_essay(location)
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    img_data, errores = None, {}
+    ctx = f"Essay bg: {location[:40]}"
+    intentos = [
+        (IMAGEN4_MODEL, lambda: _generar_con_imagen_vertex(IMAGEN4_MODEL, prompt, aspect="16:9")),
+        (IMAGEN3_MODEL, lambda: _generar_con_imagen_vertex(IMAGEN3_MODEL, prompt, aspect="16:9")),
+        ("fal-ai/flux/schnell", lambda: _generar_con_flux_schnell(prompt, image_size="landscape_16_9")),
+    ]
+    for nombre, fn in intentos:
+        try:
+            img_data = fn()
+            cost_tracker.registrar_imagen(nombre, n=1, ctx=ctx)
+            break
+        except Exception as e:
+            errores[nombre] = str(e)
+            log.warning(f"    {nombre} falló: {e}")
+    if img_data is None:
+        raise RuntimeError(
+            f"Fondo de ensayo falló en todos los proveedores ({location[:50]}). "
+            + " | ".join(f"{k}: {v[:80]}" for k, v in errores.items())
+        )
+    with open(output_path, "wb") as f:
+        f.write(img_data)
+    log.info(f"  [essay bg] {output_path.name} ({output_path.stat().st_size/1024:.0f} KB)")
+    return str(output_path)
 
 
 if __name__ == "__main__":

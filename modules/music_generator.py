@@ -84,6 +84,7 @@ def generar_musica_lyria(
     tema: str,
     duracion_seg: float,
     ruta_salida: Path = None,
+    prompt_situacional: str = "",
 ) -> Path | None:
     """
     Genera una pista musical con Lyria 3 (Google AI).
@@ -106,6 +107,11 @@ def generar_musica_lyria(
         ruta_salida.parent.mkdir(parents=True, exist_ok=True)
 
     prompt = _mood_to_prompt(musica_mood, tema)
+    # Identidad sonora SITUACIONAL (la escribe el guion, lección de Partida
+    # Guardada): se ANTEPONE al mood para que la música pegue con el tema.
+    # Vacío = comportamiento de siempre.
+    if (prompt_situacional or "").strip():
+        prompt = f"{prompt_situacional.strip()}, {prompt}"
     log.info(f"  [Lyria] Mood: {musica_mood} | Prompt: \"{prompt[:70]}...\"")
 
     # lyria-002 se invoca con :predict (instances/parameters), NO con generateContent.
