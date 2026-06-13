@@ -176,7 +176,9 @@ def correr_essay(tema: str, publicar: bool = False, reuse_audio: str = "",
         # ── 1a. FICHA DE DATOS VERIFICADOS (web search — el alma del formato) ──
         banner("PASO 1a — Fact-check con búsqueda web")
         from modules.fact_checker import generar_ficha_datos
-        ficha = generar_ficha_datos(tema, max_uses=6, max_vinetas=20, max_tokens=2000,
+        # max_tokens 3000: con 2000 la ficha del Mundial se TRUNCÓ a media sección
+        # (el modelo escribe con encabezados verbosos) y un capítulo quedó sin datos.
+        ficha = generar_ficha_datos(tema, max_uses=6, max_vinetas=20, max_tokens=3000,
                                     enfoque=FICHA_ENFOQUE.get(clave, ""))
         if ficha:
             log.info(f"  Ficha verificada:\n{ficha}")
