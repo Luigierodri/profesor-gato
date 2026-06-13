@@ -133,5 +133,13 @@
     "categoria": "sociedad",
     "geo": "mexico",
     "trend": "facebook"
+  },
+  {
+    "fecha": "2026-06-13",
+    "angulo": "¿Por qué el gobierno quiere saber quién usa cada SIM en México y qué puede hacer con esos datos?",
+    "evento": "padron_telefonia_mexico",
+    "categoria": "tecnologia",
+    "geo": "mexico",
+    "trend": "padrón nacional de usuarios de telefonía móvil"
   }
 ]

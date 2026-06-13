@@ -14,7 +14,7 @@
       "comentarios": 0,
       "compartidos": 2,
       "subs_ganados": 4,
-      "actualizado": "2026-06-12T16:12:21.513172+00:00"
+      "actualizado": "2026-06-13T14:57:05.245224+00:00"
     }
   },
   {
@@ -32,7 +32,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 2,
-      "actualizado": "2026-06-12T16:12:21.513191+00:00"
+      "actualizado": "2026-06-13T14:57:05.245244+00:00"
     }
   },
   {
@@ -50,7 +50,7 @@
       "comentarios": 1,
       "compartidos": 1,
       "subs_ganados": 2,
-      "actualizado": "2026-06-12T16:12:21.513198+00:00"
+      "actualizado": "2026-06-13T14:57:05.245251+00:00"
     }
   },
   {
@@ -61,14 +61,14 @@
     "evento": "",
     "gancho": "",
     "metricas": {
-      "vistas": 203,
-      "retencion_pct": 44.4,
+      "vistas": 205,
+      "retencion_pct": 44.5,
       "duracion_media_s": 21.0,
-      "likes": 10,
+      "likes": 11,
       "comentarios": 1,
       "compartidos": 1,
       "subs_ganados": 1,
-      "actualizado": "2026-06-12T16:12:21.513204+00:00"
+      "actualizado": "2026-06-13T14:57:05.245257+00:00"
     }
   },
   {
@@ -86,7 +86,7 @@
       "comentarios": 0,
       "compartidos": 0,
       "subs_ganados": 2,
-      "actualizado": "2026-06-12T16:12:21.513210+00:00"
+      "actualizado": "2026-06-13T14:57:05.245262+00:00"
     }
   },
   {
@@ -104,7 +104,7 @@
       "comentarios": 1,
       "compartidos": 2,
       "subs_ganados": 2,
-      "actualizado": "2026-06-12T16:12:21.513215+00:00"
+      "actualizado": "2026-06-13T14:57:05.245266+00:00"
     }
   },
   {
@@ -122,7 +122,7 @@
       "comentarios": 0,
       "compartidos": 0,
       "subs_ganados": 0,
-      "actualizado": "2026-06-12T16:12:21.513220+00:00"
+      "actualizado": "2026-06-13T14:57:05.245271+00:00"
     }
   },
   {
@@ -140,7 +140,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-12T16:12:21.513225+00:00"
+      "actualizado": "2026-06-13T14:57:05.245275+00:00"
     }
   },
   {
@@ -158,7 +158,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-12T16:12:21.513229+00:00"
+      "actualizado": "2026-06-13T14:57:05.245280+00:00"
     }
   },
   {
@@ -169,14 +169,14 @@
     "evento": "historia_monaco",
     "gancho": "Mónaco existe porque un hombre se disfrazó de monje.",
     "metricas": {
-      "vistas": 31,
-      "retencion_pct": 195.3,
-      "duracion_media_s": 113.0,
+      "vistas": 34,
+      "retencion_pct": 189.8,
+      "duracion_media_s": 110.0,
       "likes": 3,
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-12T16:12:21.513234+00:00"
+      "actualizado": "2026-06-13T14:57:05.245284+00:00"
     }
   },
   {
@@ -187,14 +187,14 @@
     "evento": "mundial_2026",
     "gancho": "México clasifica más que Francia... y nunca llega lejos.",
     "metricas": {
-      "vistas": 6,
+      "vistas": 8,
       "retencion_pct": 31.4,
       "duracion_media_s": 16.0,
       "likes": 2,
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-12T16:12:21.513239+00:00"
+      "actualizado": "2026-06-13T14:57:05.245289+00:00"
     }
   },
   {
@@ -205,14 +205,14 @@
     "evento": "economia_china_empresas",
     "gancho": "China destruyó al hombre más rico del país. En público.",
     "metricas": {
-      "vistas": 15,
-      "retencion_pct": 56.5,
-      "duracion_media_s": 32.0,
-      "likes": 1,
+      "vistas": 40,
+      "retencion_pct": 65.0,
+      "duracion_media_s": 37.0,
+      "likes": 2,
       "comentarios": 0,
       "compartidos": 2,
-      "subs_ganados": 0,
-      "actualizado": "2026-06-12T16:12:21.513244+00:00"
+      "subs_ganados": 1,
+      "actualizado": "2026-06-13T14:57:05.245293+00:00"
     }
   },
   {
@@ -222,7 +222,16 @@
     "categoria": "ciencia",
     "evento": "ciencia_agujeros_negros",
     "gancho": "Hay un lugar donde el tiempo literalmente se detiene.",
-    "metricas": {}
+    "metricas": {
+      "vistas": 540,
+      "retencion_pct": 36.1,
+      "duracion_media_s": 19.0,
+      "likes": 15,
+      "comentarios": 0,
+      "compartidos": 2,
+      "subs_ganados": 4,
+      "actualizado": "2026-06-13T14:57:05.245297+00:00"
+    }
   },
   {
     "video_id": "50nkrryj4Ws",
@@ -240,6 +249,15 @@
     "categoria": "sociedad",
     "evento": "cultura_facebook_mexico",
     "gancho": "Facebook está muy muerto… con 93 millones de usuarios en México.",
+    "metricas": {}
+  },
+  {
+    "video_id": "1MGODCw0ty8",
+    "fecha": "2026-06-13",
+    "titulo": "¿Por qué el gobierno quiere saber quién usa tu SIM?",
+    "categoria": "tecnologia",
+    "evento": "padron_telefonia_mexico",
+    "gancho": "Tu SIM ya no es anónima.",
     "metricas": {}
   }
 ]
