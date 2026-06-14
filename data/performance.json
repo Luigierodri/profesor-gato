@@ -14,7 +14,7 @@
       "comentarios": 0,
       "compartidos": 2,
       "subs_ganados": 4,
-      "actualizado": "2026-06-13T14:57:05.245224+00:00"
+      "actualizado": "2026-06-14T15:04:54.154471+00:00"
     }
   },
   {
@@ -32,7 +32,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 2,
-      "actualizado": "2026-06-13T14:57:05.245244+00:00"
+      "actualizado": "2026-06-14T15:04:54.154493+00:00"
     }
   },
   {
@@ -50,7 +50,7 @@
       "comentarios": 1,
       "compartidos": 1,
       "subs_ganados": 2,
-      "actualizado": "2026-06-13T14:57:05.245251+00:00"
+      "actualizado": "2026-06-14T15:04:54.154501+00:00"
     }
   },
   {
@@ -68,7 +68,7 @@
       "comentarios": 1,
       "compartidos": 1,
       "subs_ganados": 1,
-      "actualizado": "2026-06-13T14:57:05.245257+00:00"
+      "actualizado": "2026-06-14T15:04:54.154508+00:00"
     }
   },
   {
@@ -86,7 +86,7 @@
       "comentarios": 0,
       "compartidos": 0,
       "subs_ganados": 2,
-      "actualizado": "2026-06-13T14:57:05.245262+00:00"
+      "actualizado": "2026-06-14T15:04:54.154513+00:00"
     }
   },
   {
@@ -104,7 +104,7 @@
       "comentarios": 1,
       "compartidos": 2,
       "subs_ganados": 2,
-      "actualizado": "2026-06-13T14:57:05.245266+00:00"
+      "actualizado": "2026-06-14T15:04:54.154518+00:00"
     }
   },
   {
@@ -122,7 +122,7 @@
       "comentarios": 0,
       "compartidos": 0,
       "subs_ganados": 0,
-      "actualizado": "2026-06-13T14:57:05.245271+00:00"
+      "actualizado": "2026-06-14T15:04:54.154523+00:00"
     }
   },
   {
@@ -133,14 +133,14 @@
     "evento": "",
     "gancho": "",
     "metricas": {
-      "vistas": 68,
-      "retencion_pct": 53.7,
+      "vistas": 69,
+      "retencion_pct": 52.7,
       "duracion_media_s": 30.0,
       "likes": 4,
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-13T14:57:05.245275+00:00"
+      "actualizado": "2026-06-14T15:04:54.154529+00:00"
     }
   },
   {
@@ -158,7 +158,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-13T14:57:05.245280+00:00"
+      "actualizado": "2026-06-14T15:04:54.154534+00:00"
     }
   },
   {
@@ -176,7 +176,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-13T14:57:05.245284+00:00"
+      "actualizado": "2026-06-14T15:04:54.154539+00:00"
     }
   },
   {
@@ -187,14 +187,14 @@
     "evento": "mundial_2026",
     "gancho": "México clasifica más que Francia... y nunca llega lejos.",
     "metricas": {
-      "vistas": 8,
-      "retencion_pct": 31.4,
-      "duracion_media_s": 16.0,
+      "vistas": 9,
+      "retencion_pct": 35.4,
+      "duracion_media_s": 18.0,
       "likes": 2,
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-13T14:57:05.245289+00:00"
+      "actualizado": "2026-06-14T15:04:54.154544+00:00"
     }
   },
   {
@@ -205,14 +205,14 @@
     "evento": "economia_china_empresas",
     "gancho": "China destruyó al hombre más rico del país. En público.",
     "metricas": {
-      "vistas": 40,
-      "retencion_pct": 65.0,
-      "duracion_media_s": 37.0,
+      "vistas": 44,
+      "retencion_pct": 58.0,
+      "duracion_media_s": 33.0,
       "likes": 2,
       "comentarios": 0,
       "compartidos": 2,
       "subs_ganados": 1,
-      "actualizado": "2026-06-13T14:57:05.245293+00:00"
+      "actualizado": "2026-06-14T15:04:54.154550+00:00"
     }
   },
   {
@@ -223,14 +223,14 @@
     "evento": "ciencia_agujeros_negros",
     "gancho": "Hay un lugar donde el tiempo literalmente se detiene.",
     "metricas": {
-      "vistas": 540,
-      "retencion_pct": 36.1,
-      "duracion_media_s": 19.0,
-      "likes": 15,
+      "vistas": 854,
+      "retencion_pct": 38.5,
+      "duracion_media_s": 21.0,
+      "likes": 16,
       "comentarios": 0,
       "compartidos": 2,
-      "subs_ganados": 4,
-      "actualizado": "2026-06-13T14:57:05.245297+00:00"
+      "subs_ganados": 5,
+      "actualizado": "2026-06-14T15:04:54.154555+00:00"
     }
   },
   {
@@ -240,7 +240,16 @@
     "categoria": "economia",
     "evento": "mundial_2026",
     "gancho": "El Mundial genera miles de millones. El país sede recibe cero.",
-    "metricas": {}
+    "metricas": {
+      "vistas": 6,
+      "retencion_pct": 69.1,
+      "duracion_media_s": 36.0,
+      "likes": 1,
+      "comentarios": 0,
+      "compartidos": 1,
+      "subs_ganados": 0,
+      "actualizado": "2026-06-14T15:04:54.154560+00:00"
+    }
   },
   {
     "video_id": "qAiFSYM1-wE",
@@ -258,6 +267,15 @@
     "categoria": "tecnologia",
     "evento": "padron_telefonia_mexico",
     "gancho": "Tu SIM ya no es anónima.",
+    "metricas": {}
+  },
+  {
+    "video_id": "EvwtpshvmDc",
+    "fecha": "2026-06-14",
+    "titulo": "¿Por qué la F1 es el deporte más caro del mundo?",
+    "categoria": "economia",
+    "evento": "formula1_economia",
+    "gancho": "Un auto de F1 cuesta más que tu colonia entera.",
     "metricas": {}
   }
 ]

@@ -141,5 +141,13 @@
     "categoria": "tecnologia",
     "geo": "mexico",
     "trend": "padrón nacional de usuarios de telefonía móvil"
+  },
+  {
+    "fecha": "2026-06-14",
+    "angulo": "¿Por qué la Fórmula 1 es el deporte más caro del mundo y quién paga realmente la cuenta?",
+    "evento": "formula1_economia",
+    "categoria": "economia",
+    "geo": "latam",
+    "trend": "formula 1 / f1 hoy / lewis hamilton"
   }
 ]
