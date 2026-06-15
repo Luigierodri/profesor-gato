@@ -149,5 +149,13 @@
     "categoria": "economia",
     "geo": "latam",
     "trend": "formula 1 / f1 hoy / lewis hamilton"
+  },
+  {
+    "fecha": "2026-06-15",
+    "angulo": "¿Por qué la tarjeta roja existe en el fútbol y quién inventó las reglas que hoy mueven miles de millones de dólares?",
+    "evento": "historia_reglas_futbol",
+    "categoria": "historia",
+    "geo": "latam",
+    "trend": "tarjeta roja mundial 2026 / tarjeta roja futbol"
   }
 ]
