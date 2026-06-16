@@ -14,7 +14,7 @@
       "comentarios": 0,
       "compartidos": 2,
       "subs_ganados": 4,
-      "actualizado": "2026-06-16T03:11:02.700955+00:00"
+      "actualizado": "2026-06-16T17:55:03.874086+00:00"
     }
   },
   {
@@ -32,7 +32,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 2,
-      "actualizado": "2026-06-16T03:11:02.700973+00:00"
+      "actualizado": "2026-06-16T17:55:03.874104+00:00"
     }
   },
   {
@@ -50,7 +50,7 @@
       "comentarios": 1,
       "compartidos": 1,
       "subs_ganados": 2,
-      "actualizado": "2026-06-16T03:11:02.700979+00:00"
+      "actualizado": "2026-06-16T17:55:03.874111+00:00"
     }
   },
   {
@@ -68,7 +68,7 @@
       "comentarios": 1,
       "compartidos": 1,
       "subs_ganados": 1,
-      "actualizado": "2026-06-16T03:11:02.700985+00:00"
+      "actualizado": "2026-06-16T17:55:03.874116+00:00"
     }
   },
   {
@@ -86,7 +86,7 @@
       "comentarios": 0,
       "compartidos": 0,
       "subs_ganados": 2,
-      "actualizado": "2026-06-16T03:11:02.700990+00:00"
+      "actualizado": "2026-06-16T17:55:03.874121+00:00"
     }
   },
   {
@@ -104,7 +104,7 @@
       "comentarios": 1,
       "compartidos": 2,
       "subs_ganados": 2,
-      "actualizado": "2026-06-16T03:11:02.700995+00:00"
+      "actualizado": "2026-06-16T17:55:03.874125+00:00"
     }
   },
   {
@@ -122,7 +122,7 @@
       "comentarios": 0,
       "compartidos": 0,
       "subs_ganados": 0,
-      "actualizado": "2026-06-16T03:11:02.700999+00:00"
+      "actualizado": "2026-06-16T17:55:03.874130+00:00"
     }
   },
   {
@@ -140,7 +140,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-16T03:11:02.701004+00:00"
+      "actualizado": "2026-06-16T17:55:03.874134+00:00"
     }
   },
   {
@@ -158,7 +158,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-16T03:11:02.701008+00:00"
+      "actualizado": "2026-06-16T17:55:03.874138+00:00"
     }
   },
   {
@@ -176,7 +176,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-16T03:11:02.701012+00:00"
+      "actualizado": "2026-06-16T17:55:03.874142+00:00"
     }
   },
   {
@@ -194,7 +194,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-16T03:11:02.701017+00:00"
+      "actualizado": "2026-06-16T17:55:03.874147+00:00"
     }
   },
   {
@@ -212,7 +212,7 @@
       "comentarios": 0,
       "compartidos": 2,
       "subs_ganados": 1,
-      "actualizado": "2026-06-16T03:11:02.701021+00:00"
+      "actualizado": "2026-06-16T17:55:03.874151+00:00"
     }
   },
   {
@@ -230,7 +230,7 @@
       "comentarios": 0,
       "compartidos": 2,
       "subs_ganados": 5,
-      "actualizado": "2026-06-16T03:11:02.701025+00:00"
+      "actualizado": "2026-06-16T17:55:03.874155+00:00"
     }
   },
   {
@@ -248,7 +248,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-16T03:11:02.701030+00:00"
+      "actualizado": "2026-06-16T17:55:03.874160+00:00"
     }
   },
   {
@@ -266,7 +266,7 @@
       "comentarios": 1,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-16T03:11:02.701034+00:00"
+      "actualizado": "2026-06-16T17:55:03.874164+00:00"
     }
   },
   {
@@ -284,7 +284,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-16T03:11:02.701039+00:00"
+      "actualizado": "2026-06-16T17:55:03.874168+00:00"
     }
   },
   {
@@ -303,6 +303,15 @@
     "categoria": "guerras_conflictos",
     "evento": "historia_irak_inestabilidad",
     "gancho": "EE. UU. no solo derrocó a Saddam. Borró el país.",
+    "metricas": {}
+  },
+  {
+    "video_id": "xh7ojPRYLmc",
+    "fecha": "2026-06-16",
+    "titulo": "¿El Hoy No Circula te afecta más por tener menos?",
+    "categoria": "politica",
+    "evento": "hoy_no_circula_cdmx",
+    "gancho": "El Hoy No Circula castiga más a quien menos tiene.",
     "metricas": {}
   }
 ]

@@ -165,5 +165,13 @@
     "categoria": "guerras_conflictos",
     "geo": "latam",
     "trend": "irak"
+  },
+  {
+    "fecha": "2026-06-16",
+    "angulo": "¿Por qué el Hoy No Circula existe en CDMX y quién gana y quién pierde con él?",
+    "evento": "hoy_no_circula_cdmx",
+    "categoria": "politica",
+    "geo": "mexico",
+    "trend": "doble hoy no circula cdmx"
   }
 ]
