@@ -157,5 +157,13 @@
     "categoria": "historia",
     "geo": "latam",
     "trend": "tarjeta roja mundial 2026 / tarjeta roja futbol"
+  },
+  {
+    "fecha": "2026-06-16",
+    "angulo": "¿Por qué Irak sigue siendo el país más inestable de Medio Oriente décadas después de la guerra?",
+    "evento": "historia_irak_inestabilidad",
+    "categoria": "guerras_conflictos",
+    "geo": "latam",
+    "trend": "irak"
   }
 ]
