@@ -173,5 +173,13 @@
     "categoria": "politica",
     "geo": "mexico",
     "trend": "doble hoy no circula cdmx"
+  },
+  {
+    "fecha": "2026-06-17",
+    "angulo": "¿Por qué la República Democrática del Congo tiene los minerales más valiosos del mundo y sigue siendo el país más pobre?",
+    "evento": "historia_rd_congo_recursos",
+    "categoria": "historia",
+    "geo": "latam",
+    "trend": "portugal - rd congo"
   }
 ]
