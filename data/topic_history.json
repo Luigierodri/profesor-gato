@@ -181,5 +181,13 @@
     "categoria": "historia",
     "geo": "latam",
     "trend": "portugal - rd congo"
+  },
+  {
+    "fecha": "2026-06-18",
+    "angulo": "¿Por qué GTA siempre rompe récords de ventas aunque lleve años sin salir un juego nuevo?",
+    "evento": "cultura_pop_gta6",
+    "categoria": "cultura_pop",
+    "geo": "latam",
+    "trend": "gta 6"
   }
 ]
