@@ -189,5 +189,13 @@
     "categoria": "cultura_pop",
     "geo": "latam",
     "trend": "gta 6"
+  },
+  {
+    "fecha": "2026-06-19",
+    "angulo": "¿Por qué el himno nacional mexicano habla de guerra si México lleva más de 170 años sin una invasión extranjera?",
+    "evento": "historia_himno_nacional_mexico",
+    "categoria": "historia",
+    "geo": "mexico",
+    "trend": "himno nacional"
   }
 ]
