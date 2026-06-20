@@ -197,5 +197,13 @@
     "categoria": "historia",
     "geo": "mexico",
     "trend": "himno nacional"
+  },
+  {
+    "fecha": "2026-06-20",
+    "angulo": "¿Por qué el Nacional Monte de Piedad existe desde hace 250 años y quién realmente gana cuando empeñas algo?",
+    "evento": "economia_monte_de_piedad",
+    "categoria": "economia",
+    "geo": "mexico",
+    "trend": "nacional monte de piedad"
   }
 ]
