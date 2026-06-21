@@ -205,5 +205,13 @@
     "categoria": "economia",
     "geo": "mexico",
     "trend": "nacional monte de piedad"
+  },
+  {
+    "fecha": "2026-06-21",
+    "angulo": "¿Por qué Groenlandia es la isla más codiciada del mundo y qué pasaría si alguien realmente la comprara?",
+    "evento": "geopolitica_groenlandia",
+    "categoria": "geografia",
+    "geo": "latam",
+    "trend": "groenlandia"
   }
 ]

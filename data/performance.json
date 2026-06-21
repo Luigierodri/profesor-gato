@@ -14,7 +14,7 @@
       "comentarios": 0,
       "compartidos": 2,
       "subs_ganados": 4,
-      "actualizado": "2026-06-20T14:59:57.922276+00:00"
+      "actualizado": "2026-06-21T15:07:00.129502+00:00"
     }
   },
   {
@@ -32,7 +32,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 2,
-      "actualizado": "2026-06-20T14:59:57.922296+00:00"
+      "actualizado": "2026-06-21T15:07:00.129521+00:00"
     }
   },
   {
@@ -50,7 +50,7 @@
       "comentarios": 1,
       "compartidos": 1,
       "subs_ganados": 2,
-      "actualizado": "2026-06-20T14:59:57.922303+00:00"
+      "actualizado": "2026-06-21T15:07:00.129529+00:00"
     }
   },
   {
@@ -68,7 +68,7 @@
       "comentarios": 1,
       "compartidos": 1,
       "subs_ganados": 1,
-      "actualizado": "2026-06-20T14:59:57.922309+00:00"
+      "actualizado": "2026-06-21T15:07:00.129534+00:00"
     }
   },
   {
@@ -86,7 +86,7 @@
       "comentarios": 0,
       "compartidos": 0,
       "subs_ganados": 2,
-      "actualizado": "2026-06-20T14:59:57.922314+00:00"
+      "actualizado": "2026-06-21T15:07:00.129540+00:00"
     }
   },
   {
@@ -104,7 +104,7 @@
       "comentarios": 1,
       "compartidos": 2,
       "subs_ganados": 2,
-      "actualizado": "2026-06-20T14:59:57.922319+00:00"
+      "actualizado": "2026-06-21T15:07:00.129544+00:00"
     }
   },
   {
@@ -122,7 +122,7 @@
       "comentarios": 0,
       "compartidos": 0,
       "subs_ganados": 0,
-      "actualizado": "2026-06-20T14:59:57.922323+00:00"
+      "actualizado": "2026-06-21T15:07:00.129549+00:00"
     }
   },
   {
@@ -140,7 +140,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-20T14:59:57.922327+00:00"
+      "actualizado": "2026-06-21T15:07:00.129553+00:00"
     }
   },
   {
@@ -158,7 +158,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-20T14:59:57.922331+00:00"
+      "actualizado": "2026-06-21T15:07:00.129558+00:00"
     }
   },
   {
@@ -176,7 +176,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-20T14:59:57.922335+00:00"
+      "actualizado": "2026-06-21T15:07:00.129563+00:00"
     }
   },
   {
@@ -194,7 +194,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-20T14:59:57.922340+00:00"
+      "actualizado": "2026-06-21T15:07:00.129567+00:00"
     }
   },
   {
@@ -212,7 +212,7 @@
       "comentarios": 0,
       "compartidos": 2,
       "subs_ganados": 1,
-      "actualizado": "2026-06-20T14:59:57.922344+00:00"
+      "actualizado": "2026-06-21T15:07:00.129571+00:00"
     }
   },
   {
@@ -230,7 +230,7 @@
       "comentarios": 0,
       "compartidos": 2,
       "subs_ganados": 5,
-      "actualizado": "2026-06-20T14:59:57.922348+00:00"
+      "actualizado": "2026-06-21T15:07:00.129576+00:00"
     }
   },
   {
@@ -248,7 +248,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-20T14:59:57.922352+00:00"
+      "actualizado": "2026-06-21T15:07:00.129580+00:00"
     }
   },
   {
@@ -266,7 +266,7 @@
       "comentarios": 1,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-20T14:59:57.922356+00:00"
+      "actualizado": "2026-06-21T15:07:00.129584+00:00"
     }
   },
   {
@@ -284,7 +284,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-20T14:59:57.922360+00:00"
+      "actualizado": "2026-06-21T15:07:00.129588+00:00"
     }
   },
   {
@@ -302,7 +302,7 @@
       "comentarios": 0,
       "compartidos": 2,
       "subs_ganados": 0,
-      "actualizado": "2026-06-20T14:59:57.922364+00:00"
+      "actualizado": "2026-06-21T15:07:00.129592+00:00"
     }
   },
   {
@@ -313,14 +313,14 @@
     "evento": "historia_irak_inestabilidad",
     "gancho": "EE. UU. no solo derrocó a Saddam. Borró el país.",
     "metricas": {
-      "vistas": 638,
-      "retencion_pct": 68.0,
+      "vistas": 646,
+      "retencion_pct": 67.8,
       "duracion_media_s": 31.0,
       "likes": 19,
       "comentarios": 1,
       "compartidos": 2,
-      "subs_ganados": 2,
-      "actualizado": "2026-06-20T14:59:57.922368+00:00"
+      "subs_ganados": 3,
+      "actualizado": "2026-06-21T15:07:00.129596+00:00"
     }
   },
   {
@@ -331,14 +331,14 @@
     "evento": "hoy_no_circula_cdmx",
     "gancho": "El Hoy No Circula castiga más a quien menos tiene.",
     "metricas": {
-      "vistas": 641,
-      "retencion_pct": 59.0,
+      "vistas": 645,
+      "retencion_pct": 59.3,
       "duracion_media_s": 34.0,
       "likes": 16,
       "comentarios": 0,
       "compartidos": 2,
       "subs_ganados": 4,
-      "actualizado": "2026-06-20T14:59:57.922373+00:00"
+      "actualizado": "2026-06-21T15:07:00.129601+00:00"
     }
   },
   {
@@ -348,7 +348,16 @@
     "categoria": "cultura_pop",
     "evento": "cultura_pop_gta6",
     "gancho": "Un juego de 2013 ganó 900 millones de dólares el año pasado.",
-    "metricas": {}
+    "metricas": {
+      "vistas": 92,
+      "retencion_pct": 27.7,
+      "duracion_media_s": 16.0,
+      "likes": 1,
+      "comentarios": 0,
+      "compartidos": 1,
+      "subs_ganados": 0,
+      "actualizado": "2026-06-21T15:07:00.129605+00:00"
+    }
   },
   {
     "video_id": "73jHqTYhUxM",
@@ -366,6 +375,15 @@
     "categoria": "economia",
     "evento": "economia_monte_de_piedad",
     "gancho": "Tu empeño financia algo que no imaginas.",
+    "metricas": {}
+  },
+  {
+    "video_id": "-_wp296jBgk",
+    "fecha": "2026-06-21",
+    "titulo": "¿Por qué todos quieren comprar Groenlandia?",
+    "categoria": "geografia",
+    "evento": "geopolitica_groenlandia",
+    "gancho": "Groenlandia vale más que cualquier precio.",
     "metricas": {}
   }
 ]
