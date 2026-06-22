@@ -213,5 +213,13 @@
     "categoria": "geografia",
     "geo": "latam",
     "trend": "groenlandia"
+  },
+  {
+    "fecha": "2026-06-22",
+    "angulo": "¿Por qué Argentina exporta futbolistas como si fueran petróleo y quién se queda con ese dinero?",
+    "evento": "futbol_argentina_exportacion",
+    "categoria": "deportes",
+    "geo": "latam",
+    "trend": "argentina - austria (partido internacional + jugadores como Kevin Danso y Thiago Almada en tendencia)"
   }
 ]
