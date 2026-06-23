@@ -221,5 +221,13 @@
     "categoria": "deportes",
     "geo": "latam",
     "trend": "argentina - austria (partido internacional + jugadores como Kevin Danso y Thiago Almada en tendencia)"
+  },
+  {
+    "fecha": "2026-06-23",
+    "angulo": "¿Por qué el dólar sube y baja aunque tú no lo compres nunca?",
+    "evento": "economia_peso_mexicano",
+    "categoria": "economia",
+    "geo": "mexico",
+    "trend": "tipo de cambio dolar"
   }
 ]

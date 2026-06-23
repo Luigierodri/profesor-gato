@@ -14,7 +14,7 @@
       "comentarios": 0,
       "compartidos": 2,
       "subs_ganados": 4,
-      "actualizado": "2026-06-22T17:25:26.216753+00:00"
+      "actualizado": "2026-06-23T15:44:31.137841+00:00"
     }
   },
   {
@@ -32,7 +32,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 2,
-      "actualizado": "2026-06-22T17:25:26.216774+00:00"
+      "actualizado": "2026-06-23T15:44:31.137858+00:00"
     }
   },
   {
@@ -50,7 +50,7 @@
       "comentarios": 1,
       "compartidos": 1,
       "subs_ganados": 2,
-      "actualizado": "2026-06-22T17:25:26.216781+00:00"
+      "actualizado": "2026-06-23T15:44:31.137864+00:00"
     }
   },
   {
@@ -68,7 +68,7 @@
       "comentarios": 1,
       "compartidos": 1,
       "subs_ganados": 1,
-      "actualizado": "2026-06-22T17:25:26.216787+00:00"
+      "actualizado": "2026-06-23T15:44:31.137870+00:00"
     }
   },
   {
@@ -86,7 +86,7 @@
       "comentarios": 0,
       "compartidos": 0,
       "subs_ganados": 2,
-      "actualizado": "2026-06-22T17:25:26.216791+00:00"
+      "actualizado": "2026-06-23T15:44:31.137874+00:00"
     }
   },
   {
@@ -104,7 +104,7 @@
       "comentarios": 1,
       "compartidos": 2,
       "subs_ganados": 2,
-      "actualizado": "2026-06-22T17:25:26.216796+00:00"
+      "actualizado": "2026-06-23T15:44:31.137879+00:00"
     }
   },
   {
@@ -122,7 +122,7 @@
       "comentarios": 0,
       "compartidos": 0,
       "subs_ganados": 0,
-      "actualizado": "2026-06-22T17:25:26.216800+00:00"
+      "actualizado": "2026-06-23T15:44:31.137883+00:00"
     }
   },
   {
@@ -140,7 +140,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-22T17:25:26.216804+00:00"
+      "actualizado": "2026-06-23T15:44:31.137887+00:00"
     }
   },
   {
@@ -158,7 +158,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-22T17:25:26.216808+00:00"
+      "actualizado": "2026-06-23T15:44:31.137891+00:00"
     }
   },
   {
@@ -176,7 +176,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-22T17:25:26.216812+00:00"
+      "actualizado": "2026-06-23T15:44:31.137895+00:00"
     }
   },
   {
@@ -194,7 +194,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-22T17:25:26.216817+00:00"
+      "actualizado": "2026-06-23T15:44:31.137899+00:00"
     }
   },
   {
@@ -212,7 +212,7 @@
       "comentarios": 0,
       "compartidos": 2,
       "subs_ganados": 1,
-      "actualizado": "2026-06-22T17:25:26.216821+00:00"
+      "actualizado": "2026-06-23T15:44:31.137904+00:00"
     }
   },
   {
@@ -230,7 +230,7 @@
       "comentarios": 0,
       "compartidos": 2,
       "subs_ganados": 5,
-      "actualizado": "2026-06-22T17:25:26.216825+00:00"
+      "actualizado": "2026-06-23T15:44:31.137942+00:00"
     }
   },
   {
@@ -248,7 +248,7 @@
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-22T17:25:26.216830+00:00"
+      "actualizado": "2026-06-23T15:44:31.137947+00:00"
     }
   },
   {
@@ -259,14 +259,14 @@
     "evento": "cultura_facebook_mexico",
     "gancho": "Facebook está muy muerto… con 93 millones de usuarios en México.",
     "metricas": {
-      "vistas": 724,
+      "vistas": 725,
       "retencion_pct": 41.1,
       "duracion_media_s": 22.0,
       "likes": 15,
       "comentarios": 1,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-22T17:25:26.216834+00:00"
+      "actualizado": "2026-06-23T15:44:31.137951+00:00"
     }
   },
   {
@@ -277,14 +277,14 @@
     "evento": "padron_telefonia_mexico",
     "gancho": "Tu SIM ya no es anónima.",
     "metricas": {
-      "vistas": 36,
-      "retencion_pct": 494.6,
-      "duracion_media_s": 267.0,
+      "vistas": 38,
+      "retencion_pct": 462.4,
+      "duracion_media_s": 249.0,
       "likes": 0,
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-22T17:25:26.216838+00:00"
+      "actualizado": "2026-06-23T15:44:31.137956+00:00"
     }
   },
   {
@@ -295,14 +295,14 @@
     "evento": "formula1_economia",
     "gancho": "Un auto de F1 cuesta más que tu colonia entera.",
     "metricas": {
-      "vistas": 121,
-      "retencion_pct": 52.2,
+      "vistas": 122,
+      "retencion_pct": 51.4,
       "duracion_media_s": 28.0,
       "likes": 3,
       "comentarios": 0,
       "compartidos": 2,
       "subs_ganados": 0,
-      "actualizado": "2026-06-22T17:25:26.216842+00:00"
+      "actualizado": "2026-06-23T15:44:31.137960+00:00"
     }
   },
   {
@@ -313,14 +313,14 @@
     "evento": "historia_irak_inestabilidad",
     "gancho": "EE. UU. no solo derrocó a Saddam. Borró el país.",
     "metricas": {
-      "vistas": 649,
-      "retencion_pct": 67.4,
+      "vistas": 650,
+      "retencion_pct": 67.2,
       "duracion_media_s": 30.0,
       "likes": 19,
       "comentarios": 1,
       "compartidos": 2,
       "subs_ganados": 3,
-      "actualizado": "2026-06-22T17:25:26.216846+00:00"
+      "actualizado": "2026-06-23T15:44:31.137964+00:00"
     }
   },
   {
@@ -331,14 +331,14 @@
     "evento": "hoy_no_circula_cdmx",
     "gancho": "El Hoy No Circula castiga más a quien menos tiene.",
     "metricas": {
-      "vistas": 646,
-      "retencion_pct": 59.3,
+      "vistas": 647,
+      "retencion_pct": 59.2,
       "duracion_media_s": 34.0,
       "likes": 16,
       "comentarios": 0,
       "compartidos": 2,
       "subs_ganados": 4,
-      "actualizado": "2026-06-22T17:25:26.216850+00:00"
+      "actualizado": "2026-06-23T15:44:31.137968+00:00"
     }
   },
   {
@@ -349,14 +349,14 @@
     "evento": "cultura_pop_gta6",
     "gancho": "Un juego de 2013 ganó 900 millones de dólares el año pasado.",
     "metricas": {
-      "vistas": 115,
-      "retencion_pct": 25.2,
-      "duracion_media_s": 14.0,
+      "vistas": 140,
+      "retencion_pct": 25.4,
+      "duracion_media_s": 15.0,
       "likes": 1,
       "comentarios": 0,
       "compartidos": 1,
       "subs_ganados": 0,
-      "actualizado": "2026-06-22T17:25:26.216854+00:00"
+      "actualizado": "2026-06-23T15:44:31.137971+00:00"
     }
   },
   {
@@ -367,14 +367,14 @@
     "evento": "historia_himno_nacional_mexico",
     "gancho": "Hay dos estrofas del himno que fueron prohibidas.",
     "metricas": {
-      "vistas": 26,
-      "retencion_pct": 65.0,
-      "duracion_media_s": 32.0,
-      "likes": 0,
-      "comentarios": 0,
-      "compartidos": 0,
-      "subs_ganados": 0,
-      "actualizado": "2026-06-22T17:25:26.216858+00:00"
+      "vistas": 732,
+      "retencion_pct": 132.1,
+      "duracion_media_s": 66.0,
+      "likes": 19,
+      "comentarios": 1,
+      "compartidos": 6,
+      "subs_ganados": 2,
+      "actualizado": "2026-06-23T15:44:31.137975+00:00"
     }
   },
   {
@@ -384,7 +384,16 @@
     "categoria": "economia",
     "evento": "economia_monte_de_piedad",
     "gancho": "Tu empeño financia algo que no imaginas.",
-    "metricas": {}
+    "metricas": {
+      "vistas": 135,
+      "retencion_pct": 24.0,
+      "duracion_media_s": 13.0,
+      "likes": 1,
+      "comentarios": 0,
+      "compartidos": 0,
+      "subs_ganados": 0,
+      "actualizado": "2026-06-23T15:44:31.137979+00:00"
+    }
   },
   {
     "video_id": "-_wp296jBgk",
@@ -402,6 +411,15 @@
     "categoria": "deportes",
     "evento": "futbol_argentina_exportacion",
     "gancho": "Argentina vende más futbolistas que nadie y casi no ve el dinero.",
+    "metricas": {}
+  },
+  {
+    "video_id": "pukfvSQxI44",
+    "fecha": "2026-06-23",
+    "titulo": "¿Por qué sube el dólar si tú nunca lo compras?",
+    "categoria": "economia",
+    "evento": "economia_peso_mexicano",
+    "gancho": "El dólar sube y tú pagas más… sin tocarlo.",
     "metricas": {}
   }
 ]
