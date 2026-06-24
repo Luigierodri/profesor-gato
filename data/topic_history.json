@@ -229,5 +229,13 @@
     "categoria": "economia",
     "geo": "mexico",
     "trend": "tipo de cambio dolar"
+  },
+  {
+    "fecha": "2026-06-24",
+    "angulo": "¿Por qué Rockstar puede cobrar 100 dólares por GTA 6 y la gente igual va a pagar?",
+    "evento": "cultura_pop_gta6",
+    "categoria": "tecnologia",
+    "geo": "latam",
+    "trend": "gta 6 / rockstar"
   }
 ]
