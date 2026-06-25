@@ -237,5 +237,13 @@
     "categoria": "tecnologia",
     "geo": "latam",
     "trend": "gta 6 / rockstar"
+  },
+  {
+    "fecha": "2026-06-25",
+    "angulo": "¿Qué es la Unidad de Inteligencia Financiera y por qué puede congelar tu cuenta bancaria sin avisarte?",
+    "evento": "politica_uif_mexico",
+    "categoria": "politica",
+    "geo": "mexico",
+    "trend": "unidad de inteligencia financiera"
   }
 ]
