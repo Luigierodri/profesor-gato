@@ -245,5 +245,13 @@
     "categoria": "politica",
     "geo": "mexico",
     "trend": "unidad de inteligencia financiera"
+  },
+  {
+    "fecha": "2026-06-26",
+    "angulo": "¿Por qué Wimbledon es el torneo de tenis más poderoso del mundo y quién se queda con los millones que genera?",
+    "evento": "tenis_wimbledon_economia",
+    "categoria": "sociedad",
+    "geo": "latam",
+    "trend": "wimbledon"
   }
 ]
