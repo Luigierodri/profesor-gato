@@ -253,5 +253,13 @@
     "categoria": "sociedad",
     "geo": "latam",
     "trend": "wimbledon"
+  },
+  {
+    "fecha": "2026-06-27",
+    "angulo": "¿Por qué un embargo puede hundir la economía de un país entero aunque tú no seas el gobierno?",
+    "evento": "economia_embargo_global",
+    "categoria": "historia",
+    "geo": "latam",
+    "trend": "embargo"
   }
 ]
