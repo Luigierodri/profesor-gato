@@ -277,5 +277,13 @@
     "categoria": "geografia",
     "geo": "latam",
     "trend": "brasil - japón (partido trending hoy en México/LATAM)"
+  },
+  {
+    "fecha": "2026-06-30",
+    "angulo": "¿Por qué tu nómina siempre llega a fin de mes y no cuando tú quieres?",
+    "evento": "economia_nomina_mexico",
+    "categoria": "economia",
+    "geo": "mexico",
+    "trend": "nómina"
   }
 ]
