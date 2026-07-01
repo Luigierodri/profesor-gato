@@ -285,5 +285,13 @@
     "categoria": "economia",
     "geo": "mexico",
     "trend": "nómina"
+  },
+  {
+    "fecha": "2026-07-01",
+    "angulo": "¿Por qué Sinner y Sabalenka ganan millones jugando tenis pero la mayoría de los tenistas del mundo no pueden ni pagar su entrenador?",
+    "evento": "tenis_desigualdad_economica",
+    "categoria": "deportes",
+    "geo": "latam",
+    "trend": "jannik sinner / aryna sabalenka"
   }
 ]
