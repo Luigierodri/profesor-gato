@@ -293,5 +293,13 @@
     "categoria": "deportes",
     "geo": "latam",
     "trend": "jannik sinner / aryna sabalenka"
+  },
+  {
+    "fecha": "2026-07-02",
+    "angulo": "¿Por qué España es una potencia del fútbol mundial pero nunca ganó un Mundial hasta que cambió por completo su modelo de juego?",
+    "evento": "mundial_2026",
+    "categoria": "historia",
+    "geo": "latam",
+    "trend": "spain vs austria world cup 2026 / españa vs austria"
   }
 ]
