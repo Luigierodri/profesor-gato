@@ -301,5 +301,13 @@
     "categoria": "historia",
     "geo": "latam",
     "trend": "spain vs austria world cup 2026 / españa vs austria"
+  },
+  {
+    "fecha": "2026-07-03",
+    "angulo": "¿Por qué el norovirus se propaga como incendio aunque todos se laven las manos?",
+    "evento": "salud_norovirus_contagio",
+    "categoria": "ciencia",
+    "geo": "latam",
+    "trend": "norovirus"
   }
 ]
