@@ -309,5 +309,13 @@
     "categoria": "ciencia",
     "geo": "latam",
     "trend": "norovirus"
+  },
+  {
+    "fecha": "2026-07-04",
+    "angulo": "¿Por qué México tiene una de las crisis de agua más graves del mundo aunque tiene ríos, lagos y lluvia por todos lados?",
+    "evento": "sociedad_crisis_agua_mexico",
+    "categoria": "sociedad",
+    "geo": "mexico",
+    "trend": "agua"
   }
 ]
