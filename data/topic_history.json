@@ -317,5 +317,13 @@
     "categoria": "sociedad",
     "geo": "mexico",
     "trend": "agua"
+  },
+  {
+    "fecha": "2026-07-05",
+    "angulo": "¿Por qué la Fórmula 1 sigue corriendo en Silverstone aunque ese circuito fue construido para bombarderos de guerra?",
+    "evento": "formula1_economia",
+    "categoria": "historia",
+    "geo": "latam",
+    "trend": "silverstone f1"
   }
 ]
