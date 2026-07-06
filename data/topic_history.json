@@ -325,5 +325,13 @@
     "categoria": "historia",
     "geo": "latam",
     "trend": "silverstone f1"
+  },
+  {
+    "fecha": "2026-07-06",
+    "angulo": "¿Por qué robar gasolina se volvió un negocio millonario en México y quién realmente paga el costo?",
+    "evento": "economia_huachicol_mexico",
+    "categoria": "politica",
+    "geo": "mexico",
+    "trend": "huachicolero"
   }
 ]
