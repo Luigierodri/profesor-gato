@@ -333,5 +333,13 @@
     "categoria": "politica",
     "geo": "mexico",
     "trend": "huachicolero"
+  },
+  {
+    "fecha": "2026-07-07",
+    "angulo": "¿Por qué Estados Unidos nunca ha ganado un Mundial aunque tiene el fútbol más rico del mundo?",
+    "evento": "futbol_eeuu_paradoja",
+    "categoria": "historia",
+    "geo": "latam",
+    "trend": "cómo va estados unidos"
   }
 ]
