@@ -357,5 +357,13 @@
     "categoria": "deportes",
     "geo": "latam",
     "trend": "mauricio pochettino"
+  },
+  {
+    "fecha": "2026-07-07",
+    "angulo": "¿Por qué México es uno de los países con más muertes por tormentas e inundaciones aunque lleva décadas construyendo sistemas de drenaje millonarios?",
+    "evento": "sociedad_desastres_naturales_mexico",
+    "categoria": "geografia",
+    "geo": "mexico",
+    "trend": "tormenta / aluvion"
   }
 ]
