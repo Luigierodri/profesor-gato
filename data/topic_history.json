@@ -365,5 +365,13 @@
     "categoria": "geografia",
     "geo": "mexico",
     "trend": "tormenta / aluvion"
+  },
+  {
+    "fecha": "2026-07-07",
+    "angulo": "¿Por qué Suiza tiene uno de los ejércitos más preparados del mundo si nunca entra en guerra?",
+    "evento": "historia_suiza_neutralidad",
+    "categoria": "historia",
+    "geo": "latam",
+    "trend": "switzerland vs colombia (partido del Mundial 2026)"
   }
 ]
