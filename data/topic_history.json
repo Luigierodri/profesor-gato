@@ -373,5 +373,13 @@
     "categoria": "historia",
     "geo": "latam",
     "trend": "switzerland vs colombia (partido del Mundial 2026)"
+  },
+  {
+    "fecha": "2026-07-07",
+    "angulo": "¿Por qué Colombia produce jugadores de talla mundial pero nunca puede retenerlos y quién se queda con el dinero?",
+    "evento": "futbol_colombia_exportacion",
+    "categoria": "economia",
+    "geo": "latam",
+    "trend": "switzerland vs colombia / luis javier suárez / dávinson sánchez"
   }
 ]
