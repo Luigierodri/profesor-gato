@@ -213,6 +213,20 @@ def correr_pipeline() -> RunResult:
         resultado.pasos_fail.append("tiktok_publisher")
         log.info(f"  ⚠ tiktok_publisher.py terminó con exit={tiktok_code} (no bloquea)")
 
+    # ── RESPONDER COMENTARIOS (solo escaneo: redacta borradores, NO publica) ──
+    # Detecta comentarios de espectadores sin responder y deja las réplicas
+    # redactadas en data/comentarios_pendientes.json para revisión manual.
+    # Nunca postea solo y nunca bloquea el run (best-effort).
+    log.info("\n▶ Fase comentarios: responder_comentarios.py --scan (solo borradores)")
+    try:
+        scan_code, _ = _correr_proceso(
+            [PYTHON, "responder_comentarios.py", "--scan", "--solo-faltantes"],
+            "responder_comentarios",
+        )
+        resultado.pasos_ok.append("comentarios_scan" if scan_code == 0 else "comentarios_scan?")
+    except Exception as e:
+        log.info(f"  ⚠ scan de comentarios falló (no bloquea): {e}")
+
     resultado.fin = datetime.now(MEX_TZ).strftime("%H:%M:%S")
     log.info(resultado.resumen())
 

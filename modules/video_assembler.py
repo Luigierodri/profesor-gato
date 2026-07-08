@@ -48,8 +48,10 @@ CHAR_PNGS = {
 # Poses rotables: images/personajes/<speaker>/<speaker>_<pose>.png
 CHAR_DIR = BASE_DIR / "images" / "personajes"
 POSES_VALIDAS = {
-    "gato":   {"gancho", "explica", "revela", "cierre"},
-    "bastet": {"sorpresa", "pregunta", "preocupada", "eureka"},
+    "gato":   {"gancho", "explica", "revela", "cierre",
+               "senala", "indignado", "piensa", "dinero"},
+    "bastet": {"sorpresa", "pregunta", "preocupada", "eureka",
+               "senala", "indignada", "asombrada", "triste"},
 }
 CHAR_PNG_WIDTH = int(VIDEO_WIDTH * 0.45)  # 486px — ~45% del ancho
 

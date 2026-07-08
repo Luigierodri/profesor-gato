@@ -14,9 +14,12 @@ VOICE_ID            = "jVhLuw5HHSDD176mpezF"           # Profesor Gato (Luigie)
 BASTET_VOICE_ID     = os.getenv("BASTET_VOICE_ID", "XrExE9yKIg1WjnnlVkGX")  # Matilda preset
 ELEVENLABS_MODEL    = "eleven_multilingual_v2"
 VOICE_SETTINGS = {
-    "stability":          0.45,   # Más variación = más expresivo
-    "similarity_boost":   0.85,   # Alta similitud con tu voz original
-    "style":              0.35,   # Algo de estilo/emoción
+    # PERFIL B (2026-07-05, A/B/C en partida-guardada/_ab_voz, Luigi eligió de oído):
+    # más grave y natural, sin "estirar palabras". Unificado en TODOS los pipelines
+    # que usan la voz Luigie (shorts+largos de ambos canales). Bastet NO se toca.
+    "stability":          0.52,
+    "similarity_boost":   0.90,
+    "style":              0.25,
     "use_speaker_boost":  True
 }
 

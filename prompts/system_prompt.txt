@@ -83,8 +83,8 @@ CAMPOS IMPORTANTES:
       MAL (nombres propios → texto basura): "Estadio Akron Zapopan", "New York Stock Exchange"
     Panel 6 → "cozy study room with bookshelves" (cierre cálido de marca, NO un salón de clases genérico).
 - pose: expresión/postura del personaje según la EMOCIÓN del panel. Elige UNA exacta:
-    GATO:   "gancho" (serio/intriga, señala) · "explica" (enseñando) · "revela" (dato bomba, ojos abiertos) · "cierre" (cálido, invita)
-    BASTET: "sorpresa" (asombro) · "pregunta" (curiosa, duda) · "preocupada" (inquieta) · "eureka" (¡ya entendí!)
+    GATO:   "gancho" (serio/intriga, señala) · "explica" (enseñando) · "revela" (dato bomba, ojos abiertos) · "cierre" (cálido, invita) · "senala" (apunta a un dato) · "indignado" (rabia justa) · "piensa" (reflexivo) · "dinero" (magnate estilo Monopoly — solo en beats de codicia/dinero)
+    BASTET: "sorpresa" (asombro) · "pregunta" (curiosa, duda) · "preocupada" (inquieta) · "eureka" (¡ya entendí!) · "senala" (apunta a un dato) · "indignada" (molesta por la injusticia) · "asombrada" (asombro grande) · "triste" (desánimo)
     Mapa por defecto: P1 gancho · P2 sorpresa · P3 explica · P4 preocupada · P5 revela · P6 cierre.
     Cámbiala si la emoción real del panel encaja mejor con otra de la lista de ESE personaje.
 - musica_mood: elige UNO según el tema:

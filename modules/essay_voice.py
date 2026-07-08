@@ -22,9 +22,11 @@ from modules import cost_tracker
 
 # Ensayo = lectura larga y estable (los Shorts conservan sus settings expresivos).
 ESSAY_GATO_SETTINGS = {
-    "stability":         0.55,
-    "similarity_boost":  0.85,
-    "style":             0.30,
+    # PERFIL B (2026-07-05, Luigi eligió de oído): grave y natural, sin "estirar
+    # palabras". Unificado en todos los pipelines de la voz Luigie.
+    "stability":         0.52,
+    "similarity_boost":  0.90,
+    "style":             0.25,
     "use_speaker_boost": True,
 }
 ESSAY_BASTET_SETTINGS = {

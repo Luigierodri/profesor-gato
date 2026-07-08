@@ -32,8 +32,10 @@ CHAR_PNGS_RAIZ = {
     "bastet": BASE_DIR / "images" / "bastet_fondo_negro.png",
 }
 POSES_VALIDAS = {
-    "gato":   {"gancho", "explica", "revela", "cierre"},
-    "bastet": {"sorpresa", "pregunta", "preocupada", "eureka"},
+    "gato":   {"gancho", "explica", "revela", "cierre",
+               "senala", "indignado", "piensa", "dinero"},
+    "bastet": {"sorpresa", "pregunta", "preocupada", "eureka",
+               "senala", "indignada", "asombrada", "triste"},
 }
 
 W, H, FPS = 1920, 1080, 30
@@ -258,21 +260,142 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             t = "¡" + t
         return t
 
-    # ── Tarjetas (fondo negro + texto + silencio) ─────────────────────────
+    # ── Cortinillas de marca (fondo PIL slate+dorado + personajes) ────────
+    def _paw(self, d, cx: int, cy: int, s: float, color):
+        """Huellita de gato: almohadilla + 3 deditos. `s` = escala (~1.0 = 22px)."""
+        pad_w, pad_h = 22 * s, 16 * s
+        d.ellipse([cx - pad_w / 2, cy - pad_h / 2, cx + pad_w / 2, cy + pad_h / 2],
+                  fill=color)
+        toe = 7 * s
+        for dx, dy in ((-11 * s, -13 * s), (0, -17 * s), (11 * s, -13 * s)):
+            d.ellipse([cx + dx - toe / 2, cy + dy - toe / 2,
+                       cx + dx + toe / 2, cy + dy + toe / 2], fill=color)
+
+    def _letterspaced(self, d, cx: int, y: int, texto: str, font, fill, extra: int = 10):
+        """Texto centrado con letter-spacing (sello de marca)."""
+        widths = [d.textlength(c, font=font) for c in texto]
+        total = sum(widths) + extra * (len(texto) - 1)
+        x = cx - total / 2
+        for c, cw in zip(texto, widths):
+            d.text((x, y), c, font=font, fill=fill)
+            x += cw + extra
+
+    def _pegar_char(self, img, speaker: str, pose: str, alto: int,
+                    x: int = None, lado: str = "der", margen: int = 110):
+        """Pega un personaje (PNG pose) anclado al piso interior de la cortinilla."""
+        from PIL import Image as _Img
+        p = resolver_char_png(speaker, pose)
+        if not Path(p).exists():
+            return
+        ch = _Img.open(p).convert("RGBA")
+        esc = alto / ch.height
+        ch = ch.resize((int(ch.width * esc), alto), _Img.LANCZOS)
+        y = H - 44 - ch.height
+        if x is None:
+            x = (W - margen - ch.width) if lado == "der" else margen
+        img.alpha_composite(ch, (x, y))
+
+    def _cortinilla_png(self, tipo: str, titulo_grande: str, linea_chica: str,
+                        nombre: str, numero: int = None) -> Path:
+        """Fondo de cortinilla 1920x1080 con la identidad del canal (slate+dorado,
+        sello PROFESOR GATO con huellitas, personajes según el tipo)."""
+        from PIL import Image as _Img, ImageDraw as _Draw
+        from modules.data_chart import _font, _wrap, BG, GOLD, GOLD_SOFT, INK, INK_SOFT
+
+        img = _Img.new("RGBA", (W, H), BG + (255,))
+        d = _Draw.Draw(img)
+
+        # Marco doble dorado (fino afuera, tenue adentro) = sello de "capítulo de libro"
+        d.rectangle([26, 26, W - 26, H - 26], outline=GOLD, width=2)
+        d.rectangle([38, 38, W - 38, H - 38], outline=GOLD_SOFT, width=1)
+
+        # Sello superior: huellita · PROFESOR GATO · huellita
+        f_marca = _font(30, bold=True)
+        self._letterspaced(d, W // 2, 66, "PROFESOR GATO", f_marca, GOLD, extra=12)
+        marca_w = sum(d.textlength(c, font=f_marca) for c in "PROFESOR GATO") + 12 * 12
+        self._paw(d, int(W / 2 - marca_w / 2 - 48), 88, 1.0, GOLD)
+        self._paw(d, int(W / 2 + marca_w / 2 + 48), 88, 1.0, GOLD)
+
+        cx = W // 2
+        if tipo == "intro":
+            # Título del video + firma; el dúo flanquea
+            f_tit = _font(84, bold=True)
+            lineas = _wrap(d, titulo_grande, f_tit, W - 760)[:3]
+            y = H // 2 - 60 - (len(lineas) - 1) * 52
+            for ln in lineas:
+                d.text((cx - d.textlength(ln, font=f_tit) / 2, y), ln, font=f_tit, fill=INK)
+                y += 104
+            d.rectangle([cx - 120, y + 26, cx + 120, y + 30], fill=GOLD)
+            self._letterspaced(d, cx, y + 56, (linea_chica or "UN ENSAYO DE ECONOMÍA").upper(),
+                               _font(34), GOLD, extra=8)
+            self._pegar_char(img, "bastet", "pregunta", 500, lado="izq")
+            self._pegar_char(img, "gato", "gancho", 520, lado="der")
+
+        elif tipo == "reflexion":
+            self._letterspaced(d, cx, H // 2 - 150, "PARA CERRAR", _font(38), GOLD, extra=10)
+            f_tit = _font(78, bold=True)
+            lineas = _wrap(d, titulo_grande, f_tit, W - 820)[:2]
+            y = H // 2 - 60
+            for ln in lineas:
+                d.text((cx - d.textlength(ln, font=f_tit) / 2, y), ln, font=f_tit, fill=INK)
+                y += 96
+            self._paw(d, cx, y + 60, 1.3, GOLD_SOFT)
+            self._pegar_char(img, "gato", "piensa", 540, lado="der")
+
+        elif tipo == "outro":
+            f_tit = _font(80, bold=True)
+            d.text((cx - d.textlength(titulo_grande, font=f_tit) / 2, H // 2 - 110),
+                   titulo_grande, font=f_tit, fill=INK)
+            self._letterspaced(d, cx, H // 2 + 16, (linea_chica or "").upper(),
+                               _font(40, bold=True), GOLD, extra=8)
+            self._paw(d, cx - 170, H // 2 + 110, 1.2, GOLD_SOFT)
+            self._paw(d, cx,       H // 2 + 124, 1.2, GOLD)
+            self._paw(d, cx + 170, H // 2 + 110, 1.2, GOLD_SOFT)
+            self._pegar_char(img, "bastet", "eureka", 470, lado="izq")
+            self._pegar_char(img, "gato", "cierre", 500, lado="der")
+
+        else:  # capítulo numerado
+            etiqueta = f"CAPÍTULO {numero}" if numero else "CAPÍTULO"
+            f_eti = _font(38)
+            eti_w = d.textlength(etiqueta, font=f_eti) + 9 * (len(etiqueta) - 1)
+            self._letterspaced(d, cx, H // 2 - 148, etiqueta, f_eti, GOLD, extra=9)
+            # Reglitas doradas a los lados de la etiqueta
+            ry = H // 2 - 128
+            d.rectangle([cx - eti_w / 2 - 170, ry, cx - eti_w / 2 - 40, ry + 3], fill=GOLD_SOFT)
+            d.rectangle([cx + eti_w / 2 + 40, ry, cx + eti_w / 2 + 170, ry + 3], fill=GOLD_SOFT)
+            f_tit = _font(82, bold=True)
+            lineas = _wrap(d, titulo_grande, f_tit, W - 560)[:2]
+            y = H // 2 - 58
+            for ln in lineas:
+                d.text((cx - d.textlength(ln, font=f_tit) / 2, y), ln, font=f_tit, fill=INK)
+                y += 100
+            self._paw(d, cx, y + 64, 1.3, GOLD_SOFT)
+
+        out_png = self.tmp / f"{nombre}.png"
+        img.convert("RGB").save(out_png)
+        return out_png
+
+    # ── Tarjetas / cortinillas (fondo de marca + zoom sutil + silencio) ────
     def _tarjeta(self, titulo_grande: str, linea_chica: str, dur: float,
-                 nombre: str) -> Path:
+                 nombre: str, tipo: str = "capitulo", numero: int = None) -> Path:
         titulo_grande = self._norm_card(titulo_grande)
         linea_chica = self._norm_card(linea_chica)
-        bg = self.tmp / f"{nombre}_bg.mp4"
-        (ffmpeg.input(f"color=c=0x0A0A0A:s={W}x{H}:r={FPS}", f="lavfi", t=dur)
-         .output(str(bg), vcodec="libx264", pix_fmt="yuv420p", r=FPS)
-         .overwrite_output().run(quiet=True))
-        ass = self._ass_card(titulo_grande, linea_chica, dur, f"{nombre}.ass")
-        txt = self.tmp / f"{nombre}_txt.mp4"
-        self._quemar(bg, ass, txt)
+        png = self._cortinilla_png(tipo, titulo_grande, linea_chica,
+                                   f"{nombre}_bg", numero=numero)
         out = self.tmp / f"{nombre}.mp4"
+        fade_d = 0.35
+        video = (
+            ffmpeg.input(str(png), loop=1, framerate=FPS, t=dur)
+            .filter("scale", 2400, -1)
+            .filter("zoompan", z="min(zoom+0.0006,1.025)",
+                    x="iw/2-(iw/zoom/2)", y="ih/2-(ih/zoom/2)",
+                    d=int(dur * FPS), s=f"{W}x{H}", fps=FPS)
+            .filter("fade", type="in", start_time=0, duration=fade_d)
+            .filter("fade", type="out", start_time=max(0.0, dur - fade_d), duration=fade_d)
+            .filter("setpts", "PTS-STARTPTS")
+        )
         sil = ffmpeg.input("anullsrc=r=44100:cl=stereo", f="lavfi", t=dur).audio
-        (ffmpeg.output(ffmpeg.input(str(txt)).video, sil, str(out),
+        (ffmpeg.output(video, sil, str(out),
                        vcodec="libx264", acodec="aac", pix_fmt="yuv420p",
                        r=FPS, ar=44100, t=dur, preset="veryfast", crf=21)
          .overwrite_output().run(quiet=True))
@@ -380,18 +503,40 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             piezas, specs, capitulos = [], [], []
             timeline = 0.0
             prev_cap = None
+            num_cap = 0                      # numeración visible (la intro no cuenta)
+            intro_pendiente = False
+            _es_reflexion = lambda c: any(k in c.lower() for k in
+                                          ("reflexi", "final", "cierre", "conclusi", "moraleja"))
 
             for i, b in enumerate(bloques):
                 cap = b.get("capitulo", "") or ""
                 if cap != prev_cap:
                     capitulos.append({"titulo": cap or "Capítulo", "t": timeline})
+                    cards = []
                     if prev_cap is None:
-                        card = self._tarjeta(titulo, cap, INTRO_DUR, "card_intro")
+                        # COLD OPEN (retención, 5 jul 2026): el gancho de la Introducción
+                        # entra EN FRÍO al segundo 0; la cortinilla de título se pospone
+                        # al primer cambio de capítulo (cuando el gancho ya retuvo).
+                        intro_pendiente = True
                     else:
-                        card = self._tarjeta(cap, "", CARD_DUR, f"card_cap_{i:03d}")
-                    d = self.dur(card)
-                    piezas.append(card); specs.append(("sil", d)); timeline += d
-                    log.info(f"  🃏 tarjeta capítulo: {cap}")
+                        if intro_pendiente:
+                            cards.append(self._tarjeta(titulo, "Un ensayo de economía",
+                                                       INTRO_DUR, "card_intro", tipo="intro"))
+                            intro_pendiente = False
+                        if _es_reflexion(cap):
+                            cards.append(self._tarjeta(cap, "", CARD_DUR + 0.6,
+                                                       f"card_cap_{i:03d}", tipo="reflexion"))
+                        else:
+                            num_cap += 1
+                            cards.append(self._tarjeta(cap, "", CARD_DUR, f"card_cap_{i:03d}",
+                                                       tipo="capitulo", numero=num_cap))
+                    for card in cards:
+                        d = self.dur(card)
+                        piezas.append(card); specs.append(("sil", d)); timeline += d
+                    if cards:
+                        log.info(f"  🃏 cortinilla: {cap or titulo}")
+                    else:
+                        log.info(f"  🎬 cold open: '{cap}' entra sin cortinilla (gancho directo)")
 
                 try:
                     clip = self._clip_segmento(b)
@@ -411,7 +556,8 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
                 prev_cap = cap
 
             outro = self._tarjeta("¿Quieres más? Haz clic aquí",
-                                  "Suscríbete · Profesor Gato", OUTRO_DUR, "card_outro")
+                                  "Suscríbete · Profesor Gato", OUTRO_DUR,
+                                  "card_outro", tipo="outro")
             piezas.append(outro); specs.append(("sil", self.dur(outro)))
 
             log.info(f"\n[concat] {len(piezas)} piezas (video) + pista de voz continua...")

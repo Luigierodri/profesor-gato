@@ -97,8 +97,10 @@ def guardar_log(datos: dict):
 
 # Poses por personaje + default por posición de panel (respaldo si Claude no la da)
 _POSES_VALIDAS = {
-    "gato":   {"gancho", "explica", "revela", "cierre"},
-    "bastet": {"sorpresa", "pregunta", "preocupada", "eureka"},
+    "gato":   {"gancho", "explica", "revela", "cierre",
+               "senala", "indignado", "piensa", "dinero"},
+    "bastet": {"sorpresa", "pregunta", "preocupada", "eureka",
+               "senala", "indignada", "asombrada", "triste"},
 }
 _POSE_DEFAULT = {
     ("gato", 1): "gancho", ("gato", 3): "explica",
@@ -193,8 +195,14 @@ def correr_pipeline(
     # ── PASO 1: DETECTAR TEMA ─────────────────────────────────────────────────
     banner("PASO 1 — Detectando tema del dia")
     trend_hook = None
+    evento_tag = ""
+    categoria_tag = ""
+    geo_tag = "latam"
     if tema_manual:
         tema = tema_manual
+        evento_tag = "manual"
+        categoria_tag = "economia"
+        geo_tag = "mexico" if any(p in tema.lower() for p in ("méxico", "mexico", "azteca", "cdmx", "tlatelolco", "peso")) else "latam"
         log.info(f"  Tema manual: {tema}")
     else:
         temas = detectar_temas_del_dia()

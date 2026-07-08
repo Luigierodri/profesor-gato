@@ -137,20 +137,51 @@ def _cargar_audios_existentes(carpeta: str, segmentos: list[dict]) -> list[dict]
     return audios
 
 
+def _clave_visual(v: dict) -> str:
+    """Clave de cache por identidad visual (misma foto/gráfica/escena = 1 sola imagen)."""
+    t = v.get("tipo", "escena")
+    if t == "foto":
+        return f"foto::{v.get('query','')}"
+    if t == "grafica":
+        labels = "|".join(x.get("label", "") for x in v.get("series", []))
+        return f"grafica::{v.get('titulo','')}::{labels}"
+    return f"escena::{v.get('location','')}"
+
+
 def _generar_fondos(segmentos: list[dict], carpeta: Path) -> list[str]:
-    """Un fondo 16:9 por LOCATION única (cache: segmentos consecutivos con la misma
-    location comparten imagen → menos costo y más continuidad visual)."""
+    """Un fondo 16:9 por identidad visual única. Rutea cada segmento a:
+      - foto real (Wikimedia)  ·  gráfica de datos (PIL)  ·  pixel-art (Imagen).
+    Foto/gráfica que fallen caen SIEMPRE al pixel-art (nunca rompe el render)."""
     from modules.background_generator import generar_imagen_essay
+    from modules.wikimedia_fetcher import fondo_16x9
+    from modules.data_chart import render_chart
     carpeta.mkdir(parents=True, exist_ok=True)
     cache: dict[str, str] = {}
     rutas = []
     for s in segmentos:
-        loc = s["location"]
-        if loc not in cache:
+        v = s.get("visual") or {"tipo": "escena", "location": s["location"]}
+        key = _clave_visual(v)
+        if key not in cache:
             idx = len(cache) + 1
-            log.info(f"  [bg {idx}] {loc[:70]}")
-            cache[loc] = generar_imagen_essay(loc, carpeta / f"bg_{idx:02d}.png")
-        rutas.append(cache[loc])
+            dest = carpeta / f"bg_{idx:02d}.png"
+            tipo = v.get("tipo", "escena")
+            ruta = None
+            try:
+                if tipo == "foto":
+                    log.info(f"  [bg {idx}] FOTO real ← {v.get('query','')[:60]}")
+                    ruta = fondo_16x9(v.get("query", ""), dest)
+                elif tipo == "grafica":
+                    log.info(f"  [bg {idx}] GRÁFICA ← {v.get('titulo','')[:60]}")
+                    ruta = render_chart(v, dest)
+            except Exception as e:
+                log.warning(f"  [bg {idx}] {tipo} falló ({e}); caigo a pixel-art")
+                ruta = None
+            if not ruta:                                   # fallback pixel-art (escena)
+                loc = v.get("location") or s["location"]
+                log.info(f"  [bg {idx}] pixel-art ← {loc[:60]}")
+                ruta = generar_imagen_essay(loc, dest)
+            cache[key] = ruta
+        rutas.append(cache[key])
     log.info(f"  {len(cache)} fondos únicos para {len(segmentos)} segmentos")
     return rutas
 
@@ -220,7 +251,7 @@ def correr_essay(tema: str, publicar: bool = False, reuse_audio: str = "",
         audios = generar_audios_essay(segmentos, carpeta_salida=carpeta_audio)
 
     # ── 3. FONDOS 16:9 (Imagen, cache por location) ────────────────────────
-    banner("PASO 3 — Fondos pixel art 16:9 (Imagen, cache por location)")
+    banner("PASO 3 — Fondos 16:9 (foto real / gráfica de datos / pixel-art)")
     carpeta_imgs = BASE_DIR / "images" / f"ESSAY_{_slug(titulo)[:30]}_{ts}"
     fondos = _generar_fondos(segmentos, carpeta_imgs)
 

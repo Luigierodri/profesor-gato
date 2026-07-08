@@ -16,12 +16,20 @@ elige la pose según el panel del guion (ver `video_assembler.py`).
 - gato_explica.png   → Panel 3 (explicando con el puntero)
 - gato_revela.png    → Panel 5 (el giro/bomba, ojos abiertos)
 - gato_cierre.png    → Panel 6 (cierre cálido, invitando)
+- gato_senala.png    → señala el gráfico/foto (úsala en segmentos con `visual` foto/grafica)
+- gato_indignado.png → rabia justa ante el abuso/dato injusto
+- gato_piensa.png    → reflexivo, plantea la duda
+- gato_dinero.png    → magnate estilo Monopoly (beats de codicia/renta/quién se queda el dinero)
 
 ### bastet/
 - bastet_sorpresa.png    → Panel 2 (asombro)
 - bastet_pregunta.png    → reacción curiosa (cabeza ladeada)
 - bastet_preocupada.png  → Panel 4 (inquietud)
 - bastet_eureka.png      → revelación feliz ("¡ya entendí!")
+- bastet_senala.png      → señala el gráfico/foto
+- bastet_indignada.png   → molesta ante la injusticia
+- bastet_asombrada.png   → asombro grande (boca abierta, patas arriba)
+- bastet_triste.png      → desánimo ante la mala noticia
 
 ### nilo/
 - (por definir)

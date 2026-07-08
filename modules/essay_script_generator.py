@@ -12,17 +12,71 @@ import anthropic
 from config import ANTHROPIC_API_KEY, CLAUDE_MODEL
 from modules import cost_tracker
 
-ESSAY_MAX_TOKENS = 8000
+# 16000: con 8000 el guion se truncaba (JSON incompleto) al añadir el campo `visual`
+# por segmento. Sonnet 4.6 soporta salidas grandes; damos headroom para 38-48 segmentos.
+ESSAY_MAX_TOKENS = 16000
 
 POSES_VALIDAS = {
-    "gato":   {"gancho", "explica", "revela", "cierre"},
-    "bastet": {"sorpresa", "pregunta", "preocupada", "eureka"},
+    "gato":   {"gancho", "explica", "revela", "cierre",
+               "senala", "indignado", "piensa", "dinero"},
+    "bastet": {"sorpresa", "pregunta", "preocupada", "eureka",
+               "senala", "indignada", "asombrada", "triste"},
 }
 
 
 def _cargar_prompt() -> str:
     with open("prompts/system_prompt_essay.txt", "r", encoding="utf-8") as f:
         return f.read()
+
+
+def _normalizar_visual(v, location: str) -> dict:
+    """Valida el fondo del segmento. Devuelve SIEMPRE un dict con 'tipo':
+      - foto:    {"tipo":"foto","query": <en inglés>}        (foto real de Wikimedia)
+      - grafica: {"tipo":"grafica", titulo/unidad/series/fuente} (>=2 barras válidas)
+      - escena:  {"tipo":"escena","location": <en inglés>}     (pixel-art, default/fallback)
+    Cualquier cosa dudosa cae a 'escena' con la location del segmento."""
+    escena = {"tipo": "escena", "location": location}
+    if not isinstance(v, dict):
+        return escena
+    tipo = (v.get("tipo") or "").strip().lower()
+
+    if tipo == "foto":
+        query = (v.get("query") or "").strip()
+        return {"tipo": "foto", "query": query} if query else escena
+
+    if tipo == "grafica":
+        series = []
+        for it in (v.get("series") or []):
+            if not isinstance(it, dict):
+                continue
+            label = (str(it.get("label", "")) or "").strip()
+            valor = it.get("valor")
+            try:
+                valor = float(valor)
+            except (TypeError, ValueError):
+                continue
+            if not label:
+                continue
+            series.append({
+                "label": label,
+                "valor": valor,
+                "valor_txt": (str(it.get("valor_txt")).strip() if it.get("valor_txt") else ""),
+                "resaltar": bool(it.get("resaltar")),
+            })
+        if len(series) >= 2:                       # una sola barra no es una gráfica
+            return {
+                "tipo": "grafica",
+                "titulo": (v.get("titulo") or "").strip(),
+                "unidad": (v.get("unidad") or "").strip(),
+                "series": series,
+                "fuente": (v.get("fuente") or "").strip(),
+            }
+        return escena
+
+    if tipo == "escena":
+        return {"tipo": "escena", "location": (v.get("location") or location).strip() or location}
+
+    return escena
 
 
 def generar_essay(tema: str, outline=None, ficha_datos: str = "") -> dict:
@@ -99,6 +153,12 @@ def generar_essay(tema: str, outline=None, ficha_datos: str = "") -> dict:
         # Tarjeta de datos: solo si trae cifra real.
         d = s.get("dato")
         if not (isinstance(d, dict) and (d.get("cifra") or "").strip()):
+            s["dato"] = None
+
+        # Fondo (visual): foto real / gráfica de datos / pixel-art (escena, default).
+        s["visual"] = _normalizar_visual(s.get("visual"), s["location"])
+        # Un segmento con GRÁFICA no lleva además tarjeta de datos (la gráfica es el dato).
+        if s["visual"]["tipo"] == "grafica":
             s["dato"] = None
 
     total_words = sum(len(s["narracion"].split()) for s in segs)
