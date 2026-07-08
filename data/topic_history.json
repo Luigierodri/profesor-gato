@@ -397,5 +397,13 @@
     "categoria": "economia",
     "geo": "mexico",
     "trend": "pemex"
+  },
+  {
+    "fecha": "2026-07-08",
+    "angulo": "¿Por qué comprar una casa en México es casi imposible para quien más la necesita?",
+    "evento": "economia_vivienda_mexico",
+    "categoria": "economia",
+    "geo": "mexico",
+    "trend": "vivienda"
   }
 ]
