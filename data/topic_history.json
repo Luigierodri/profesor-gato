@@ -405,5 +405,13 @@
     "categoria": "economia",
     "geo": "mexico",
     "trend": "vivienda"
+  },
+  {
+    "fecha": "2026-07-08",
+    "angulo": "¿Por qué el VIX sube cuando el mundo tiene miedo y quién gana dinero con tu pánico?",
+    "evento": "economia_vix_miedo",
+    "categoria": "economia",
+    "geo": "latam",
+    "trend": "vix index"
   }
 ]
