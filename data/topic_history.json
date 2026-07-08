@@ -389,5 +389,13 @@
     "categoria": "cultura_pop",
     "geo": "latam",
     "trend": "switzerland vs colombia"
+  },
+  {
+    "fecha": "2026-07-08",
+    "angulo": "¿Por qué Pemex debe más dinero que muchos países y quién paga esa deuda al final?",
+    "evento": "economia_pemex_deuda",
+    "categoria": "economia",
+    "geo": "mexico",
+    "trend": "pemex"
   }
 ]
