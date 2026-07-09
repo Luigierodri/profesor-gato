@@ -91,6 +91,56 @@ OUTLINES = {
                        "partido a ese precio?)")},
         ],
     },
+
+    # La deuda de Pemex. Regla de Luigi: DATOS REALES Y VERIFICABLES; las gráficas y
+    # los números MANDAN sobre la emoción. Apolítico en la narración: se da crédito a
+    # que la deuda BAJÓ (con datos) y se muestra el costo (dinero público) — "el número
+    # no tiene ideología". Toda cifra sale de la ficha verificada; lo no confirmado va
+    # como pregunta. EVERGREEN: 2025/2026 en presente histórico, sin "esta semana".
+    "la deuda de pemex": {
+        "nota": ("Formato NÚMEROS PRIMERO: cada capítulo abre con una cifra verificada y "
+                 "una gráfica/tarjeta de datos, y la narración solo la explica. Tono: "
+                 "lucidez fría, cero amargura, cero señalar partido — se reconoce lo que "
+                 "mejoró (la deuda cayó 5 años seguidos) Y se muestra a costa de qué "
+                 "(rescate con dinero público). Frase-ancla: 'el número no milita en "
+                 "ningún partido'. NADA de cifra sin respaldo de la ficha; si algo no está "
+                 "verificado, se dice como pregunta abierta. EVERGREEN."),
+        "capitulos": [
+            {"capitulo": "El número que no tiene ideología",
+             "notas": ("abre con el tamaño REAL de la deuda financiera de Pemex al cierre "
+                       "de 2025 (~84.5 mil millones de USD) y el hecho de que es la "
+                       "petrolera más endeudada del mundo; GRÁFICA de deuda por año "
+                       "(2018 ~106, pico 2020 ~113, 2024 ~98, 2025 ~84.5 mil M USD, las "
+                       "que confirme la ficha). Bastet: '¿eso es mucho?' → comparar con "
+                       "una petrolera privada (ej. deuda de Shell ~48 mil M USD) o con el "
+                       "PIB de países pequeños, SOLO si la ficha lo respalda")},
+            {"capitulo": "Cómo se llega a deber tanto",
+             "notas": ("la causa estructural con datos: la producción de crudo se "
+                       "desplomó (pico ~3.4 millones de barriles/día en 2004 con "
+                       "Cantarell → ~1.67 millones en 2025, caída cercana al 50%) mientras "
+                       "la petrolera seguía endeudándose y transfiriendo impuestos al "
+                       "Estado; GRÁFICA de producción 2004→2025 (cifras de la ficha)")},
+            {"capitulo": "La deuda bajó… ¿y eso?",
+             "notas": ("HONESTIDAD CON DATOS: sí bajó — 5 años consecutivos, ~-13% en 2025, "
+                       "el nivel más bajo en 11 años; PERO la baja viene de un rescate con "
+                       "dinero público: plan de apoyo ~50 mil M USD (notas precapitalizadas "
+                       "P-Cap ~12, banca de desarrollo ~13, emisión soberana ~14) + ~14 mil "
+                       "M USD en el presupuesto 2026 para pagar su deuda. TARJETA DE DATOS. "
+                       "Aquí se desinfla el '¡pero bajó!': el crédito es real, la fuente del "
+                       "crédito es el contribuyente")},
+            {"capitulo": "Quién paga la factura",
+             "notas": ("aun con el rescate, Pemex siguió perdiendo dinero: ~2.6 mil M USD "
+                       "en el 1T 2026 y ~61,250 millones de pesos en el 3T 2025 (cifras de "
+                       "la ficha); cada dólar de rescate es dinero público que no fue a "
+                       "salud, educación o infraestructura. CTA de mitad al cerrar el "
+                       "capítulo")},
+            {"capitulo": "El número sigue ahí",
+             "notas": ("aterrizaje apolítico: la deuda creció y se rescató A TRAVÉS DE "
+                       "VARIAS ADMINISTRACIONES — no es de un sexenio ni de un partido; "
+                       "qué significa para TI como contribuyente; pregunta final para "
+                       "comentar sin pedir que tomen bando")},
+        ],
+    },
 }
 
 # Enfoque de búsqueda del fact_checker por tema (qué cifras necesita el guion).
@@ -105,6 +155,19 @@ FICHA_ENFOQUE = {
         "- Estudios sobre 'derrama económica' real de mundiales pasados vs. lo prometido\n"
         "- Elefantes blancos: estadios de Brasil 2014 / Sudáfrica 2010 hoy\n"
         "- Reparto: cuánto de los ingresos viene de derechos de TV y patrocinios"
+    ),
+    "la deuda de pemex": (
+        "- Deuda financiera de Pemex al cierre de 2025 (cifra oficial en USD) y su nivel "
+        "en 2024, 2020 (pico) y 2018, para una serie por año\n"
+        "- Confirmación de si Pemex es la petrolera (o corporativo no financiero) más "
+        "endeudado del mundo, y una referencia de deuda de una petrolera privada (Shell/Exxon)\n"
+        "- Producción de crudo de Pemex: pico de 2004 (Cantarell) y nivel actual "
+        "(2025) en barriles por día, y % de caída\n"
+        "- Rescate/apoyo del gobierno a Pemex: monto del plan estratégico 2025 y su "
+        "desglose (notas precapitalizadas/P-Cap, banca de desarrollo, emisión soberana)\n"
+        "- Monto en el presupuesto federal 2026 destinado a pagar deuda de Pemex\n"
+        "- Pérdidas recientes de Pemex: resultado del 1T 2026 y del 3T 2025\n"
+        "- Meta de deuda del Plan Pemex hacia 2030"
     ),
 }
 
@@ -172,6 +235,15 @@ def _generar_fondos(segmentos: list[dict], carpeta: Path) -> list[str]:
                     ruta = fondo_16x9(v.get("query", ""), dest)
                 elif tipo == "grafica":
                     log.info(f"  [bg {idx}] GRÁFICA ← {v.get('titulo','')[:60]}")
+                    # Estilo poster: fondo situacional (Imagen) DISTINTO por gráfica
+                    # para diversificar los escenarios; los datos reales van encima.
+                    fp = v.get("fondo_prompt")
+                    if fp and v.get("estilo") == "poster" and not v.get("fondo"):
+                        try:
+                            bg_dest = carpeta / f"chartbg_{idx:02d}.png"
+                            v["fondo"] = generar_imagen_essay(fp, bg_dest)
+                        except Exception as e:
+                            log.warning(f"  [bg {idx}] fondo situacional de gráfica falló ({e}); slate plano")
                     ruta = render_chart(v, dest)
             except Exception as e:
                 log.warning(f"  [bg {idx}] {tipo} falló ({e}); caigo a pixel-art")

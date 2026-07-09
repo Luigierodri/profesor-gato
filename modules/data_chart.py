@@ -99,12 +99,48 @@ def _wrap(draw, text, font, max_w):
     return lineas
 
 
+def _cover(im: "Image.Image", tw: int, th: int) -> "Image.Image":
+    """Redimensiona tipo CSS 'cover' (llena tw×th recortando el excedente centrado)."""
+    w, h = im.size
+    escala = max(tw / w, th / h)
+    im = im.resize((max(int(w * escala), tw), max(int(h * escala), th)))
+    x = (im.width - tw) // 2
+    y = (im.height - th) // 2
+    return im.crop((x, y, x + tw, y + th))
+
+
+def _base_canvas(spec: dict):
+    """Devuelve (canvas_RGBA, usa_fondo). Si el spec trae 'fondo' (imagen situacional
+    de Imagen), la usa oscurecida como base; si no, el slate plano de siempre."""
+    fondo = (spec.get("fondo") or "").strip()
+    if fondo and Path(fondo).exists():
+        try:
+            base = _cover(Image.open(fondo).convert("RGB"), W, H)
+            # Oscurecer hacia el slate de marca para que el dato mande sobre la foto.
+            base = Image.blend(base, Image.new("RGB", (W, H), BG), 0.55)
+            img = base.convert("RGBA")
+            # Panel/scrim a la izquierda (zona de la gráfica) para contraste del texto.
+            scrim = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+            ds = ImageDraw.Draw(scrim)
+            ds.rectangle([0, 0, CONTENT_R + 150, H], fill=(*BG, 165))
+            return Image.alpha_composite(img, scrim), True
+        except Exception as e:
+            log.warning(f"  [data_chart] fondo situacional falló ({e}); uso slate plano")
+    return Image.new("RGBA", (W, H), (*BG, 255)), False
+
+
 def render_chart(spec: dict, output_path) -> str:
     """Renderiza la gráfica a un PNG 16:9 y devuelve la ruta (str).
 
     Nunca lanza por datos raros: si la serie viene vacía/rota, dibuja igual el
     título y una nota — el pipeline decide el fallback antes de llamar aquí.
+
+    Fondo situacional: si spec['fondo'] apunta a una imagen (pixel-art de Imagen del
+    tema real), se usa oscurecida como base y los datos REALES se dibujan encima.
     """
+    if spec.get("estilo") == "poster":
+        return _render_poster(spec, output_path)
+
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -113,7 +149,7 @@ def render_chart(spec: dict, output_path) -> str:
     fuente = (spec.get("fuente") or "").strip()
     series = [s for s in (spec.get("series") or []) if isinstance(s, dict)]
 
-    img = Image.new("RGB", (W, H), BG)
+    img, _usa_fondo = _base_canvas(spec)
     d = ImageDraw.Draw(img)
 
     # Banda superior + título
@@ -189,8 +225,133 @@ def render_chart(spec: dict, output_path) -> str:
         f_fuente = _font(28)
         d.text((MARGIN_L, H - 58), f"Fuente: {fuente}", font=f_fuente, fill=INK_SOFT)
 
-    img.save(output_path, "PNG")
+    img.convert("RGB").save(output_path, "PNG")
     log.info(f"  Gráfica renderizada: {output_path.name} ({len(series)} barras)")
+    return str(output_path)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  ESTILO "POSTER" — barras VERTICALES temáticas (look de la referencia de Luigi:
+#  fondo situacional + barras bicolor + rejilla con eje Y + topes + título grueso).
+#  El personaje lo pone el assembler abajo-derecha, por eso las barras van a la izq.
+# ══════════════════════════════════════════════════════════════════════════════
+CREMA = (245, 230, 200)
+GRID  = (140, 148, 164)
+
+_FONT_HEAVY = [r"C:\Windows\Fonts\impact.ttf", r"C:\Windows\Fonts\ariblk.ttf",
+               "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"]
+
+
+def _font_heavy(size: int):
+    for p in _FONT_HEAVY:
+        try:
+            return ImageFont.truetype(p, size)
+        except Exception:
+            continue
+    return _font(size, bold=True)
+
+
+def _dashed_h(d, x0, x1, y, fill=GRID, dash=22, gap=16, width=3):
+    x = x0
+    while x < x1:
+        d.line([x, y, min(x + dash, x1), y], fill=fill, width=width)
+        x += dash + gap
+
+
+def _nice_step(vmax: float, target: int = 4) -> float:
+    import math
+    if vmax <= 0:
+        return 1.0
+    raw = vmax / target
+    mag = 10 ** math.floor(math.log10(raw))
+    for m in (1, 2, 2.5, 5, 10):
+        if m * mag >= raw:
+            return m * mag
+    return 10 * mag
+
+
+def _text_out(d, xy, text, font, fill, w=4, anchor=None, outline=(22, 17, 10)):
+    x, y = xy
+    for dx in range(-w, w + 1):
+        for dy in range(-w, w + 1):
+            if dx * dx + dy * dy <= w * w:
+                d.text((x + dx, y + dy), text, font=font, fill=outline, anchor=anchor)
+    d.text((x, y), text, font=font, fill=fill, anchor=anchor)
+
+
+def _render_poster(spec: dict, output_path) -> str:
+    import math
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    titulo = (spec.get("titulo") or "").strip()
+    unidad = (spec.get("unidad") or "").strip()
+    fuente = (spec.get("fuente") or "").strip()
+    series = [s for s in (spec.get("series") or []) if isinstance(s, dict)]
+
+    img, _ = _base_canvas(spec)
+    d = ImageDraw.Draw(img)
+    d.rectangle([0, 0, W - 1, H - 1], outline=GOLD_SOFT, width=7)   # marco cartucho
+
+    # Título centrado, grueso, con contorno
+    f_tit = _font_heavy(92)
+    ty = 40
+    for ln in _wrap(d, titulo.upper(), f_tit, W - 280)[:2]:
+        wln = d.textlength(ln, font=f_tit)
+        _text_out(d, ((W - wln) / 2, ty), ln, f_tit, CREMA, w=5)
+        ty += 100
+    if unidad:
+        _text_out(d, (W / 2, ty + 2), f"en {unidad}", _font(40, bold=True), GOLD, w=3, anchor="ma")
+        ty += 56
+
+    # Área de plot (aire a la derecha para el personaje del assembler)
+    PL_X0, PL_X1, base_y = 210, 1380, 905
+    top_y = max(ty + 46, 340)
+    plot_h = base_y - top_y
+    valores = [abs(float(s.get("valor", 0) or 0)) for s in series] or [1.0]
+    vmax = max(valores) or 1.0
+    step = _nice_step(vmax)
+    top_val = math.ceil(vmax / step) * step or step
+
+    # Ejes + rejilla + etiquetas de valor
+    d.line([PL_X0, top_y - 24, PL_X0, base_y], fill=CREMA, width=4)
+    d.line([PL_X0, base_y, PL_X1 + 26, base_y], fill=CREMA, width=4)
+    d.polygon([(PL_X0 - 13, top_y - 22), (PL_X0 + 13, top_y - 22), (PL_X0, top_y - 46)], fill=CREMA)
+    f_grid = _font(34, bold=True)
+    t = step
+    while t <= top_val + 1e-6:
+        gy = base_y - (t / top_val) * plot_h
+        _dashed_h(d, PL_X0 + 6, PL_X1 + 18, int(gy))
+        _text_out(d, (PL_X0 - 20, gy - 20), _fmt_num(t), f_grid, CREMA, w=2, anchor="ra")
+        t += step
+
+    # Barras verticales bicolor + tope + valor + etiqueta
+    n = len(series)
+    slot = (PL_X1 - PL_X0) / max(n, 1)
+    bw = min(slot * 0.52, 148)
+    f_val = _font_heavy(48)
+    f_lab = _font(34, bold=True)
+    for i, s in enumerate(series):
+        v = valores[i]
+        cx = PL_X0 + slot * (i + 0.5)
+        bh = (v / top_val) * plot_h
+        x0, x1, y0 = cx - bw / 2, cx + bw / 2, base_y - bh
+        hi = bool(s.get("resaltar"))
+        top_c = (255, 214, 130) if hi else GOLD
+        bot_c = (122, 88, 52) if hi else (78, 58, 36)
+        d.rounded_rectangle([x0, y0, x1, base_y], radius=10, fill=bot_c)
+        d.rounded_rectangle([x0, y0, x1, y0 + min(bh * 0.5, plot_h)], radius=10, fill=top_c)
+        d.rectangle([x0, y0, x1, base_y], outline=CREMA, width=3)
+        r = 15
+        d.ellipse([cx - r, y0 - 2 * r - 8, cx + r, y0 - 8], fill=GOLD, outline=(60, 44, 24), width=3)
+        vtxt = str(s.get("valor_txt") or _fmt_num(s.get("valor", "")))
+        _text_out(d, (cx, y0 - 2 * r - 18), vtxt, f_val, CREMA, w=3, anchor="ms")
+        _text_out(d, (cx, base_y + 14), str(s.get("label", ""))[:22], f_lab, CREMA, w=2, anchor="ma")
+
+    if fuente:
+        _text_out(d, (PL_X0, H - 54), f"Fuente: {fuente}", _font(28), INK_SOFT, w=2)
+
+    img.convert("RGB").save(output_path, "PNG")
+    log.info(f"  Gráfica POSTER: {output_path.name} ({n} barras)")
     return str(output_path)
 
 

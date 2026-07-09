@@ -19,6 +19,7 @@ import requests
 from pathlib import Path
 from config import ELEVENLABS_API_KEY, VOICE_ID, BASTET_VOICE_ID, ELEVENLABS_MODEL
 from modules import cost_tracker
+from modules.num_es import normalizar_numeros_es
 
 # Ensayo = lectura larga y estable (los Shorts conservan sus settings expresivos).
 ESSAY_GATO_SETTINGS = {
@@ -118,15 +119,15 @@ def generar_audios_essay(segmentos: list[dict], carpeta_salida: str) -> list[dic
     resultados = []
     for idx, seg in enumerate(segmentos):
         numero    = seg["numero"]
-        narracion = seg["narracion"]
+        narracion = normalizar_numeros_es(seg["narracion"])
         speaker   = seg.get("speaker", "gato")
         voice_id, vs, label = _voz_de(speaker)
         ruta_audio = os.path.join(carpeta_salida, f"bloque_{numero:02d}.mp3")
         print(f"  Seg {numero}/{len(segmentos)} [{label}]: \"{narracion[:50]}...\"")
 
-        prev_txt = (segmentos[idx - 1]["narracion"]
+        prev_txt = (normalizar_numeros_es(segmentos[idx - 1]["narracion"])
                     if idx > 0 and segmentos[idx - 1].get("speaker", "gato") == speaker else None)
-        next_txt = (segmentos[idx + 1]["narracion"]
+        next_txt = (normalizar_numeros_es(segmentos[idx + 1]["narracion"])
                     if idx < len(segmentos) - 1
                     and segmentos[idx + 1].get("speaker", "gato") == speaker else None)
         payload = {

@@ -13,6 +13,7 @@ from config import (
     ELEVENLABS_MODEL, VOICE_SETTINGS, OUTPUT_DIR
 )
 from modules import cost_tracker
+from modules.num_es import normalizar_numeros_es
 
 BASTET_VOICE_SETTINGS = {
     "stability":        0.40,   # subido de 0.20: <0.30 en multilingual_v2 causa glitches/cortes
@@ -138,7 +139,7 @@ def generar_audios_por_paneles(datos_comic: dict, carpeta_salida: str = None) ->
 
     for idx, panel in enumerate(paneles):
         numero    = panel["numero"]
-        narracion = panel["narracion"]
+        narracion = normalizar_numeros_es(panel["narracion"])
         speaker   = panel.get("speaker", "gato")
 
         # Elegir voz según personaje
@@ -167,8 +168,8 @@ def generar_audios_por_paneles(datos_comic: dict, carpeta_salida: str = None) ->
             "model_id": ELEVENLABS_MODEL,
             "voice_settings": voice_settings,
             # Continuidad de prosodia: contexto del panel anterior y siguiente
-            "previous_text": paneles[idx - 1]["narracion"] if idx > 0 else None,
-            "next_text":     paneles[idx + 1]["narracion"] if idx < len(paneles) - 1 else None,
+            "previous_text": normalizar_numeros_es(paneles[idx - 1]["narracion"]) if idx > 0 else None,
+            "next_text":     normalizar_numeros_es(paneles[idx + 1]["narracion"]) if idx < len(paneles) - 1 else None,
         }
 
         response = _post_elevenlabs(url, headers, payload)
