@@ -421,5 +421,13 @@
     "categoria": "historia",
     "geo": "latam",
     "trend": "tour de francia"
+  },
+  {
+    "fecha": "2026-07-09",
+    "angulo": "¿Por qué la IA que usas gratis cada día vale billones de dólares y quién está pagando realmente por ella?",
+    "evento": "tecnologia_ia_economia",
+    "categoria": "tecnologia",
+    "geo": "latam",
+    "trend": "chatgpt"
   }
 ]
