@@ -429,5 +429,13 @@
     "categoria": "tecnologia",
     "geo": "latam",
     "trend": "chatgpt"
+  },
+  {
+    "fecha": "2026-07-09",
+    "angulo": "¿Por qué Marruecos produce futbolistas que prefieren jugar para otro país y quién pierde con eso?",
+    "evento": "futbol_marruecos_identidad",
+    "categoria": "deportes",
+    "geo": "latam",
+    "trend": "hakimi marruecos / portero marruecos"
   }
 ]
