@@ -413,5 +413,13 @@
     "categoria": "economia",
     "geo": "latam",
     "trend": "vix index"
+  },
+  {
+    "fecha": "2026-07-09",
+    "angulo": "¿Por qué el Tour de Francia es la carrera más brutal del mundo y los ciclistas siguen pagando con su cuerpo décadas después?",
+    "evento": "tour_de_france_historia",
+    "categoria": "historia",
+    "geo": "latam",
+    "trend": "tour de francia"
   }
 ]
