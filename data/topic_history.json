@@ -437,5 +437,13 @@
     "categoria": "deportes",
     "geo": "latam",
     "trend": "hakimi marruecos / portero marruecos"
+  },
+  {
+    "fecha": "2026-07-10",
+    "angulo": "¿Por qué el Estadio Ciudad de los Deportes lleva décadas prometiendo remodelarse y el dinero siempre desaparece?",
+    "evento": "estadio_ciudad_deportes_mexico",
+    "categoria": "politica",
+    "geo": "mexico",
+    "trend": "estadio ciudad de los deportes"
   }
 ]
