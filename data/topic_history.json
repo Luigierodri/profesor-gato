@@ -445,5 +445,13 @@
     "categoria": "politica",
     "geo": "mexico",
     "trend": "estadio ciudad de los deportes"
+  },
+  {
+    "fecha": "2026-07-10",
+    "angulo": "¿Por qué los mejores tenistas del mundo ganan 100 veces más que el número 100 del ranking aunque todos juegan el mismo deporte?",
+    "evento": "tenis_desigualdad_economica",
+    "categoria": "economia",
+    "geo": "latam",
+    "trend": "sinner vs djokovic / alexander zverev / ranking"
   }
 ]
