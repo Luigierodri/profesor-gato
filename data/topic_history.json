@@ -453,5 +453,13 @@
     "categoria": "economia",
     "geo": "latam",
     "trend": "sinner vs djokovic / alexander zverev / ranking"
+  },
+  {
+    "fecha": "2026-07-11",
+    "angulo": "¿Por qué en Honduras y Centroamérica las Cortes Supremas pueden destituir presidentes y nadie puede hacer nada?",
+    "evento": "historia_cortes_supremas_latam",
+    "categoria": "politica",
+    "geo": "latam",
+    "trend": "corte suprema / honduras"
   }
 ]
