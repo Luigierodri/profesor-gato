@@ -461,5 +461,13 @@
     "categoria": "politica",
     "geo": "latam",
     "trend": "corte suprema / honduras"
+  },
+  {
+    "fecha": "2026-07-12",
+    "angulo": "¿Por qué las vacaciones en México cuestan cada vez más y el salario nunca alcanza para lo mismo?",
+    "evento": "economia_vacaciones_mexico",
+    "categoria": "sociedad",
+    "geo": "latam",
+    "trend": "vacaciones"
   }
 ]
