@@ -469,5 +469,13 @@
     "categoria": "sociedad",
     "geo": "latam",
     "trend": "vacaciones"
+  },
+  {
+    "fecha": "2026-07-12",
+    "angulo": "¿Por qué Sinaloa lleva décadas siendo el estado más violento de México y nadie puede controlarlo de verdad?",
+    "evento": "historia_sinaloa_crimen",
+    "categoria": "historia",
+    "geo": "mexico",
+    "trend": "sinaloa"
   }
 ]
