@@ -477,5 +477,13 @@
     "categoria": "historia",
     "geo": "mexico",
     "trend": "sinaloa"
+  },
+  {
+    "fecha": "2026-07-13",
+    "angulo": "¿Por qué un asteroide puede extinguir civilizaciones y no lo veríamos venir hasta que ya sea tarde?",
+    "evento": "ciencia_asteroides_amenaza",
+    "categoria": "ciencia",
+    "geo": "latam",
+    "trend": "asteroide"
   }
 ]
