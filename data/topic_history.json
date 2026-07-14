@@ -485,5 +485,13 @@
     "categoria": "ciencia",
     "geo": "latam",
     "trend": "asteroide"
+  },
+  {
+    "fecha": "2026-07-14",
+    "angulo": "¿Por qué los jueces en México son casi imposibles de destituir aunque hagan lo que quieran?",
+    "evento": "politica_poder_judicial_mexico",
+    "categoria": "sociedad",
+    "geo": "mexico",
+    "trend": "juez"
   }
 ]
