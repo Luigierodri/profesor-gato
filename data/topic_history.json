@@ -493,5 +493,13 @@
     "categoria": "sociedad",
     "geo": "mexico",
     "trend": "juez"
+  },
+  {
+    "fecha": "2026-07-15",
+    "angulo": "¿Por qué el Monte de Piedad ha sobrevivido 270 años y sigue siendo el prestamista de los que no tienen a quién más acudir?",
+    "evento": "economia_monte_de_piedad",
+    "categoria": "historia",
+    "geo": "mexico",
+    "trend": "huelga nacional monte de piedad"
   }
 ]
