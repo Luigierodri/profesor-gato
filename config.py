@@ -17,11 +17,24 @@ VOICE_SETTINGS = {
     # PERFIL B (2026-07-05, A/B/C en partida-guardada/_ab_voz, Luigi eligió de oído):
     # más grave y natural, sin "estirar palabras". Unificado en TODOS los pipelines
     # que usan la voz Luigie (shorts+largos de ambos canales). Bastet NO se toca.
-    "stability":          0.52,
-    "similarity_boost":   0.90,
+    # ANTI-TARTAMUDEO (2026-07-14): PERFIL B había subido similarity 0.85→0.90 y bajado
+    # stability 0.55→0.52 → volvió el trabado (Luigi lo oyó en shorts de AMBOS canales).
+    # similarity 0.90 fuerza copiar imperfecciones del audio de referencia (repite
+    # sílabas). Se regresa a similarity 0.85 (estable, sigue sonando a él) y stability
+    # 0.55 (con el que los largos nunca tartamudearon). style 0.25 se conserva. SIN A/B.
+    "stability":          0.55,
+    "similarity_boost":   0.85,
     "style":              0.25,
     "use_speaker_boost":  True
 }
+
+# ─── PRESUPUESTO ELEVENLABS (cuota por ciclo, COMPARTIDA con Partida Guardada) ──
+# Misma cuenta/API key que PG. modules/voice_budget lleva un contador local por
+# ciclo (archivo compartido en el home) y avisa antes de reventar la cuota. Reset
+# el día VOZ_RESET_DIA (aniversario del plan). Ver reference-elevenlabs-cuota.
+ELEVENLABS_LIMITE_MENSUAL = 153_204
+VOZ_RESET_DIA = 15
+VOZ_PRESUPUESTO_HARD_STOP = False
 
 # ─── ANTHROPIC ────────────────────────────────────────────────────────────────
 CLAUDE_MODEL        = "claude-sonnet-4-6"

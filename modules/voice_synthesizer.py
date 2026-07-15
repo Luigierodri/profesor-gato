@@ -14,6 +14,10 @@ from config import (
 )
 from modules import cost_tracker
 from modules.num_es import normalizar_numeros_es
+try:
+    from modules import voice_budget
+except Exception:
+    voice_budget = None
 
 BASTET_VOICE_SETTINGS = {
     "stability":        0.40,   # subido de 0.20: <0.30 en multilingual_v2 causa glitches/cortes
@@ -137,6 +141,18 @@ def generar_audios_por_paneles(datos_comic: dict, carpeta_salida: str = None) ->
     
     resultados = []
 
+    # Pre-flight de presupuesto (cupo ElevenLabs COMPARTIDO con Partida Guardada):
+    # estima los chars del comic completo y avisa/aborta ANTES de reventar a media
+    # generación con un 401 quota_exceeded.
+    if voice_budget is not None:
+        try:
+            total_chars = sum(len(normalizar_numeros_es(p["narracion"])) for p in paneles)
+            voice_budget.chequear_job(total_chars, ctx=datos_comic.get("titulo", ""))
+        except RuntimeError:
+            raise  # HARD_STOP: propagar para abortar limpio
+        except Exception:
+            pass
+
     for idx, panel in enumerate(paneles):
         numero    = panel["numero"]
         narracion = normalizar_numeros_es(panel["narracion"])
@@ -194,6 +210,11 @@ def generar_audios_por_paneles(datos_comic: dict, carpeta_salida: str = None) ->
             n_chars=len(narracion),
             ctx=f"Panel {numero} [{speaker_label}]",
         )
+        if voice_budget is not None:
+            try:
+                voice_budget.registrar(len(narracion))
+            except Exception:
+                pass
 
         print(f"  panel_{numero:02d}.mp3 [{speaker_label}] {duracion:.1f}s ({size_kb:.1f} KB)")
 
