@@ -36,6 +36,12 @@ ELEVENLABS_LIMITE_MENSUAL = 153_204
 VOZ_RESET_DIA = 15
 VOZ_PRESUPUESTO_HARD_STOP = False
 
+# ─── PRESUPUESTO GOOGLE CLOUD (Vertex: Veo/Imagen/Lyria) ──────────────────────
+# modules/google_budget acumula el gasto estimado de Vertex por mes (archivo
+# compartido ~/.google_cloud_gasto.json). Si el mes pasa este umbral USD, avisa.
+# 0 = sin alerta. Es estimación local; la factura real está en Cloud Console.
+GOOGLE_CLOUD_ALERTA_USD = 25.0
+
 # ─── ANTHROPIC ────────────────────────────────────────────────────────────────
 CLAUDE_MODEL        = "claude-sonnet-4-6"
 SCRIPT_MAX_TOKENS   = 2048   # Aumentado para formato diálogo Gato+Bastet

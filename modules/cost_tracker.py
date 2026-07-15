@@ -31,6 +31,11 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
+try:
+    from modules import google_budget
+except Exception:
+    google_budget = None
+
 log = logging.getLogger("cost_tracker")
 
 # ─── PRECIOS DE REFERENCIA (USD, mayo 2026) ──────────────────────────────────
@@ -176,6 +181,13 @@ def _registrar(tipo: str, modelo: str, desc: str, costo: float, estimado: bool):
         "ts": ts, "tipo": tipo, "modelo": modelo,
         "desc": desc, "costo": costo, "estimado": estimado,
     })
+    # Acumular el gasto de Google (Vertex: VIDEO/IMAGEN/MÚSICA) por mes para tener
+    # visibilidad de la factura de Cloud. No cuenta TOKENS (Claude) ni VOZ (ElevenLabs).
+    if google_budget is not None:
+        try:
+            google_budget.registrar_tipo(tipo, costo)
+        except Exception:
+            pass
     est_nota = " (estimado)" if estimado else ""
     log.info(f"[💰] {tipo} {modelo_corto}: {desc} → ${costo:.4f}{est_nota}")
 
