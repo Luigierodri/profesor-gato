@@ -501,5 +501,13 @@
     "categoria": "historia",
     "geo": "mexico",
     "trend": "huelga nacional monte de piedad"
+  },
+  {
+    "fecha": "2026-07-16",
+    "angulo": "¿Por qué los huracanes se están volviendo más caros y quién paga la cuenta cuando uno destruye tu ciudad?",
+    "evento": "economia_huracanes_desastres",
+    "categoria": "geografia",
+    "geo": "latam",
+    "trend": "huracanes 2026"
   }
 ]
