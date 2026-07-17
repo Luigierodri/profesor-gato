@@ -509,5 +509,13 @@
     "categoria": "geografia",
     "geo": "latam",
     "trend": "huracanes 2026"
+  },
+  {
+    "fecha": "2026-07-17",
+    "angulo": "¿Por qué los volcanes más peligrosos del mundo están justo donde vive más gente y nadie se mueve?",
+    "evento": "ciencia_volcanes_riesgo",
+    "categoria": "ciencia",
+    "geo": "latam",
+    "trend": "erupción volcánica"
   }
 ]
