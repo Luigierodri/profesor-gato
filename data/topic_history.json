@@ -517,5 +517,13 @@
     "categoria": "ciencia",
     "geo": "latam",
     "trend": "erupción volcánica"
+  },
+  {
+    "fecha": "2026-07-18",
+    "angulo": "¿Por qué el Mundial 2026 le va a costar más dinero a México del que le va a dejar?",
+    "evento": "mundial_2026",
+    "categoria": "economia",
+    "geo": "latam",
+    "trend": "copa mundial de la fifa 2026 / a que hora es la final del mundial 2026"
   }
 ]
