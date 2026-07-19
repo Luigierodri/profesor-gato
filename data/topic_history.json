@@ -525,5 +525,13 @@
     "categoria": "economia",
     "geo": "latam",
     "trend": "copa mundial de la fifa 2026 / a que hora es la final del mundial 2026"
+  },
+  {
+    "fecha": "2026-07-19",
+    "angulo": "¿Por qué México gasta miles de millones en estadios para el Mundial y la mayoría de ese dinero nunca regresa?",
+    "evento": "mundial_2026",
+    "categoria": "deportes",
+    "geo": "mexico",
+    "trend": "clausura mundial 2026"
   }
 ]
