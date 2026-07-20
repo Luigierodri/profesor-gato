@@ -533,5 +533,13 @@
     "categoria": "deportes",
     "geo": "mexico",
     "trend": "clausura mundial 2026"
+  },
+  {
+    "fecha": "2026-07-20",
+    "angulo": "¿Por qué el dólar sube y baja y tu quincena siempre pierde aunque el peso 'se recupere'?",
+    "evento": "economia_peso_mexicano",
+    "categoria": "economia",
+    "geo": "mexico",
+    "trend": "precio del dolar hoy"
   }
 ]
