@@ -541,5 +541,13 @@
     "categoria": "economia",
     "geo": "mexico",
     "trend": "precio del dolar hoy"
+  },
+  {
+    "fecha": "2026-07-21",
+    "angulo": "¿Por qué Francia lleva más de un siglo dominando el Tour de France y los demás países apenas pueden competir?",
+    "evento": "tour_de_france_historia",
+    "categoria": "historia",
+    "geo": "latam",
+    "trend": "tour de france 2026"
   }
 ]
