@@ -549,5 +549,13 @@
     "categoria": "historia",
     "geo": "latam",
     "trend": "tour de france 2026"
+  },
+  {
+    "fecha": "2026-07-22",
+    "angulo": "¿Por qué Samsung, Apple y unos pocos fabricantes controlan los chips que mueven todo tu dinero, tu trabajo y tu gobierno?",
+    "evento": "tecnologia_chips_monopolio",
+    "categoria": "tecnologia",
+    "geo": "latam",
+    "trend": "samsung"
   }
 ]
