@@ -557,5 +557,13 @@
     "categoria": "tecnologia",
     "geo": "latam",
     "trend": "samsung"
+  },
+  {
+    "fecha": "2026-07-23",
+    "angulo": "¿Por qué Rosalía actúa en Argentina y los argentinos no pueden pagarle en dólares?",
+    "evento": "economia_argentina_cepo_dolar",
+    "categoria": "politica",
+    "geo": "latam",
+    "trend": "que paso con rosalia y argentina"
   }
 ]
