@@ -565,5 +565,13 @@
     "categoria": "politica",
     "geo": "latam",
     "trend": "que paso con rosalia y argentina"
+  },
+  {
+    "fecha": "2026-07-24",
+    "angulo": "¿Por qué en México rentar una casa cuesta más que el salario mínimo completo y aun así hay lista de espera?",
+    "evento": "economia_vivienda_mexico",
+    "categoria": "sociedad",
+    "geo": "mexico",
+    "trend": "vivienda"
   }
 ]
