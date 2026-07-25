@@ -573,5 +573,13 @@
     "categoria": "sociedad",
     "geo": "mexico",
     "trend": "vivienda"
+  },
+  {
+    "fecha": "2026-07-25",
+    "angulo": "¿Por qué el Bayern Munich lleva décadas comprando a los mejores jugadores de sus rivales y nadie puede impedírselo?",
+    "evento": "futbol_transferencias_dinero",
+    "categoria": "economia",
+    "geo": "latam",
+    "trend": "bayern munich"
   }
 ]
