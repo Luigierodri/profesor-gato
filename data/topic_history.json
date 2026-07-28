@@ -597,5 +597,13 @@
     "categoria": "ciencia",
     "geo": "latam",
     "trend": "forma de la tierra"
+  },
+  {
+    "fecha": "2026-07-28",
+    "angulo": "¿Por qué Ferromex mueve más mercancía que toda la red de pasajeros de México y tú nunca has visto un tren de carga?",
+    "evento": "economia_ferromex_mexico",
+    "categoria": "economia",
+    "geo": "mexico",
+    "trend": "ferromex"
   }
 ]
