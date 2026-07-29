@@ -605,5 +605,13 @@
     "categoria": "economia",
     "geo": "mexico",
     "trend": "ferromex"
+  },
+  {
+    "fecha": "2026-07-29",
+    "angulo": "¿Por qué Alemania produce los mejores clubes de Europa pero nunca puede ganar una Champions?",
+    "evento": "futbol_bundesliga_europa",
+    "categoria": "deportes",
+    "geo": "latam",
+    "trend": "leverkusen - krc genk"
   }
 ]
