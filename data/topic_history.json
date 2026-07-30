@@ -613,5 +613,13 @@
     "categoria": "deportes",
     "geo": "latam",
     "trend": "leverkusen - krc genk"
+  },
+  {
+    "fecha": "2026-07-30",
+    "angulo": "¿Por qué el sargazo destruye playas millonarias y nadie sabe quién paga para limpiarlo?",
+    "evento": "economia_sargazo_caribe",
+    "categoria": "economia",
+    "geo": "latam",
+    "trend": "sargazo"
   }
 ]
