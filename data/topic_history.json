@@ -621,5 +621,13 @@
     "categoria": "economia",
     "geo": "latam",
     "trend": "sargazo"
+  },
+  {
+    "fecha": "2026-07-31",
+    "angulo": "¿Por qué las autopistas de México las construye el gobierno pero las cobra una empresa privada y tú pagas hasta que te mueras?",
+    "evento": "economia_autopistas_mexico",
+    "categoria": "politica",
+    "geo": "mexico",
+    "trend": "autopista méxico - querétaro"
   }
 ]
