@@ -629,5 +629,13 @@
     "categoria": "politica",
     "geo": "mexico",
     "trend": "autopista méxico - querétaro"
+  },
+  {
+    "fecha": "2026-08-01",
+    "angulo": "¿Por qué la Premier League mueve más dinero que el PIB de varios países latinoamericanos y tú la pagas cada fin de semana sin darte cuenta?",
+    "evento": "futbol_transferencias_dinero",
+    "categoria": "historia",
+    "geo": "latam",
+    "trend": "premier league / chelsea - tottenham / manchester united"
   }
 ]
