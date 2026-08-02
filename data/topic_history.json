@@ -637,5 +637,13 @@
     "categoria": "historia",
     "geo": "latam",
     "trend": "premier league / chelsea - tottenham / manchester united"
+  },
+  {
+    "fecha": "2026-08-02",
+    "angulo": "¿Por qué los volcanes más peligrosos del mundo están justo encima de las ciudades más pobladas de América Latina?",
+    "evento": "ciencia_volcanes_riesgo",
+    "categoria": "sociedad",
+    "geo": "latam",
+    "trend": "volcan purace"
   }
 ]
