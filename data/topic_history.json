@@ -645,5 +645,13 @@
     "categoria": "sociedad",
     "geo": "latam",
     "trend": "volcan purace"
+  },
+  {
+    "fecha": "2026-08-03",
+    "angulo": "¿Por qué Epic Games le declaró la guerra a Apple y Google y casi destruye la forma en que pagas apps en todo el mundo?",
+    "evento": "tecnologia_epic_apple_guerra",
+    "categoria": "tecnologia",
+    "geo": "latam",
+    "trend": "epic games"
   }
 ]
