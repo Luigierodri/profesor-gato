@@ -653,5 +653,13 @@
     "categoria": "tecnologia",
     "geo": "latam",
     "trend": "epic games"
+  },
+  {
+    "fecha": "2026-08-04",
+    "angulo": "¿Por qué el narcotráfico en México nació exactamente en Sinaloa y no en ningún otro estado?",
+    "evento": "historia_sinaloa_crimen",
+    "categoria": "historia",
+    "geo": "mexico",
+    "trend": "narcotráfico en méxico"
   }
 ]
