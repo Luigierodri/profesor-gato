@@ -661,5 +661,13 @@
     "categoria": "historia",
     "geo": "mexico",
     "trend": "narcotráfico en méxico"
+  },
+  {
+    "fecha": "2026-08-05",
+    "angulo": "¿Por qué SpaceX vale más que la mayoría de países de América Latina y tú nunca has comprado una acción de ella?",
+    "evento": "tecnologia_spacex_mercado",
+    "categoria": "tecnologia",
+    "geo": "latam",
+    "trend": "spacex stock"
   }
 ]
