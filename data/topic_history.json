@@ -669,5 +669,13 @@
     "categoria": "tecnologia",
     "geo": "latam",
     "trend": "spacex stock"
+  },
+  {
+    "fecha": "2026-08-06",
+    "angulo": "¿Por qué una bacteria que viene del agua sucia puede arruinarte las vacaciones y nadie te avisa antes de que la comas?",
+    "evento": "salud_cyclospora_latam",
+    "categoria": "salud",
+    "geo": "latam",
+    "trend": "cyclospora"
   }
 ]
