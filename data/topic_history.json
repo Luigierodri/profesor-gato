@@ -677,5 +677,13 @@
     "categoria": "salud",
     "geo": "latam",
     "trend": "cyclospora"
+  },
+  {
+    "fecha": "2026-08-07",
+    "angulo": "¿Por qué el Ozempic cuesta 300 dólares en México y 20 en otros países si lo fabrica la misma empresa?",
+    "evento": "economia_ozempic_precios",
+    "categoria": "economia",
+    "geo": "latam",
+    "trend": "ozempic"
   }
 ]
