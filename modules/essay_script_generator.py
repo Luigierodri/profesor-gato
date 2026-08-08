@@ -40,6 +40,10 @@ def _normalizar_visual(v, location: str) -> dict:
         return escena
     tipo = (v.get("tipo") or "").strip().lower()
 
+    if tipo == "footage":
+        query = (v.get("query") or "").strip()
+        return {"tipo": "footage", "query": query} if query else escena
+
     if tipo == "foto":
         query = (v.get("query") or "").strip()
         return {"tipo": "foto", "query": query} if query else escena
@@ -64,8 +68,11 @@ def _normalizar_visual(v, location: str) -> dict:
                 "resaltar": bool(it.get("resaltar")),
             })
         if len(series) >= 2:                       # una sola barra no es una gráfica
+            forma = "torta" if (v.get("forma") or "").strip().lower() in (
+                "torta", "pie", "circulo", "círculo", "dona") else "barras"
             return {
                 "tipo": "grafica",
+                "forma": forma,
                 "titulo": (v.get("titulo") or "").strip(),
                 "unidad": (v.get("unidad") or "").strip(),
                 "series": series,

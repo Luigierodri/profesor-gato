@@ -193,23 +193,43 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         n = b["numero"]
         es_dato = bool(b.get("dato"))
 
-        # 1) Fondo: Ken Burns sobre la imagen 16:9 (mismo patrón de los Shorts).
-        bg = (
-            ffmpeg.input(str(b["ruta_imagen"]), loop=1, framerate=FPS, t=dur)
-            .filter("scale", 8000, -1)
-            .filter("zoompan",
-                    z="min(zoom+0.0012,1.07)",
-                    x="iw/2-(iw/zoom/2)", y="ih/2-(ih/zoom/2)",
-                    d=int(dur * FPS), s=f"{W}x{H}", fps=FPS)
-            .filter("setpts", "PTS-STARTPTS")
-        )
+        # 1) Fondo: si el visual es FOOTAGE (video CC), se usa el clip como fondo
+        # (escala para cubrir 16:9 + crop, muteado, loop si es más corto). Si es
+        # imagen (foto/gráfica/pixel-art), Ken Burns como siempre.
+        ruta_bg = str(b["ruta_imagen"])
+        es_video = ruta_bg.lower().endswith((".mp4", ".mkv", ".webm"))
+        if es_video:
+            bg = (
+                ffmpeg.input(ruta_bg, stream_loop=-1, t=dur)
+                .filter("scale", W, H, force_original_aspect_ratio="increase")
+                .filter("crop", W, H)
+                .filter("fps", FPS)
+                .filter("setpts", "PTS-STARTPTS")
+            )
+        else:
+            bg = (
+                ffmpeg.input(ruta_bg, loop=1, framerate=FPS, t=dur)
+                .filter("scale", 8000, -1)
+                .filter("zoompan",
+                        z="min(zoom+0.0012,1.07)",
+                        x="iw/2-(iw/zoom/2)", y="ih/2-(ih/zoom/2)",
+                        d=int(dur * FPS), s=f"{W}x{H}", fps=FPS)
+                .filter("setpts", "PTS-STARTPTS")
+            )
         # Tarjeta de datos: el fondo se oscurece para que el número MANDE.
         if es_dato:
             bg = bg.filter("drawbox", c="black@0.55", t="fill")
 
-        # 2) Personaje del speaker (esquina inferior derecha, no tapa subtítulos).
+        # 2) Personaje del speaker — SOLO en momentos clave (no en todos los frames),
+        # para dar tono de YouTube. Aparece en datos, footage/foto/gráfica, y en poses
+        # expresivas; se OCULTA en la narración plana ("explica"/"piensa" sin visual).
+        NEUTRAL = {"explica", "piensa"}
+        mostrar_char = (
+            es_dato or es_video or b.get("tiene_visual")
+            or (b.get("pose", "gato") not in NEUTRAL)
+        )
         char_png = resolver_char_png(b.get("speaker", "gato"), b.get("pose"))
-        if char_png.exists():
+        if char_png.exists() and mostrar_char:
             char = (
                 ffmpeg.input(str(char_png), loop=1, framerate=FPS, t=dur)
                 .filter("scale", CHAR_W, -2)

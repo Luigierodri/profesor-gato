@@ -63,10 +63,40 @@ def _apocope(texto: str) -> str:
     return _RE_APOC.sub(lambda m: ("veintiún" if m.group(1) else "un"), texto)
 
 
+# Decimales: "3.6" / "12.7" / "1,234.5" → palabras (la voz se enreda con el punto).
+# Se leen dígito-a-dígito tras "punto" (evita ambigüedad tipo .75 = ¿setenta y cinco?).
+_RE_DEC = re.compile(r"\$?(\d{1,3}(?:,\d{3})*|\d+)\.(\d+)")
+
+
+def _decimal_a_palabras(m) -> str:
+    ent = int(m.group(1).replace(",", ""))
+    dec = m.group(2)
+    ent_p = _entero_a_palabras(ent) or "cero"
+    dec_p = " ".join(_U[int(d)] for d in dec)
+    return f"{ent_p} punto {dec_p}"
+
+
+# Siglas que el TTS deletrea feo → forma hablada natural.
+_SIGLAS = [
+    (re.compile(r"\bEE\.?\s?UU\.?|\bEEUU\b|\bE\.\s?U\.", re.IGNORECASE), "Estados Unidos"),
+]
+
+
+def _normalizar_siglas(texto: str) -> str:
+    for rx, rep in _SIGLAS:
+        texto = rx.sub(rep, texto)
+    return texto
+
+
 def normalizar_numeros_es(texto: str) -> str:
-    """Deletrea a palabras los enteros ≥1000 del texto (para que la voz no se trabe)."""
+    """Prepara el texto para TTS: siglas (EEUU→Estados Unidos), decimales a palabras,
+    % → 'por ciento', y enteros ≥1000 deletreados (para que la voz no se trabe)."""
     if not texto:
         return texto
+
+    texto = _normalizar_siglas(texto)
+    texto = _RE_DEC.sub(_decimal_a_palabras, texto)          # decimales primero
+    texto = re.sub(r"\s*%", " por ciento", texto)            # 3.6% → ... por ciento
 
     def _repl(m):
         s = m.group(0).replace("$", "").replace(",", "")

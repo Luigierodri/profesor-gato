@@ -46,6 +46,47 @@ def _slug(t: str) -> str:
 
 # ── OUTLINES CURADOS (flujo híbrido: Claude propone → Luigi aprueba) ──────────
 OUTLINES = {
+    # La economía que hereda el nuevo presidente de Colombia (posesión 7 ago 2026).
+    # Tono MEDIDO y no-partidista: Gato NO ataca a De la Espriella ni al saliente;
+    # habla de los NÚMEROS que recibe cualquier gobierno que entra hoy. Engagement por
+    # datos, no por bando. Cifras SOLO de la ficha verificada; lo no confirmado, como
+    # pregunta. Aprovecha el nuevo visual: FOOTAGE real de la posesión/Congreso/Bogotá.
+    "la economía que hereda el nuevo presidente de colombia": {
+        "nota": ("El HOOK es la posesión de hoy (Abelardo de la Espriella asume como "
+                 "presidente número 61 de Colombia, en Cali, con la mayor votación de la "
+                 "historia). Pero el video NO opina del presidente ni de su política: "
+                 "pregunta '¿qué economía recibe?'. Tono sobrio, de profesor que explica, "
+                 "sin banner ni hate ni celebración. Usa footage real (tipo:footage) para "
+                 "la posesión y el Congreso, fotos para Bogotá/billetes, y GRÁFICAS para "
+                 "las comparaciones de cifras. NO uses 'hoy/mañana' de forma que caduque "
+                 "raro: 'al asumir en 2026' está bien. Cierre lúcido, no derrotista: el "
+                 "reto es real y le toca a cualquiera que gobierne."),
+        "capitulos": [
+            {"capitulo": "La herencia detrás de la ceremonia",
+             "notas": ("hook: hoy Colombia estrena presidente 61 con la posesión en Cali; "
+                       "pero detrás del protocolo hay una caja pública que recibe en cierto "
+                       "estado; el video va a mirar los números fríos, no el discurso; "
+                       "footage de la posesión presidencial")},
+            {"capitulo": "El hueco fiscal",
+             "notas": ("el gasto supera al ingreso: déficit fiscal cercano al 7% del PIB y "
+                       "deuda pública alrededor del 66% del PIB (cifras que confirme la "
+                       "ficha); explicar en simple qué significa gastar más de lo que entra "
+                       "y por qué la deuda que sube limita al que llega; GRÁFICA de deuda")},
+            {"capitulo": "El costo de la vida",
+             "notas": ("inflación por encima de la meta (cerca de 6.4%, meta del 3% que no "
+                       "volvería pronto) y el dólar promedio alrededor de 3.750 pesos; cómo "
+                       "eso pega al bolsillo del colombiano común; CTA de mitad aquí; "
+                       "footage/foto de mercado o billetes")},
+            {"capitulo": "El motor que no arranca del todo",
+             "notas": ("crecimiento del PIB moderado (cerca de 2.9%, revisado a la baja) y "
+                       "el problema estructural del empleo informal; qué tan difícil es "
+                       "crecer y crear empleo bueno con la caja apretada; GRÁFICA")},
+            {"capitulo": "Lo que de verdad se hereda",
+             "notas": ("cierre medido: gobierne quien gobierne, estos números son el punto "
+                       "de partida; la pregunta honesta para comentar: ¿qué debería ser la "
+                       "prioridad número uno con esta herencia? sin decir por quién votar")},
+        ],
+    },
     # El negocio del Mundial. Validado por el video TOP del canal ("boletos
     # imposibles", 756 vistas + comentarios de rabia). Indignación CON datos:
     # cada cifra sale de la ficha verificada; lo no verificado se narra como
@@ -141,10 +182,262 @@ OUTLINES = {
                        "comentar sin pedir que tomen bando")},
         ],
     },
+
+    # El Mar de Aral. Origen: el PRIMER cómic del Profesor Gato (cuenta personal de
+    # TikTok de Luigi) — jaló bien, ahora se vuelve largo robusto. ADN del canal:
+    # una DECISIÓN ECONÓMICA (monocultivo de algodón para exportación, "oro blanco")
+    # con una externalidad catastrófica. Internacional (URSS/Asia Central), no mexicano.
+    # Regla Pemex: NÚMEROS PRIMERO, cada cifra de la ficha; lo no verificado va como
+    # pregunta. Apolítico: no es un panfleto anti-URSS — la lección es UNIVERSAL sobre
+    # ignorar el costo real de una decisión económica (aplica a cualquier país/empresa).
+    # EVERGREEN: presente histórico, sin "esta semana".
+    "el mar de aral": {
+        "nota": ("Formato NÚMEROS PRIMERO con arco de tragedia (del cómic original): "
+                 "oasis → apuesta económica → colapso → costo humano → ¿se puede revertir?. "
+                 "Tono: lucidez con asombro triste, NUNCA catastrofismo hueco ni moraleja "
+                 "ecologista de regaño — el villano no es 'el humano malo' sino una CUENTA "
+                 "mal hecha (se contabilizó el algodón y NO el mar). Frase-ancla tipo: 'un mar "
+                 "no aparece en ningún balance hasta que ya no está'. La recuperación del Aral "
+                 "Norte (presa Kok-Aral) da un cierre de esperanza REAL con datos, no de "
+                 "consuelo. Cada cifra sale de la ficha; si algo no está verificado, pregunta "
+                 "abierta. Bastet hace las preguntas del espectador. EVERGREEN."),
+        "capitulos": [
+            {"capitulo": "El cuarto mar del mundo",
+             "notas": ("abre con lo que SE PERDIÓ, en cifras: el Aral era el 4º lago más "
+                       "grande del planeta (~68,000 km² en 1960), un oasis azul en pleno "
+                       "desierto de Asia Central que sostenía una industria pesquera enorme "
+                       "(~1/6 de la pesca de toda la URSS, decenas de miles de empleos, "
+                       "puertos como Moynaq y Aralsk — las cifras que confirme la ficha). "
+                       "FOTO real satelital de 1960. Bastet: '¿un mar, en un desierto?'")},
+            {"capitulo": "La apuesta del oro blanco",
+             "notas": ("la DECISIÓN económica, sin ideología: para volverse potencia "
+                       "algodonera de exportación, la planificación soviética desvió los dos "
+                       "ríos que alimentaban el mar (Amu Daria y Syr Daria) hacia canales de "
+                       "riego gigantes (canal de Karakum) para monocultivo de algodón, el "
+                       "'oro blanco'. El cálculo NO era estúpido: el algodón daba divisas; el "
+                       "error fue no poner el mar en la cuenta. Bastet: '¿nadie avisó?' — se "
+                       "sabía que el mar bajaría; se consideró un precio aceptable")},
+            {"capitulo": "El mar que se evaporó",
+             "notas": ("el colapso EN DATOS: sin ríos que lo repongan, el Aral empezó a "
+                       "encogerse; GRÁFICA de superficie por año (1960 ~68,000 → 1990s → "
+                       "2000s → hoy, las cifras de la ficha) y la salinidad que se disparó "
+                       "(de ~10 g/L a más de 100 g/L, matando la vida) — mapas 1975/1985/1995 "
+                       "como en el cómic. El mar se partió en pedazos. Aquí va la TARJETA DE "
+                       "DATOS más fuerte del video: cuánto volumen perdió")},
+            {"capitulo": "El polvo que enferma",
+             "notas": ("el costo humano, con datos: donde hubo mar quedó el Aralkum, un "
+                       "desierto NUEVO de sal y químicos (residuos de pesticidas y "
+                       "fertilizantes del algodón); tormentas de polvo tóxico de millones "
+                       "de toneladas al año que dañan pulmones y cultivos; la pesca colapsó a "
+                       "CERO y dejó barcos oxidándose en la arena (la foto icónica de Moynaq); "
+                       "salud regional golpeada (respiratorio, mortalidad infantil — solo lo "
+                       "que la ficha respalde). CTA de mitad al cerrar el capítulo")},
+            {"capitulo": "¿Se puede devolver un mar?",
+             "notas": ("cierre con esperanza REAL y medida: Kazajistán y el Banco Mundial "
+                       "construyeron la presa de Kok-Aral (~2005, costo que confirme la ficha) "
+                       "y el Aral NORTE volvió a subir de nivel, bajó su sal y regresaron los "
+                       "peces y algo de la pesca — el sur quedó casi perdido. La lección "
+                       "universal: el mar no aparecía en ningún balance hasta que ya no "
+                       "estaba; toda decisión económica tiene una factura que alguien paga "
+                       "después. Pregunta final para comentar, sin moraleja de regaño")},
+        ],
+    },
+
+    # La tierra en Colombia. Pedido de Luigi (colombiano): tema POLÉMICO que levante
+    # pasiones, pero con el ADN del Gato — NÚMEROS PRIMERO, apolítico, mesurado. El
+    # tema es la concentración de la propiedad rural (Gini de tierra ~0.87-0.89, de
+    # los más altos del mundo) como raíz económica de 60 años de conflicto. NO es
+    # panfleto de izquierda ni de derecha: la tierra concentrada no es ilegal, es una
+    # ARITMÉTICA con consecuencias. El Gato es extranjero (no colombiano): "solo leo
+    # la escritura". Cada cifra de la ficha; lo no verificado va como pregunta abierta.
+    # EVERGREEN: presente histórico, sin "esta semana". Frase-ancla: "la tierra no
+    # milita en ningún partido — solo obedece a quien tiene el título".
+    "la tierra en colombia": {
+        "nota": ("Formato NÚMEROS PRIMERO con arco: el contraste brutal → el número que "
+                 "lo mide → el mapa de quién tiene qué → la paradoja del uso (vacas vs "
+                 "comida) → cómo se amarró el nudo (historia) → qué significa. Tono: "
+                 "lucidez fría, CERO señalar partido/gobierno, cero regaño ideológico — "
+                 "se reconoce que concentrar tierra no es un delito y que el problema es "
+                 "estructural y viejo (atraviesa TODOS los gobiernos). Frase-ancla: 'la "
+                 "tierra no vota, no milita — solo obedece a quien tiene el título'. El "
+                 "Gato aclara que él es extranjero: no defiende bando, solo lee cifras. "
+                 "Bastet hace las preguntas del espectador ('¿el 1% tiene el 81%?'). "
+                 "NADA de cifra sin respaldo de la ficha; si algo no está verificado, se "
+                 "dice como pregunta. Foco Colombia pero lección universal (quién tiene "
+                 "la tierra tiene el poder). EVERGREEN."),
+        "capitulos": [
+            {"capitulo": "Una vaca y una familia",
+             "notas": ("COLD OPEN con el contraste que duele, en cifras: en Colombia el "
+                       "~1% de las fincas más grandes concentra alrededor del 81% de la "
+                       "tierra rural, mientras cerca del 65% de los predios miden menos de "
+                       "3 hectáreas (cifras de la ficha, IGAC/Oxfam). Imagen mental: una "
+                       "res de ganadería extensiva ocupa más tierra que una familia "
+                       "campesina entera. FOTO real de paisaje rural colombiano (sabana/ "
+                       "altiplano) o latifundio ganadero. Bastet: '¿el 1% tiene el 81%? "
+                       "¿de un país entero?' — el Gato: 'no es opinión, es el catastro'")},
+            {"capitulo": "El número que no vota",
+             "notas": ("qué es el coeficiente de Gini (0 = todos tienen igual, 1 = uno "
+                       "solo lo tiene todo) y por qué aquí importa. La tierra en Colombia "
+                       "tiene un Gini de ~0.87 (frontera agrícola) a ~0.89 (predios "
+                       "privados totales), IGAC 2023 — de los más altos del mundo. "
+                       "CLAVE del capítulo: compararlo con el Gini de INGRESO del país "
+                       "(~0.55), que ya es alto → la TIERRA está mucho MÁS concentrada que "
+                       "el dinero. GRÁFICA de barras en misma escala 0-1: 'Gini del "
+                       "INGRESO ~0.55' vs 'Gini de la TIERRA ~0.87'. Frase: 'la tierra es "
+                       "la desigualdad que está debajo de la desigualdad'. fondo "
+                       "situacional: oficina de catastro / mapa rural")},
+            {"capitulo": "El mapa de quién tiene qué",
+             "notas": ("la concentración con números duros: el ~1% de los mayores "
+                       "propietarios posee cerca del 47% del área rural privada; el 10% "
+                       "más grande, alrededor del 81%. Del otro lado, la gran mayoría de "
+                       "propietarios (~80%) apenas tiene ~10% de la tierra. GRÁFICA de "
+                       "barras: '% del área que tiene el top 1%' (~47), 'el top 10%' (~81) "
+                       "y 'el 80% restante de dueños' (~10) — cifras de la ficha. Idea: "
+                       "'no es que falte tierra; es que sobra concentrada'. fondo "
+                       "situacional distinto: vista aérea de fincas/parcelas")},
+            {"capitulo": "La paradoja de la vaca",
+             "notas": ("el giro ECONÓMICO menos obvio (uso del suelo): Colombia dedica "
+                       "~38.5 millones de hectáreas a ganadería, pero solo ~19.3 millones "
+                       "tienen vocación ganadera — casi el DOBLE de lo que debería; y cerca "
+                       "del 65% de la tierra apta para agricultura no se cultiva (cifras de "
+                       "la ficha, IGAC/UPRA). Mientras tanto, ~70% de los alimentos que "
+                       "come el país los producen mini/microfundios. GRÁFICA de barras: "
+                       "'hectáreas EN ganadería ~38.5M' vs 'hectáreas CON vocación "
+                       "ganadera ~19.3M'. Frase: 'la mejor tierra no está sembrada: está "
+                       "pastando'. fondo situacional: potrero extenso con ganado")},
+            {"capitulo": "Cómo se amarró el nudo",
+             "notas": ("la historia SIN señalar partido, para explicar por qué sigue así: "
+                       "1936 la Ley 200 intentó que 'la tierra fuera de quien la trabaja' "
+                       "y chocó con los terratenientes; 1961 otro intento (Ley 135); en "
+                       "1972 el Pacto de Chicoral frenó la reforma agraria (se le llamó "
+                       "'el funeral de la reforma'). La tierra sin repartir fue una de las "
+                       "raíces económicas del conflicto armado — y la guerra CONCENTRÓ aún "
+                       "más por el despojo: el Gini de propietarios subió de ~0.84 (1960) a "
+                       "~0.885 (2009) (Ibáñez-Muñoz/Oxfam). En 2016 el punto 1 del Acuerdo "
+                       "de Paz (Reforma Rural Integral) prometió un Fondo de Tierras de 3 "
+                       "millones de ha + formalizar 7 millones; años después sigue en buena "
+                       "parte pendiente (sin culpar a un gobierno puntual). TARJETA/GRÁFICA "
+                       "opcional: Gini de propietarios 1960 (~0.84) vs 2009 (~0.885), 'subió "
+                       "con la guerra'. CTA de mitad al cerrar el capítulo")},
+            {"capitulo": "La escritura sigue ahí",
+             "notas": ("aterrizaje apolítico: la concentración de la tierra no es de un "
+                       "gobierno ni de un partido — atravesó liberales, conservadores y a "
+                       "todos los que vinieron después; es de las más viejas del país. No "
+                       "se trata de odiar al que tiene tierra, sino de ver la aritmética: "
+                       "quien tiene la tierra tiene el poder, y un país que produce el 70% "
+                       "de su comida en pedacitos mientras su mejor suelo engorda vacas "
+                       "está dejando comida, empleo y paz sobre la mesa. El Gato recuerda "
+                       "que él solo leyó la escritura. Pregunta final para comentar sin "
+                       "pedir que tomen bando")},
+        ],
+    },
+
+    # Nicaragua deja de tener elecciones. DISPARADOR (verificado por web el 21 jul 2026):
+    # el 19-20 de julio de 2026, en el acto por el 47º aniversario de la revolución
+    # sandinista en Managua, Daniel Ortega —co-presidente junto a Rosario Murillo desde
+    # febrero de 2025— dijo que "aquí no volverá a haber elecciones" y anunció que la
+    # Asamblea Nacional aprobará leyes para "poner un muro" a la oposición. Es la primera
+    # vez que lo dice en público. Fuentes: CNN en Español, Infobae, Confidencial,
+    # Al Jazeera (20-21 jul 2026).
+    # REGLA DEL CANAL: el Gato es INTERNACIONAL (no mexicano). Tema político delicado →
+    # el video explica el MECANISMO (cómo se desmonta una democracia por la vía legal),
+    # no reparte insultos: la fuerza está en los hechos y las fechas, no en el adjetivo.
+    # EVERGREEN: todo con fecha explícita ("el 19 de julio de 2026"), nunca "esta semana".
+    "nicaragua sin elecciones": {
+        "nota": ("Formato EXPLICADOR CON LÍNEA DE TIEMPO: el video responde una sola "
+                 "pregunta — ¿cómo llega un país a que su gobernante anuncie, en voz "
+                 "alta, que no volverá a haber elecciones? Se cuenta como un MECANISMO "
+                 "en pasos, cada uno con fecha y cifra verificada, porque el punto "
+                 "didáctico es que ninguno de esos pasos fue un golpe de Estado: todos "
+                 "fueron legales, votados y publicados en el diario oficial. Tono: "
+                 "lucidez fría y didáctica, CERO insulto y CERO bando — no se trata de "
+                 "izquierda contra derecha (el propio Ortega llegó derrocando a una "
+                 "dictadura de derecha en 1979, y ese es el dato más incómodo del "
+                 "video). Frase-ancla: 'las democracias ya no se caen de un golpe: se "
+                 "desmontan pieza por pieza, y con papeles en regla'. NADA de cifra sin "
+                 "respaldo de la ficha; lo no verificado va como pregunta abierta. "
+                 "EVERGREEN: toda referencia temporal con fecha explícita. Bastet hace "
+                 "las preguntas del espectador que no sigue el tema."),
+        "capitulos": [
+            {"capitulo": "La frase",
+             "notas": ("abre en seco con el hecho: el 19 de julio de 2026, en el acto "
+                       "por el 47º aniversario de la revolución sandinista en Managua, "
+                       "Daniel Ortega dijo que en Nicaragua 'no volverá a haber "
+                       "elecciones', y anunció que la Asamblea Nacional aprobará leyes "
+                       "para 'poner un muro' a la oposición. Lo excepcional no es que "
+                       "las elecciones ya no sirvieran para cambiar de gobierno —eso "
+                       "llevaba años— sino que se diga en público y de frente. Bastet: "
+                       "'¿un presidente puede simplemente decir eso?' → el video "
+                       "responde que sí, y explica cómo se llega ahí")},
+            {"capitulo": "El que derrocó a una dictadura",
+             "notas": ("el contexto que casi nadie recuerda y que vuelve el tema "
+                       "universal: Ortega llegó al poder en 1979 como parte de la "
+                       "revolución sandinista que derrocó a la dictadura de la familia "
+                       "Somoza, que llevaba más de cuatro décadas en el poder. Gobernó "
+                       "en los ochenta, PERDIÓ una elección en 1990 y entregó el poder. "
+                       "Volvió a ganar en 2006 y desde 2007 no ha vuelto a soltarlo. "
+                       "GRÁFICA: años en el poder (dinastía Somoza vs. Ortega), con las "
+                       "cifras que confirme la ficha. La lección no es sobre una "
+                       "ideología: es sobre lo que le pasa a cualquiera que se queda "
+                       "demasiado tiempo")},
+            {"capitulo": "Los pasos legales",
+             "notas": ("EL CORAZÓN DIDÁCTICO: el mecanismo, paso por paso y con fechas, "
+                       "SOLO con lo que confirme la ficha — la resolución judicial de "
+                       "2009/reforma que habilitó la reelección indefinida; las "
+                       "elecciones de 2021 con los principales precandidatos "
+                       "opositores detenidos ANTES de la votación; la reforma "
+                       "constitucional que entró en vigor en 2025 y creó la figura de "
+                       "'co-presidencia' (Ortega y su esposa Rosario Murillo) y estiró "
+                       "el mandato de 5 a 6 años. Insistir en el patrón: cada paso fue "
+                       "aprobado por instituciones formalmente válidas. CTA de mitad al "
+                       "cerrar el capítulo")},
+            {"capitulo": "El costo en gente",
+             "notas": ("que no se quede en abstracto: las protestas de abril de 2018 y "
+                       "el número de muertos que documentaron los organismos de derechos "
+                       "humanos; los nicaragüenses que salieron del país desde entonces; "
+                       "los opositores a los que se les retiró la nacionalidad y se "
+                       "declaró 'apátridas'; medios y organizaciones civiles cerrados. "
+                       "GRÁFICA con la serie que confirme la ficha (muertos 2018, "
+                       "personas desnacionalizadas, ONG canceladas o emigración). "
+                       "Bastet pregunta '¿y nadie hizo nada?' → la respuesta honesta "
+                       "sobre sanciones y condenas internacionales y su límite real")},
+            {"capitulo": "Por qué te importa aunque no seas de ahí",
+             "notas": ("aterrizaje universal y apolítico, el que convierte: esto no es "
+                       "una nota exótica sobre un país chico. El manual se repite —en "
+                       "América Latina, en Europa del Este, en África— y siempre empieza "
+                       "igual: no con tanques, sino con reformas que se ven aburridas, "
+                       "tribunales que dan la razón y elecciones que se siguen "
+                       "celebrando hasta que dejan de significar algo. La señal de "
+                       "alarma nunca es el día que las cancelan; es el día que dejan de "
+                       "poder cambiar nada. Cerrar sin pedir que tomen bando y con "
+                       "pregunta abierta para comentarios")},
+        ],
+    },
 }
 
 # Enfoque de búsqueda del fact_checker por tema (qué cifras necesita el guion).
 FICHA_ENFOQUE = {
+    "nicaragua sin elecciones": (
+        "- La declaración de Daniel Ortega del 19 de julio de 2026 en el acto por el 47º "
+        "aniversario de la revolución sandinista: cita textual de que 'no volverá a haber "
+        "elecciones' y el anuncio de leyes de la Asamblea Nacional para bloquear a la "
+        "oposición (fuente y fecha exactas)\n"
+        "- Cronología del poder de Ortega: llegada en 1979 (caída de la dictadura de "
+        "Somoza), gobierno de los ochenta, derrota electoral de 1990 y entrega del poder, "
+        "regreso en 2006/2007; total de años que la familia Somoza estuvo en el poder vs. "
+        "años acumulados de Ortega — para una gráfica comparativa\n"
+        "- La reforma constitucional que entró en vigor en 2025: figura de 'co-presidencia' "
+        "(Ortega y Rosario Murillo) y extensión del mandato presidencial de 5 a 6 años "
+        "(fecha y contenido)\n"
+        "- La reelección indefinida: resolución/reforma que la habilitó (año) \n"
+        "- Elecciones de 2021: número de precandidatos opositores detenidos antes de los "
+        "comicios y % oficial con que ganó Ortega\n"
+        "- Protestas de abril de 2018: número de muertos según organismos de derechos "
+        "humanos (CIDH/ONU), cifra de personas que han emigrado de Nicaragua desde 2018\n"
+        "- Opositores a los que se retiró la nacionalidad ('apátridas'): número de "
+        "personas desnacionalizadas; ONG y medios cerrados por el gobierno\n"
+        "- Sanciones o condenas internacionales relevantes (OEA, UE, EE.UU.) y su alcance"
+    ),
     "el negocio del mundial": (
         "- Ingresos de la FIFA en el ciclo del Mundial 2026 (proyección o cifra oficial)\n"
         "- Ingresos reales de la FIFA en el ciclo de Qatar 2022\n"
@@ -168,6 +461,43 @@ FICHA_ENFOQUE = {
         "- Monto en el presupuesto federal 2026 destinado a pagar deuda de Pemex\n"
         "- Pérdidas recientes de Pemex: resultado del 1T 2026 y del 3T 2025\n"
         "- Meta de deuda del Plan Pemex hacia 2030"
+    ),
+    "el mar de aral": (
+        "- Superficie del Mar de Aral en 1960 (~km²) y su lugar como uno de los lagos "
+        "más grandes del mundo (¿4º?)\n"
+        "- Serie de superficie y/o volumen por año para una gráfica: 1960, 1975, 1985, "
+        "1995, 2000s y nivel actual (km² o % perdido)\n"
+        "- Salinidad del agua: nivel original (~g/L) vs. actual, y su efecto en la vida\n"
+        "- Los dos ríos desviados (Amu Daria y Syr Daria), el canal de Karakum y la "
+        "expansión del algodón de exportación soviético/uzbeko (superficie regada o "
+        "producción de algodón, si hay cifra)\n"
+        "- Industria pesquera del Aral: captura anual en su pico, empleos y su "
+        "participación en la pesca de la URSS; colapso a cero (puertos de Moynaq/Aralsk)\n"
+        "- El desierto Aralkum: superficie del lecho seco y volumen de tormentas de "
+        "polvo salino/tóxico al año\n"
+        "- Impactos de salud en la región (respiratorios, mortalidad infantil), solo "
+        "cifras verificables\n"
+        "- Recuperación del Aral Norte: presa de Kok-Aral (año ~2005), costo y "
+        "financiamiento (Banco Mundial), y el rebote de nivel/pesca reportado"
+    ),
+    "la tierra en colombia": (
+        "- Coeficiente de Gini de la TIERRA/propiedad rural en Colombia según el estudio "
+        "más reciente del IGAC (2023): valor para la frontera agrícola (~0.87) y para los "
+        "predios rurales privados totales (~0.89), y su lugar entre los más altos del mundo\n"
+        "- Coeficiente de Gini del INGRESO de Colombia reciente (~0.55) para contraste, y "
+        "su posición en América Latina / el mundo\n"
+        "- Concentración: % del área rural privada en manos del 1%, 5% y 10% de los mayores "
+        "propietarios (~47%, ~71%, ~81%); % de predios menores a 3 hectáreas (~65%); % de "
+        "propietarios pequeños y la fracción de tierra que tienen (~80% de dueños con ~10%)\n"
+        "- Oxfam / Semana: '1% de las fincas más grandes controla ~81% de la tierra'\n"
+        "- Uso del suelo: hectáreas dedicadas a ganadería (~38.5M) vs hectáreas con vocación "
+        "ganadera (~19.3M); % de la tierra apta para agricultura que no se aprovecha (~65%)\n"
+        "- % de los alimentos del país producidos por minifundio/microfundio (~70%)\n"
+        "- Historia agraria: Ley 200 de 1936, Ley 135 de 1961, Pacto de Chicoral 1972 (qué "
+        "frenó); evolución del Gini de propietarios 1960 (~0.84) → 2009 (~0.885) (Ibáñez-Muñoz)\n"
+        "- Acuerdo de Paz 2016, punto 1 (Reforma Rural Integral): Fondo de Tierras de 3 "
+        "millones de ha + formalización de 7 millones de ha, y estado de avance (sin señalar "
+        "partido/gobierno)"
     ),
 }
 
@@ -203,6 +533,8 @@ def _cargar_audios_existentes(carpeta: str, segmentos: list[dict]) -> list[dict]
 def _clave_visual(v: dict) -> str:
     """Clave de cache por identidad visual (misma foto/gráfica/escena = 1 sola imagen)."""
     t = v.get("tipo", "escena")
+    if t == "footage":
+        return f"footage::{v.get('query','')}"
     if t == "foto":
         return f"foto::{v.get('query','')}"
     if t == "grafica":
@@ -230,13 +562,24 @@ def _generar_fondos(segmentos: list[dict], carpeta: Path) -> list[str]:
             tipo = v.get("tipo", "escena")
             ruta = None
             try:
-                if tipo == "foto":
+                if tipo == "footage":
+                    from modules.topical_footage import descargar_footage_cc
+                    log.info(f"  [bg {idx}] FOOTAGE CC ← {v.get('query','')[:60]}")
+                    ruta = str(descargar_footage_cc(v.get("query", "")))
+                elif tipo == "foto":
                     log.info(f"  [bg {idx}] FOTO real ← {v.get('query','')[:60]}")
                     ruta = fondo_16x9(v.get("query", ""), dest)
                 elif tipo == "grafica":
-                    log.info(f"  [bg {idx}] GRÁFICA ← {v.get('titulo','')[:60]}")
-                    # Estilo poster: fondo situacional (Imagen) DISTINTO por gráfica
-                    # para diversificar los escenarios; los datos reales van encima.
+                    # ESTILO PÓSTER SIEMPRE: la gráfica se dibuja sobre un fondo
+                    # situacional de Imagen (regla de estilo del canal — los datos
+                    # reales van ENCIMA de la escena, nunca en slate plano). Si el
+                    # guion no lo marcó, lo forzamos y derivamos el fondo_prompt del
+                    # escenario del propio segmento (o del título de la gráfica), para
+                    # diversificar los fondos. Ver reference-gato-estilo-graficas.
+                    v.setdefault("estilo", "poster")
+                    if not v.get("fondo_prompt"):
+                        v["fondo_prompt"] = s.get("location") or v.get("titulo", "")
+                    log.info(f"  [bg {idx}] GRÁFICA (poster) ← {v.get('titulo','')[:60]}")
                     fp = v.get("fondo_prompt")
                     if fp and v.get("estilo") == "poster" and not v.get("fondo"):
                         try:
@@ -367,7 +710,8 @@ def correr_essay(tema: str, publicar: bool = False, reuse_audio: str = "",
         bloques.append({"numero": a["numero"], "ruta_audio": a["ruta_audio"],
                         "ruta_imagen": img, "palabras": a.get("palabras", []),
                         "speaker": s.get("speaker", "gato"), "pose": s.get("pose"),
-                        "dato": s.get("dato"), "capitulo": s.get("capitulo", "")})
+                        "dato": s.get("dato"), "capitulo": s.get("capitulo", ""),
+                        "tiene_visual": (s.get("visual") or {}).get("tipo") in ("foto", "grafica", "footage")})
     output_name = f"{ts}_ESSAY_{_slug(titulo)[:35]}"
     assembler = EssayAssembler()
     ruta_video, capitulos = assembler.ensamblar(bloques, titulo=titulo,

@@ -138,6 +138,8 @@ def render_chart(spec: dict, output_path) -> str:
     Fondo situacional: si spec['fondo'] apunta a una imagen (pixel-art de Imagen del
     tema real), se usa oscurecida como base y los datos REALES se dibujan encima.
     """
+    if spec.get("forma") == "torta":
+        return _render_pie(spec, output_path)
     if spec.get("estilo") == "poster":
         return _render_poster(spec, output_path)
 
@@ -238,6 +240,23 @@ def render_chart(spec: dict, output_path) -> str:
 CREMA = (245, 230, 200)
 GRID  = (140, 148, 164)
 
+# Paletas de acento para las BARRAS (el título/marco siguen dorados = marca). Se elige
+# una determinista por título → cada gráfica varía, pero la misma gráfica es estable.
+# Evita que "todas las gráficas se vean iguales".
+_PALETAS = [
+    {"hi_top": (255, 214, 130), "hi_bot": (122, 88, 52),  "top": GOLD,            "bot": (78, 58, 36),  "mark": GOLD},            # dorado
+    {"hi_top": (120, 230, 220), "hi_bot": (40, 110, 110), "top": (90, 190, 185),  "bot": (30, 80, 80),  "mark": (120, 230, 220)}, # teal
+    {"hi_top": (255, 150, 130), "hi_bot": (140, 60, 50),  "top": (220, 110, 95),  "bot": (100, 45, 38), "mark": (255, 150, 130)}, # coral
+    {"hi_top": (160, 225, 140), "hi_bot": (70, 120, 55),  "top": (120, 185, 100), "bot": (55, 90, 42),  "mark": (160, 225, 140)}, # verde
+    {"hi_top": (200, 160, 255), "hi_bot": (95, 65, 150),  "top": (160, 125, 215), "bot": (70, 50, 110), "mark": (200, 160, 255)}, # violeta
+]
+
+
+def _paleta_de(titulo: str) -> dict:
+    import hashlib
+    h = int(hashlib.md5((titulo or "chart").encode("utf-8")).hexdigest(), 16)
+    return _PALETAS[h % len(_PALETAS)]
+
 _FONT_HEAVY = [r"C:\Windows\Fonts\impact.ttf", r"C:\Windows\Fonts\ariblk.ttf",
                "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"]
 
@@ -330,19 +349,20 @@ def _render_poster(spec: dict, output_path) -> str:
     bw = min(slot * 0.52, 148)
     f_val = _font_heavy(48)
     f_lab = _font(34, bold=True)
+    pal = _paleta_de(titulo)
     for i, s in enumerate(series):
         v = valores[i]
         cx = PL_X0 + slot * (i + 0.5)
         bh = (v / top_val) * plot_h
         x0, x1, y0 = cx - bw / 2, cx + bw / 2, base_y - bh
         hi = bool(s.get("resaltar"))
-        top_c = (255, 214, 130) if hi else GOLD
-        bot_c = (122, 88, 52) if hi else (78, 58, 36)
+        top_c = pal["hi_top"] if hi else pal["top"]
+        bot_c = pal["hi_bot"] if hi else pal["bot"]
         d.rounded_rectangle([x0, y0, x1, base_y], radius=10, fill=bot_c)
         d.rounded_rectangle([x0, y0, x1, y0 + min(bh * 0.5, plot_h)], radius=10, fill=top_c)
         d.rectangle([x0, y0, x1, base_y], outline=CREMA, width=3)
         r = 15
-        d.ellipse([cx - r, y0 - 2 * r - 8, cx + r, y0 - 8], fill=GOLD, outline=(60, 44, 24), width=3)
+        d.ellipse([cx - r, y0 - 2 * r - 8, cx + r, y0 - 8], fill=pal["mark"], outline=(60, 44, 24), width=3)
         vtxt = str(s.get("valor_txt") or _fmt_num(s.get("valor", "")))
         _text_out(d, (cx, y0 - 2 * r - 18), vtxt, f_val, CREMA, w=3, anchor="ms")
         _text_out(d, (cx, base_y + 14), str(s.get("label", ""))[:22], f_lab, CREMA, w=2, anchor="ma")
@@ -352,6 +372,66 @@ def _render_poster(spec: dict, output_path) -> str:
 
     img.convert("RGB").save(output_path, "PNG")
     log.info(f"  Gráfica POSTER: {output_path.name} ({n} barras)")
+    return str(output_path)
+
+
+# ── PIE / TORTA (referencia3): rebanadas de colores sobre fondo temático ──────
+_PIE_COLORS = [
+    (242, 197, 106), (120, 190, 185), (220, 110, 95), (150, 190, 110),
+    (170, 140, 215), (235, 170, 90), (110, 170, 220), (230, 130, 160),
+]
+
+
+def _render_pie(spec: dict, output_path) -> str:
+    """Gráfica de TORTA sobre fondo temático: rebanadas de colores, % dentro,
+    etiqueta afuera. Deja aire a la derecha para el personaje del assembler."""
+    import math
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    titulo = (spec.get("titulo") or "").strip()
+    fuente = (spec.get("fuente") or "").strip()
+    series = [s for s in (spec.get("series") or []) if isinstance(s, dict)]
+    vals = [abs(float(s.get("valor", 0) or 0)) for s in series]
+    total = sum(vals) or 1.0
+
+    img, _ = _base_canvas(spec)
+    d = ImageDraw.Draw(img)
+    d.rectangle([0, 0, W - 1, H - 1], outline=GOLD_SOFT, width=7)
+
+    f_tit = _font_heavy(84)
+    ty = 40
+    for ln in _wrap(d, titulo.upper(), f_tit, W - 220)[:2]:
+        wln = d.textlength(ln, font=f_tit)
+        _text_out(d, ((W - wln) / 2, ty), ln, f_tit, CREMA, w=5)
+        ty += 92
+
+    cx, cy, R = 620, 640, 320
+    bbox = [cx - R, cy - R, cx + R, cy + R]
+    f_pct = _font_heavy(52)
+    f_lab = _font(36, bold=True)
+    ang = -90.0                                  # arranca arriba (12 en punto)
+    for i, s in enumerate(series):
+        sweep = (vals[i] / total) * 360.0
+        a0, a1 = ang, ang + sweep
+        col = _PIE_COLORS[i % len(_PIE_COLORS)]
+        d.pieslice(bbox, a0, a1, fill=col, outline=(26, 20, 12), width=6)
+        mid = math.radians((a0 + a1) / 2)
+        px, py = cx + math.cos(mid) * R * 0.62, cy + math.sin(mid) * R * 0.62
+        pct = s.get("valor_txt") or f"{round(vals[i] / total * 100)}%"
+        _text_out(d, (px, py), str(pct), f_pct, (26, 20, 12), w=3, anchor="mm", outline=CREMA)
+        lx, ly = cx + math.cos(mid) * (R + 46), cy + math.sin(mid) * (R + 46)
+        anc = "lm" if math.cos(mid) >= 0 else "rm"
+        lines = _wrap(d, str(s.get("label", ""))[:26], f_lab, 300)[:2]
+        for k, ln in enumerate(lines):
+            _text_out(d, (lx, ly + k * 40 - (20 if len(lines) > 1 else 0)),
+                      ln, f_lab, CREMA, w=2, anchor=anc)
+        ang = a1
+
+    if fuente:
+        _text_out(d, (60, H - 54), f"Fuente: {fuente}", _font(28), INK_SOFT, w=2)
+
+    img.convert("RGB").save(output_path, "PNG")
+    log.info(f"  Gráfica TORTA: {output_path.name} ({len(series)} rebanadas)")
     return str(output_path)
 
 
