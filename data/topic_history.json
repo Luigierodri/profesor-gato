@@ -685,5 +685,13 @@
     "categoria": "economia",
     "geo": "latam",
     "trend": "ozempic"
+  },
+  {
+    "fecha": "2026-08-08",
+    "angulo": "¿Por qué Jorge Messi maneja los millones de Lionel y eso es perfectamente normal en el fútbol latinoamericano?",
+    "evento": "futbol_transferencias_dinero",
+    "categoria": "deportes",
+    "geo": "latam",
+    "trend": "jorge messi"
   }
 ]
