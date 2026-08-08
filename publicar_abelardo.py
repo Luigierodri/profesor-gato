@@ -12,7 +12,7 @@ from publisher import subir_a_youtube
 
 DRY = len(sys.argv) > 1 and sys.argv[1].lower() == "dry"
 
-ruta = Path(sorted(glob.glob("videos_largos/20260807_193230_ESSAY_*.mp4"))[-1])
+ruta = Path(max(glob.glob("videos_largos/*ESSAY_Qué_economía_hereda*.mp4"), key=lambda p: Path(p).stat().st_mtime))
 assert ruta.exists(), f"No existe el MP4: {ruta}"
 script = json.loads(Path("audio/ESSAY_Qué_economía_hereda_el_nuevo_p_20260807_192541/script.json").read_text(encoding="utf-8"))
 

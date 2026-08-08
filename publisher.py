@@ -167,9 +167,12 @@ def construir_metadata(run_log: dict, ruta_video: Path) -> dict:
 
 # ── Subida a YouTube ───────────────────────────────────────────────────────────
 
-def subir_a_youtube(ruta_video: Path, metadata: dict, dry_run: bool = False) -> dict:
+def subir_a_youtube(ruta_video: Path, metadata: dict, dry_run: bool = False,
+                    publish_at: str | None = None) -> dict:
     """
     Sube el video a YouTube como YouTube Short.
+    Si `publish_at` (ISO8601 UTC, ej. 2026-07-10T18:00:00Z) se pasa, lo sube PRIVADO
+    y YouTube lo hace público a esa hora server-side (no requiere PC encendida).
     Devuelve {"video_id": ..., "url": ..., "titulo": ...}.
     """
     log.info("=" * 60)
@@ -199,11 +202,14 @@ def subir_a_youtube(ruta_video: Path, metadata: dict, dry_run: bool = False) -> 
             "defaultLanguage": "es",
         },
         "status": {
-            "privacyStatus":           "public",
+            "privacyStatus":           "private" if publish_at else "public",
             "selfDeclaredMadeForKids": False,
             "madeForKids":             False,
         },
     }
+    if publish_at:
+        body["status"]["publishAt"] = publish_at
+        log.info(f"  ⏰ Programado para: {publish_at} (privado hasta entonces)")
 
     media = MediaFileUpload(
         str(ruta_video),

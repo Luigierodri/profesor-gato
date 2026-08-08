@@ -1,13 +1,58 @@
 ══════════════════════════════════════════════════════════════════
-PROFESOR GATO — Cost Log  |  2026-05-30 23:38:48
-Tema: México será sede del Mundial 2026
+PROFESOR GATO — Cost Log (auto-init)  |  2026-08-07 19:32:35
 ══════════════════════════════════════════════════════════════════
 
-23:39:12  TOKENS   claude-sonnet-4-6                 20,744 in + 1,115 out tok      $  0.0790
-23:39:30  TOKENS   claude-sonnet-4-6                 2,634 in + 922 out tok         $  0.0217
-23:39:34  VOZ      eleven_multilingual_v2            51 chars — Panel 1 [GATO]     ~$  0.0092
-23:39:36  VOZ      eleven_multilingual_v2            95 chars — Panel 2 [BASTET]   ~$  0.0171
-23:39:39  VOZ      eleven_multilingual_v2            127 chars — Panel 3 [GATO]    ~$  0.0229
-23:39:42  VOZ      eleven_multilingual_v2            82 chars — Panel 4 [BASTET]   ~$  0.0148
-23:39:45  VOZ      eleven_multilingual_v2            147 chars — Panel 5 [GATO]    ~$  0.0265
-23:39:48  VOZ      eleven_multilingual_v2            137 chars — Panel 6 [GATO]    ~$  0.0247
+19:32:35  VOZ      eleven_multilingual_v2            174 chars — Essay seg 1 [GATO]  ~$  0.0313
+19:32:37  VOZ      eleven_multilingual_v2            97 chars — Essay seg 2 [BASTET]  ~$  0.0175
+19:32:40  VOZ      eleven_multilingual_v2            198 chars — Essay seg 3 [GATO]  ~$  0.0356
+19:32:44  VOZ      eleven_multilingual_v2            232 chars — Essay seg 4 [GATO]  ~$  0.0418
+19:32:47  VOZ      eleven_multilingual_v2            193 chars — Essay seg 5 [GATO]  ~$  0.0347
+19:32:49  VOZ      eleven_multilingual_v2            95 chars — Essay seg 6 [BASTET]  ~$  0.0171
+19:32:51  VOZ      eleven_multilingual_v2            142 chars — Essay seg 7 [GATO]  ~$  0.0256
+19:32:55  VOZ      eleven_multilingual_v2            238 chars — Essay seg 8 [GATO]  ~$  0.0428
+19:32:58  VOZ      eleven_multilingual_v2            205 chars — Essay seg 9 [GATO]  ~$  0.0369
+19:33:00  VOZ      eleven_multilingual_v2            96 chars — Essay seg 10 [BASTET]  ~$  0.0173
+19:33:03  VOZ      eleven_multilingual_v2            228 chars — Essay seg 11 [GATO]  ~$  0.0410
+19:33:07  VOZ      eleven_multilingual_v2            241 chars — Essay seg 12 [GATO]  ~$  0.0434
+19:33:10  VOZ      eleven_multilingual_v2            185 chars — Essay seg 13 [GATO]  ~$  0.0333
+19:33:12  VOZ      eleven_multilingual_v2            103 chars — Essay seg 14 [BASTET]  ~$  0.0185
+19:33:16  VOZ      eleven_multilingual_v2            274 chars — Essay seg 15 [GATO]  ~$  0.0493
+19:33:19  VOZ      eleven_multilingual_v2            200 chars — Essay seg 16 [GATO]  ~$  0.0360
+19:33:23  VOZ      eleven_multilingual_v2            266 chars — Essay seg 17 [GATO]  ~$  0.0479
+19:33:25  VOZ      eleven_multilingual_v2            109 chars — Essay seg 18 [BASTET]  ~$  0.0196
+19:33:29  VOZ      eleven_multilingual_v2            238 chars — Essay seg 19 [GATO]  ~$  0.0428
+19:33:32  VOZ      eleven_multilingual_v2            213 chars — Essay seg 20 [GATO]  ~$  0.0383
+19:33:35  VOZ      eleven_multilingual_v2            175 chars — Essay seg 21 [GATO]  ~$  0.0315
+19:33:40  VOZ      eleven_multilingual_v2            225 chars — Essay seg 22 [GATO]  ~$  0.0405
+19:33:42  VOZ      eleven_multilingual_v2            229 chars — Essay seg 23 [GATO]  ~$  0.0412
+19:33:44  VOZ      eleven_multilingual_v2            79 chars — Essay seg 24 [BASTET]  ~$  0.0142
+19:33:47  VOZ      eleven_multilingual_v2            239 chars — Essay seg 25 [GATO]  ~$  0.0430
+19:33:51  VOZ      eleven_multilingual_v2            213 chars — Essay seg 26 [GATO]  ~$  0.0383
+19:33:55  VOZ      eleven_multilingual_v2            263 chars — Essay seg 27 [GATO]  ~$  0.0473
+19:33:57  VOZ      eleven_multilingual_v2            89 chars — Essay seg 28 [BASTET]  ~$  0.0160
+19:34:00  VOZ      eleven_multilingual_v2            222 chars — Essay seg 29 [GATO]  ~$  0.0400
+19:34:03  VOZ      eleven_multilingual_v2            191 chars — Essay seg 30 [GATO]  ~$  0.0344
+19:34:06  VOZ      eleven_multilingual_v2            241 chars — Essay seg 31 [GATO]  ~$  0.0434
+19:34:08  VOZ      eleven_multilingual_v2            67 chars — Essay seg 32 [BASTET]  ~$  0.0121
+19:34:11  VOZ      eleven_multilingual_v2            222 chars — Essay seg 33 [GATO]  ~$  0.0400
+19:34:15  VOZ      eleven_multilingual_v2            224 chars — Essay seg 34 [GATO]  ~$  0.0403
+19:34:18  VOZ      eleven_multilingual_v2            236 chars — Essay seg 35 [GATO]  ~$  0.0425
+19:34:20  VOZ      eleven_multilingual_v2            81 chars — Essay seg 36 [BASTET]  ~$  0.0146
+19:34:22  VOZ      eleven_multilingual_v2            214 chars — Essay seg 37 [GATO]  ~$  0.0385
+19:34:26  VOZ      eleven_multilingual_v2            236 chars — Essay seg 38 [GATO]  ~$  0.0425
+19:34:30  VOZ      eleven_multilingual_v2            219 chars — Essay seg 39 [GATO]  ~$  0.0394
+19:34:33  VOZ      eleven_multilingual_v2            223 chars — Essay seg 40 [GATO]  ~$  0.0401
+19:34:52  IMAGEN   imagen-4.0-fast-generate-001      1 imagen — Essay bg: grand historic government palace interio   $  0.0200
+19:35:02  IMAGEN   imagen-4.0-fast-generate-001      1 imagen — Essay bg: wide aerial view of Cali colombia city w   $  0.0200
+19:35:06  IMAGEN   imagen-4.0-fast-generate-001      1 imagen — Essay bg: aerial view of Bogotá financial district   $  0.0200
+19:35:10  IMAGEN   imagen-4.0-fast-generate-001      1 imagen — Essay bg: aerial view of Bogotá financial district   $  0.0200
+19:35:14  IMAGEN   imagen-4.0-fast-generate-001      1 imagen — Essay bg: busy colombian market stall with colorfu   $  0.0200
+19:35:36  IMAGEN   imagen-4.0-fast-generate-001      1 imagen — Essay bg: industrial port with cranes and cargo co   $  0.0200
+19:35:40  IMAGEN   imagen-4.0-fast-generate-001      1 imagen — Essay bg: industrial port with cranes and cargo co   $  0.0200
+19:35:54  IMAGEN   imagen-4.0-fast-generate-001      1 imagen — Essay bg: crowded latin american city street with    $  0.0200
+19:35:58  IMAGEN   imagen-4.0-fast-generate-001      1 imagen — Essay bg: crowded latin american city street with    $  0.0200
+19:36:02  IMAGEN   imagen-4.0-fast-generate-001      1 imagen — Essay bg: historic colombian government palace ext   $  0.0200
+19:36:12  IMAGEN   imagen-4.0-fast-generate-001      1 imagen — Essay bg: wide shot of colombian andes mountain ra   $  0.0200
+19:36:43  MÚSICA   lyria-002                         45s audio — Mood: tension     ~$  0.0270
+19:37:16  MÚSICA   lyria-002                         45s audio — Mood: ambient_misterioso  ~$  0.0270
+19:37:47  MÚSICA   lyria-002                         45s audio — Mood: dramatico   ~$  0.0270

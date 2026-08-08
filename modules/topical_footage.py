@@ -16,8 +16,16 @@ log = logging.getLogger("topical_footage")
 BASE_DIR = Path(__file__).parent.parent
 FOOT_DIR = BASE_DIR / "footage_cc"
 
-# Títulos a evitar: reacciones/opinión/lives suelen traer material ajeno incrustado
-_BLOCK = re.compile(r"react|reacc|opini|qu[eé] opinas|en vivo|live\b|podcast|entrevista completa", re.I)
+# Títulos a evitar: reacciones/opinión/lives + NOTICIEROS (presentador/banner "ÚLTIMA
+# HORA" se ven feo) — preferimos b-roll ambiental o institucional.
+_BLOCK = re.compile(
+    r"react|reacc|opini|qu[eé] opinas|en vivo|live\b|podcast|entrevista completa|"
+    r"noticier|noticias|[uú]ltima hora|informativo|telediario|newscast|breaking news|"
+    r"debate|rueda de prensa|declaracion", re.I)
+# Canales de NOTICIEROS/medios a evitar (salen presentadores). Preferimos oficiales.
+_BLOCK_CANAL = re.compile(
+    r"noticias|noticiero|radio\b|caracol|rcn|semana|blu\b|pilon|desdeabajo|"
+    r"televis|prensa|el tiempo|el espectador|canal \d", re.I)
 
 _YT = None
 
@@ -48,9 +56,10 @@ def buscar_footage_cc(query: str, n: int = 6) -> list[tuple]:
     out = []
     for it in r.get("items", []):
         title = it["snippet"]["title"]
-        if _BLOCK.search(title):
+        canal = it["snippet"]["channelTitle"]
+        if _BLOCK.search(title) or _BLOCK_CANAL.search(canal):
             continue
-        out.append((it["id"]["videoId"], title, it["snippet"]["channelTitle"]))
+        out.append((it["id"]["videoId"], title, canal))
     return out
 
 
