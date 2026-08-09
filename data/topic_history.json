@@ -693,5 +693,13 @@
     "categoria": "deportes",
     "geo": "latam",
     "trend": "jorge messi"
+  },
+  {
+    "fecha": "2026-08-09",
+    "angulo": "¿Por qué la Selección Mexicana Sub-20 lleva décadas produciendo talentos que terminan brillando en Europa... pero nunca en el Mundial?",
+    "evento": "futbol_mexico_cantera",
+    "categoria": "deportes",
+    "geo": "mexico",
+    "trend": "selección de fútbol sub-20 de méxico"
   }
 ]
