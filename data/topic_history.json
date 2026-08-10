@@ -701,5 +701,13 @@
     "categoria": "deportes",
     "geo": "mexico",
     "trend": "selección de fútbol sub-20 de méxico"
+  },
+  {
+    "fecha": "2026-08-10",
+    "angulo": "¿Por qué Colombia tiembla tanto y México también, y cuál es la zona de América Latina donde nadie debería construir un edificio alto?",
+    "evento": "ciencia_sismos_latam",
+    "categoria": "ciencia",
+    "geo": "latam",
+    "trend": "terremoto en colombia"
   }
 ]
