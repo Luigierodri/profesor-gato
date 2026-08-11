@@ -709,5 +709,13 @@
     "categoria": "ciencia",
     "geo": "latam",
     "trend": "terremoto en colombia"
+  },
+  {
+    "fecha": "2026-08-11",
+    "angulo": "¿Por qué Ticketmaster puede cobrar lo que quiera y tú no tienes a dónde más ir?",
+    "evento": "economia_ticketmaster_monopolio",
+    "categoria": "politica",
+    "geo": "latam",
+    "trend": "ticketmaster"
   }
 ]
