@@ -717,5 +717,13 @@
     "categoria": "politica",
     "geo": "latam",
     "trend": "ticketmaster"
+  },
+  {
+    "fecha": "2026-08-12",
+    "angulo": "¿Por qué la Lotería Nacional lleva 200 años existiendo y el gobierno siempre gana, sin importar quién compre el boleto?",
+    "evento": "economia_loteria_mexico",
+    "categoria": "historia",
+    "geo": "mexico",
+    "trend": "sorteo mayor"
   }
 ]
