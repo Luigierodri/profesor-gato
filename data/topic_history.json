@@ -725,5 +725,13 @@
     "categoria": "historia",
     "geo": "mexico",
     "trend": "sorteo mayor"
+  },
+  {
+    "fecha": "2026-08-13",
+    "angulo": "¿Por qué el dólar sube y baja y siempre eres tú quien pierde, sin importar para qué lado va?",
+    "evento": "economia_peso_mexicano",
+    "categoria": "economia",
+    "geo": "latam",
+    "trend": "precio dolar hoy"
   }
 ]
