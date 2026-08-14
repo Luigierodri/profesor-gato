@@ -733,5 +733,13 @@
     "categoria": "economia",
     "geo": "latam",
     "trend": "precio dolar hoy"
+  },
+  {
+    "fecha": "2026-08-14",
+    "angulo": "¿Por qué OpenAI vale más que casi cualquier empresa de América Latina y nunca has visto un centavo de eso?",
+    "evento": "tecnologia_openai_economia",
+    "categoria": "tecnologia",
+    "geo": "latam",
+    "trend": "openai"
   }
 ]
