@@ -413,10 +413,237 @@ OUTLINES = {
                        "pregunta abierta para comentarios")},
         ],
     },
+
+    # El negocio de GTA VI. Pedido de Luigi para montar la ola de búsqueda del
+    # adelanto de agosto de 2026 (tráiler extendido en Netflix, 27 ago) y del
+    # lanzamiento previsto para el 19 de noviembre de 2026. Tema NO político: puro
+    # negocio y cultura. ADN del Gato: NÚMEROS PRIMERO, asombro LÚCIDO (admira la
+    # máquina de dinero sin volverse fanboy ni sermonear). El presupuesto de GTA VI
+    # es RUMOR/ESTIMACIÓN (Rockstar no lo confirma) → SIEMPRE se narra como "se
+    # estima / los analistas calculan", nunca como hecho. Frase-ancla: "no es un
+    # juego que factura como una película; es una película que ninguna película
+    # podría pagar". Aprovecha el visual nuevo: FOOTAGE del tráiler oficial en el
+    # hook y en el capítulo del presupuesto (ojo: NO es Creative Commons, decisión
+    # de Luigi de asumir el Content ID), GRÁFICAS para las comparaciones de dinero,
+    # pixel-art para lo demás. EVERGREEN con fechas EXPLÍCITAS ("el adelanto de
+    # agosto de 2026", "el lanzamiento previsto para el 19 de noviembre de 2026");
+    # prohibido "esta semana/mañana". Cada cifra sale de la ficha verificada.
+    "el negocio de gta vi": {
+        "nota": ("Formato NÚMEROS PRIMERO sobre un tema de NEGOCIO (no político). "
+                 "Tono: asombro lúcido y un punto cínico de buen gusto — el Gato "
+                 "admira la maquinaria financiera de GTA sin venderse a ella y sin "
+                 "regañar al que ama el juego (el espectador AMA GTA; justo por eso "
+                 "merece ver quién factura con esa emoción). El presupuesto de GTA VI "
+                 "es ESTIMACIÓN de analistas/medios, NO cifra oficial → decirlo así "
+                 "cada vez ('se estima', 'los analistas calculan'); lo confirmado (lo "
+                 "de GTA V) va como hecho duro. Frase-ancla: 'no es un juego que "
+                 "factura como una película; es una película que ninguna película "
+                 "podría pagar'. EVERGREEN con fechas explícitas: el adelanto se ubica "
+                 "'en agosto de 2026' y el lanzamiento 'previsto para el 19 de "
+                 "noviembre de 2026'; PROHIBIDO 'esta semana/mañana' o spoilers de "
+                 "gameplay. Footage del tráiler oficial en el hook y en el capítulo "
+                 "del presupuesto; gráficas para el dinero; Bastet hace las preguntas "
+                 "del jugador. Cada cifra sale de la ficha verificada."),
+        "capitulos": [
+            {"capitulo": "El producto más caro jamás hecho",
+             "notas": ("hook con la cifra: se ESTIMA que GTA VI costó entre 1 y 2 mil "
+                       "millones de dólares entre desarrollo y marketing (cifra de "
+                       "analistas/medios, NO confirmada por Rockstar — decirlo así), lo "
+                       "que lo volvería el producto de entretenimiento más caro jamás "
+                       "producido, por encima de cualquier película de Hollywood; "
+                       "comparar con lo que confirme la ficha. FOOTAGE del tráiler "
+                       "oficial de GTA VI. Bastet: '¿un videojuego cuesta más que una "
+                       "película de Marvel?' — el Gato: 'y ni siquiera es la parte "
+                       "impresionante'")},
+            {"capitulo": "Cómo un juego factura más que Hollywood",
+             "notas": ("la PRUEBA con GTA V (cifras duras, ya confirmadas): recaudó "
+                       "alrededor de 8-9 mil millones de USD y vendió más de 200 "
+                       "millones de copias, volviéndose uno de los productos de "
+                       "entretenimiento más rentables de la historia; hizo cerca de "
+                       "1,000 millones de USD en sus primeros 3 días. GRÁFICA de barras "
+                       "comparando ingresos de GTA V contra las películas más "
+                       "taquilleras de la historia (Avatar ~2.9 mil M, Avengers Endgame "
+                       "~2.8 mil M — las que confirme la ficha). fondo situacional: "
+                       "estreno de cine / alfombra roja vs pantalla de juego")},
+            {"capitulo": "El dinero no está donde crees",
+             "notas": ("el MODELO real, el giro didáctico: el grueso del dinero no está "
+                       "en vender el juego una vez a 60-70 dólares, sino en GTA Online y "
+                       "los micropagos (las 'Shark Cards'); el gasto recurrente del "
+                       "jugador ('recurrent consumer spending') es la mayor parte de las "
+                       "reservas de Take-Two año tras año (el % que confirme la ficha). "
+                       "TARJETA/GRÁFICA de datos. Idea-ancla: 'el juego es el anzuelo; "
+                       "la tienda dentro del juego es el negocio'. Bastet: '¿o sea que "
+                       "pago el juego y encima sigo pagando?'")},
+            {"capitulo": "La apuesta de dos mil millones",
+             "notas": ("el RIESGO y la ambición: Take-Two (dueña de Rockstar) tiene "
+                       "buena parte de su valor de bolsa amarrado a este lanzamiento; el "
+                       "juego se retrasó y quedó previsto para el 19 de noviembre de "
+                       "2026 (PS5 y Xbox Series); los analistas calculan que podría ser "
+                       "el lanzamiento de entretenimiento más grande de la historia y "
+                       "hasta mover el gasto de consumo de un trimestre (cifras/citas de "
+                       "la ficha, marcadas como proyección). FOOTAGE del tráiler. "
+                       "GRÁFICA opcional: capitalización de Take-Two o proyección de "
+                       "ventas. CTA de mitad al cerrar el capítulo")},
+            {"capitulo": "Tú eres el negocio",
+             "notas": ("aterrizaje: la industria del videojuego ya factura más que el "
+                       "cine y la música juntos (cifra de la ficha); el verdadero motor "
+                       "de GTA no es Rockstar, eres tú y tus horas. Verlo claro no te "
+                       "quita las ganas de jugarlo — te quita la ingenuidad; la emoción "
+                       "de jugar es tuya y esa no la cobra nadie. Pregunta final para "
+                       "comentar: ¿solo comprarías el juego base, o entrarías a los "
+                       "micropagos de GTA Online?")},
+        ],
+    },
+
+    # El terremoto de Colombia (10 ago 2026). Pedido de Luigi, colombiano que lo vive
+    # DESDE AFUERA (su gente está bien, quedó el susto). Tema SENSIBLE: hay muertos en
+    # su país el mismo día → el video INFORMA y HONRA, no farmea la tragedia; abre
+    # reconociendo el luto y las cifras como PRELIMINARES a la fecha. Enfoque elegido:
+    # CIENCIA → ECONOMÍA (por qué un sismo profundo en Chocó rompió el Eje Cafetero, y
+    # aterriza en el costo de reconstruir + la sismorresistencia como prevención que
+    # sale más barata). ADN del Gato: NÚMEROS PRIMERO, lucidez didáctica, CERO
+    # catastrofismo hueco y CERO show. El Gato es extranjero: habla con respeto y
+    # solidaridad ("esta vez el número duele más"), sin fingir que es colombiano.
+    # OJO CIFRAS: el balance de víctimas/daños SIGUE SUBIENDO — refrescar el fact-check
+    # justo antes del render y narrar SIEMPRE "cifras preliminares al [fecha]". Lo
+    # verificable y estable (el sismo del Eje Cafetero de 1999, la norma NSR-10, la
+    # ciencia de la profundidad) es el esqueleto duro del video.
+    "el terremoto de colombia": {
+        "nota": ("Tema SENSIBLE y RECIENTE (hay víctimas). Tono: respeto y lucidez "
+                 "didáctica, NUNCA morbo ni catastrofismo ni 'mira qué fuerte' — el "
+                 "punto es ENTENDER (por qué pasó, por qué unos lugares sufren más, "
+                 "cuánto cuesta y cómo se previene), no espectacular con el dolor. Abre "
+                 "reconociendo la pérdida humana y que las cifras son PRELIMINARES a la "
+                 "fecha (se narran como 'al menos, hasta el [día]'); NADA de cifra de "
+                 "víctimas afirmada como definitiva. El Gato es EXTRANJERO: acompaña con "
+                 "respeto y solidaridad, sin fingir nacionalidad. Estructura CIENCIA → "
+                 "ECONOMÍA: 1) qué pasó, 2) por qué se sintió tan lejos (profundidad), "
+                 "3) por qué unas ciudades sufren más (suelo + construcción), 4) cuánto "
+                 "cuesta un terremoto (con el Eje Cafetero 1999 como referencia dura y "
+                 "verificable), 5) por qué prevenir sale más barato (NSR-10). Frase-"
+                 "ancla: 'la factura de un terremoto se paga antes, previniendo, o "
+                 "después, reconstruyendo — pero siempre se paga'. Cada cifra sale de la "
+                 "ficha; lo no verificado va como pregunta. Cierre digno y de esperanza "
+                 "REAL (Colombia se levantó del 99), no consuelo hueco. Bastet hace las "
+                 "preguntas del espectador."),
+        "capitulos": [
+            {"capitulo": "El país que tembló entero",
+             "notas": ("abre con respeto y con el hecho, en cifras verificadas: el 10 de "
+                       "agosto de 2026, a las 7:34 de la mañana, un sismo de magnitud 7.4 "
+                       "con epicentro en San José del Palmar (Chocó, occidente de "
+                       "Colombia) se sintió en Bogotá, Medellín, Cali, Pereira, Manizales "
+                       "y hasta en Ecuador y Panamá. Reconocer el luto y que el balance "
+                       "de víctimas es PRELIMINAR y sigue actualizándose. La pregunta "
+                       "rara que abre el video: el epicentro estaba en Chocó, pero varios "
+                       "de los peores daños se vieron a cientos de kilómetros, en el Eje "
+                       "Cafetero. FOTO/FOOTAGE real (daños, la Catedral de Manizales). "
+                       "Bastet: '¿cómo un temblor en Chocó agrieta edificios en "
+                       "Manizales?'")},
+            {"capitulo": "Por qué se sintió tan lejos",
+             "notas": ("LA CIENCIA, en simple: fue un sismo PROFUNDO (unos 80–110 km, la "
+                       "cifra que confirme la ficha), no superficial. Un sismo profundo "
+                       "libera su energía muy abajo y esa energía alcanza a sacudir un "
+                       "área ENORME —países enteros— aunque en el epicentro el daño en "
+                       "superficie sea menor; uno superficial destruye local pero se "
+                       "siente menos lejos. La causa tectónica: la placa de Nazca se "
+                       "hunde (subducción) bajo Sudamérica y el sismo ocurre dentro de "
+                       "esa placa hundida (verificar el mecanismo exacto en la ficha). "
+                       "GRÁFICA/esquema: profundidad vs. área sentida. Bastet: '¿entre "
+                       "más profundo, más lejos se siente?'")},
+            {"capitulo": "Por qué unas ciudades sí y otras no",
+             "notas": ("el puente hacia lo económico: el daño NO lo decide solo el sismo, "
+                       "lo deciden el SUELO y la CONSTRUCCIÓN. Efecto de sitio: ciudades "
+                       "sobre suelos blandos o en laderas (Manizales, Pereira, Armenia) "
+                       "amplifican la sacudida; y las construcciones viejas o informales "
+                       "colapsan donde una sismorresistente aguanta. Idea-ancla: 'el "
+                       "terremoto no mata; matan los edificios mal hechos'. FOTO de daño "
+                       "estructural real. Esto prepara la pregunta del dinero: ¿cuánto "
+                       "cuesta construir bien vs. reconstruir después?")},
+            {"capitulo": "Cuánto cuesta un terremoto",
+             "notas": ("el costo económico con el ANCLA verificable y estable: el "
+                       "terremoto del Eje Cafetero de 1999 (Armenia, magnitud ~6.2) dejó "
+                       "más de 1.000 muertos y un costo de reconstrucción del orden de "
+                       "1.500–2.800 millones de USD, cerca del 1.5–2% del PIB de entonces "
+                       "(las cifras que confirme la ficha; se creó el FOREC para "
+                       "manejarlo). Un terremoto golpea el PIB regional, destruye capital "
+                       "de años y la mayoría de las viviendas NO está asegurada (brecha "
+                       "de aseguramiento, dato de la ficha). GRÁFICA de costos. CTA de "
+                       "mitad al cerrar el capítulo")},
+            {"capitulo": "Por qué prevenir sale más barato",
+             "notas": ("la lección económica universal y útil: tras el 99, Colombia "
+                       "endureció su norma sismorresistente (NSR-98 → NSR-10); construir "
+                       "sismorresistente encarece la obra un poco, pero cada peso puesto "
+                       "en prevención/mitigación ahorra varios en reconstrucción y "
+                       "rescate (la relación que confirme la ficha, tipo 1 a 4–7). "
+                       "Reforzar lo viejo (retrofit) y los sistemas de alerta también "
+                       "pagan. Frase-ancla: 'la factura se paga antes o después, pero "
+                       "siempre se paga'. GRÁFICA opcional: costo prevenir vs. costo "
+                       "reconstruir")},
+            {"capitulo": "Colombia se levanta",
+             "notas": ("cierre DIGNO, con esperanza real y datos, no consuelo hueco: "
+                       "Colombia ya se levantó del Eje Cafetero en 1999 y aprendió (por "
+                       "eso hoy hay norma); la tierra no avisa, pero la matemática de la "
+                       "prevención sí. El Gato, extranjero, cierra con respeto y "
+                       "solidaridad con Colombia. Pregunta final para comentar SIN morbo "
+                       "(ej. ¿tu casa/edificio sabes si es sismorresistente? / qué debería "
+                       "priorizar un país sísmico), invitando a una conversación útil")},
+        ],
+    },
 }
 
 # Enfoque de búsqueda del fact_checker por tema (qué cifras necesita el guion).
 FICHA_ENFOQUE = {
+    "el terremoto de colombia": (
+        "- El sismo del 10 de agosto de 2026 en Colombia: magnitud oficial (Servicio "
+        "Geológico Colombiano y USGS), hora local, epicentro (San José del Palmar, "
+        "Chocó) y PROFUNDIDAD exacta en km\n"
+        "- Ciudades y países donde se sintió (Bogotá, Medellín, Cali, Pereira, "
+        "Manizales, Quibdó; Ecuador, Panamá) y el dato de daños en el Eje Cafetero pese "
+        "a estar lejos del epicentro\n"
+        "- Balance PRELIMINAR de víctimas y daños con FECHA de corte (dejar claro que es "
+        "provisional y sigue actualizándose): muertos, heridos, edificaciones "
+        "colapsadas, la Catedral de Manizales, aeropuertos afectados, réplicas\n"
+        "- CIENCIA: por qué un sismo PROFUNDO (intraplaca/intraslab) se percibe en un "
+        "área mucho más amplia que uno superficial; el mecanismo tectónico del occidente "
+        "colombiano (subducción de la placa de Nazca / bloque Panamá-Chocó)\n"
+        "- Efecto de sitio: por qué ciudades como Manizales, Pereira y Armenia (suelos "
+        "blandos, laderas) amplifican la sacudida\n"
+        "- Terremoto del Eje Cafetero (Armenia/Quindío) del 25 de enero de 1999: "
+        "magnitud (~6.2), número de muertos (~1.000+), costo de reconstrucción en USD "
+        "(~1.500–2.800 millones), su peso como % del PIB de entonces y el papel del FOREC\n"
+        "- Norma sismorresistente colombiana: NSR-98 tras el 99 y la vigente NSR-10 "
+        "(qué exige, cuándo entró)\n"
+        "- Brecha de aseguramiento en Colombia: % de viviendas aseguradas contra "
+        "terremoto (o penetración del seguro), cifra reciente\n"
+        "- Relación costo-beneficio de la prevención sísmica: cuánto ahorra en "
+        "reconstrucción/rescate cada dólar invertido en mitigación (estudios tipo "
+        "BID/Banco Mundial/UNDRR), y el sobrecosto aproximado de construir sismorresistente"
+    ),
+    "el negocio de gta vi": (
+        "- Presupuesto ESTIMADO de desarrollo + marketing de GTA VI: el rango que "
+        "reportan analistas y medios (p. ej. 1,000 a 2,000 millones de USD), dejando "
+        "CLARO que es estimación no confirmada por Rockstar/Take-Two; y si sería el "
+        "producto de entretenimiento más caro jamás producido\n"
+        "- Fecha de lanzamiento de GTA VI (19 de noviembre de 2026) y plataformas "
+        "(PlayStation 5 y Xbox Series X/S)\n"
+        "- Ingresos totales acumulados de GTA V hasta 2025/2026 (estimación en USD, "
+        "del orden de 8-9 mil millones) y copias vendidas (más de 200 millones)\n"
+        "- Récord de lanzamiento de GTA V: cuánto facturó en sus primeros 3 días "
+        "(~1,000 millones de USD) y en su primera semana\n"
+        "- Costo de desarrollo + marketing de GTA V (~265 millones de USD) para "
+        "contrastar con la estimación de GTA VI\n"
+        "- Película más taquillera de la historia (Avatar ~2.9 mil M USD) y otra "
+        "referencia (Avengers: Endgame ~2.8 mil M USD) para comparar con GTA V\n"
+        "- Ingreso por gasto recurrente del jugador / GTA Online / microtransacciones "
+        "('recurrent consumer spending') de Take-Two: cifra anual o % de sus reservas "
+        "netas\n"
+        "- Capitalización de mercado de Take-Two Interactive y qué tanto de su "
+        "valuación y expectativa de analistas depende de GTA VI\n"
+        "- Tamaño de la industria global de videojuegos en ingresos y comparación con "
+        "el cine (taquilla mundial) y la música juntos\n"
+        "- Proyecciones de analistas sobre ventas de GTA VI (día uno, primer mes o "
+        "primer año), marcadas como proyección"
+    ),
     "nicaragua sin elecciones": (
         "- La declaración de Daniel Ortega del 19 de julio de 2026 en el acto por el 47º "
         "aniversario de la revolución sandinista: cita textual de que 'no volverá a haber "
@@ -502,6 +729,26 @@ FICHA_ENFOQUE = {
 }
 
 
+# Footage que se baja del canal OFICIAL saltando el filtro Creative Commons
+# (material bajo riesgo propio de Content ID — decisión explícita de Luigi). Cada
+# entrada: subcadena que debe aparecer en la query del visual -> canal oficial a
+# preferir. Todo lo que NO caiga aquí sigue por la vía Creative Commons segura.
+FOOTAGE_OFICIAL = {
+    "gta vi official trailer": "Rockstar Games",
+    "gta 6 official trailer": "Rockstar Games",
+    "gta vi trailer": "Rockstar Games",
+    "gta 6 trailer": "Rockstar Games",
+}
+
+
+def _canal_oficial_para(query: str) -> str | None:
+    q = (query or "").lower()
+    for sub, canal in FOOTAGE_OFICIAL.items():
+        if sub in q:
+            return canal
+    return None
+
+
 def banner(t):
     log.info("=" * 60); log.info(f"  {t}"); log.info("=" * 60)
 
@@ -543,6 +790,57 @@ def _clave_visual(v: dict) -> str:
     return f"escena::{v.get('location','')}"
 
 
+def _animadas_on() -> bool:
+    """Gráficas animadas ON por defecto; GRAFICAS_ANIMADAS=0 vuelve a las estáticas."""
+    import os
+    return os.environ.get("GRAFICAS_ANIMADAS", "1") != "0"
+
+
+def _grafica_spec_animada(v: dict) -> dict:
+    """Convierte el spec de gráfica del guion (data_chart) al de graficas_animadas."""
+    series = v.get("series") or []
+    datos, resaltar = [], None
+    for i, s in enumerate(series):
+        try:
+            datos.append((str(s.get("label", "")), float(s.get("valor", 0) or 0)))
+        except (TypeError, ValueError):
+            datos.append((str(s.get("label", "")), 0.0))
+        if s.get("resaltar"):
+            resaltar = i   # si hay varias resaltadas, gana la ÚLTIMA (suele ser el remate)
+    forma = {"barras": "barras", "torta": "reparto",
+             "linea": "linea", "numero": "numero"}.get(v.get("forma", "barras"), "barras")
+    # OJO: graficas_animadas pega la unidad a CADA valor → debe ser CORTA o las
+    # etiquetas se salen de pantalla. Unidades largas ("% del valor del aparato",
+    # "millones de USD") se colapsan: "%" si aplica, si no vacío (el título da contexto).
+    u = (v.get("unidad", "") or "").strip()
+    unidad = "%" if "%" in u else (u if len(u) <= 3 else "")
+    spec = {"forma": forma, "titulo": v.get("titulo", ""),
+            "unidad": unidad, "datos": datos, "fuente": v.get("fuente", "")}
+    if resaltar is not None:
+        spec["resaltar"] = resaltar
+    return spec
+
+
+def _render_grafica_animada(v: dict, dest_mp4: Path) -> str:
+    """Renderiza la gráfica ANIMADA (clip) y congela el último frame hasta ~30s
+    para que el assembler la corte a la duración del segmento sin re-loopear."""
+    import subprocess
+    from modules.graficas_animadas import render_grafica
+    dest_mp4 = Path(dest_mp4)
+    raw = dest_mp4.with_suffix(".raw.mp4")
+    render_grafica(_grafica_spec_animada(v), str(raw), vertical=False)
+    # tpad clona el último frame (congela) — barato, no re-anima al loopear.
+    subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(raw),
+                    "-vf", "tpad=stop_mode=clone:stop_duration=27",
+                    "-c:v", "libx264", "-preset", "veryfast", "-crf", "18",
+                    "-pix_fmt", "yuv420p", str(dest_mp4)], check=True)
+    try:
+        raw.unlink()
+    except Exception:
+        pass
+    return str(dest_mp4)
+
+
 def _generar_fondos(segmentos: list[dict], carpeta: Path) -> list[str]:
     """Un fondo 16:9 por identidad visual única. Rutea cada segmento a:
       - foto real (Wikimedia)  ·  gráfica de datos (PIL)  ·  pixel-art (Imagen).
@@ -563,13 +861,36 @@ def _generar_fondos(segmentos: list[dict], carpeta: Path) -> list[str]:
             ruta = None
             try:
                 if tipo == "footage":
-                    from modules.topical_footage import descargar_footage_cc
-                    log.info(f"  [bg {idx}] FOOTAGE CC ← {v.get('query','')[:60]}")
-                    ruta = str(descargar_footage_cc(v.get("query", "")))
+                    q = v.get("query", "")
+                    canal_of = _canal_oficial_para(q)
+                    if canal_of:
+                        from modules.topical_footage import descargar_footage_directo
+                        log.info(f"  [bg {idx}] FOOTAGE OFICIAL ({canal_of}) ← {q[:50]}")
+                        ruta = str(descargar_footage_directo(q, canal_pref=canal_of))
+                    else:
+                        from modules.topical_footage import descargar_footage_cc
+                        log.info(f"  [bg {idx}] FOOTAGE CC ← {q[:60]}")
+                        ruta = str(descargar_footage_cc(q))
                 elif tipo == "foto":
                     log.info(f"  [bg {idx}] FOTO real ← {v.get('query','')[:60]}")
                     ruta = fondo_16x9(v.get("query", ""), dest)
                 elif tipo == "grafica":
+                    # NUEVO: gráfica ANIMADA (clip .mp4) por defecto — barras que
+                    # crecen con ease-out, cifra que sube. El assembler ya sabe usar
+                    # un .mp4 como fondo. Si falla, cae al póster estático de siempre.
+                    if _animadas_on():
+                        try:
+                            dest_mp4 = carpeta / f"bg_{idx:02d}.mp4"
+                            log.info(f"  [bg {idx}] GRÁFICA ANIMADA ← {v.get('titulo','')[:50]}")
+                            ruta = _render_grafica_animada(v, dest_mp4)
+                        except Exception as e:
+                            log.warning(f"  [bg {idx}] gráfica animada falló ({e}); póster estático")
+                            ruta = None
+                    if ruta:
+                        cache[key] = ruta
+                        rutas.append(cache[key])
+                        continue
+                    # ── Póster estático (fallback / GRAFICAS_ANIMADAS=0) ──────────
                     # ESTILO PÓSTER SIEMPRE: la gráfica se dibuja sobre un fondo
                     # situacional de Imagen (regla de estilo del canal — los datos
                     # reales van ENCIMA de la escena, nunca en slate plano). Si el
@@ -664,6 +985,11 @@ def correr_essay(tema: str, publicar: bool = False, reuse_audio: str = "",
         banner("PASO 2 — Voz (ElevenLabs: Gato + Bastet, timestamps)")
         from modules.essay_voice import generar_audios_essay
         audios = generar_audios_essay(segmentos, carpeta_salida=carpeta_audio)
+        # Masterización OPCIONAL (MASTER_VOZ=1): solo sonido, misma duración → no
+        # desincroniza los subtítulos por timestamp. Apagado por defecto.
+        from modules.voz_hook import masterizar_si_activado
+        for _a in audios:
+            masterizar_si_activado(_a.get("ruta_audio"))
 
     # ── 3. FONDOS 16:9 (Imagen, cache por location) ────────────────────────
     banner("PASO 3 — Fondos 16:9 (foto real / gráfica de datos / pixel-art)")
@@ -707,16 +1033,34 @@ def correr_essay(tema: str, publicar: bool = False, reuse_audio: str = "",
     from modules.essay_assembler import EssayAssembler
     bloques = []
     for a, s, img in zip(audios, segmentos, fondos):
+        # Gráfica ANIMADA a pantalla completa: el clip ES el protagonista → sin
+        # personaje encima ni tarjeta de dato redundante (la cifra ya va en la gráfica).
+        es_chart_video = (_animadas_on()
+                          and (s.get("visual") or {}).get("tipo") == "grafica"
+                          and str(img).lower().endswith((".mp4", ".mkv", ".webm")))
         bloques.append({"numero": a["numero"], "ruta_audio": a["ruta_audio"],
                         "ruta_imagen": img, "palabras": a.get("palabras", []),
                         "speaker": s.get("speaker", "gato"), "pose": s.get("pose"),
-                        "dato": s.get("dato"), "capitulo": s.get("capitulo", ""),
+                        "dato": None if es_chart_video else s.get("dato"),
+                        "capitulo": s.get("capitulo", ""),
+                        "chart_video": es_chart_video,
                         "tiene_visual": (s.get("visual") or {}).get("tipo") in ("foto", "grafica", "footage")})
     output_name = f"{ts}_ESSAY_{_slug(titulo)[:35]}"
     assembler = EssayAssembler()
     ruta_video, capitulos = assembler.ensamblar(bloques, titulo=titulo,
                                                 musica_por_capitulo=musica_por_capitulo,
                                                 output_name=output_name)
+
+    # ── 5b. DISEÑO DE SONIDO (whoosh en cortes, pop en cifras, ducking) ─────
+    # Capa de post-producción sobre el render (la música ya va mezclada, por eso
+    # musica=None). Guarded: si falla, deja el video sin SFX y sigue.
+    banner("PASO 5b — Diseño de sonido (whoosh/pop/impacto)")
+    try:
+        from modules.sonido_hook import aplicar_sonido_seguro
+        guion_txt = " ".join(s.get("narracion", "") for s in segmentos)
+        aplicar_sonido_seguro(ruta_video, guion=guion_txt)
+    except Exception as e:
+        log.warning(f"  capa de sonido omitida ({e})")
 
     chap_lines = "\n".join(f"{_fmt_ts(c['t'])} {c['titulo']}" for c in capitulos)
     descripcion = (f"{script.get('descripcion','')}\n\n⏱️ Capítulos:\n{chap_lines}\n\n"

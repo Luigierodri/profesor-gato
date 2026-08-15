@@ -25,3 +25,7 @@ tmp/*.mp4
 
 # Footage temático CC (se re-baja)
 footage_cc/
+
+# Pack de SFX del motor de video (excepción al *.wav de arriba)
+!modules/pack_sfx/
+!modules/pack_sfx/*.wav

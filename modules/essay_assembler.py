@@ -228,6 +228,9 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             es_dato or es_video or b.get("tiene_visual")
             or (b.get("pose", "gato") not in NEUTRAL)
         )
+        # Gráfica animada a pantalla completa: sin personaje encima (la gráfica manda).
+        if b.get("chart_video"):
+            mostrar_char = False
         char_png = resolver_char_png(b.get("speaker", "gato"), b.get("pose"))
         if char_png.exists() and mostrar_char:
             char = (

@@ -462,6 +462,14 @@ def correr_pipeline(
     size_mb = ruta_video.stat().st_size / 1024 / 1024
     log.info(f"  Video: {ruta_video.name} ({size_mb:.1f} MB)")
 
+    # ── PASO 6b: DISEÑO DE SONIDO (whoosh en cortes, pop en cifras) ────────────
+    try:
+        from modules.sonido_hook import aplicar_sonido_seguro
+        _guion_sfx = " ".join(p.get("narracion", "") for p in paneles)
+        aplicar_sonido_seguro(ruta_video, guion=_guion_sfx)
+    except Exception as e:
+        log.warning(f"  capa de sonido omitida ({e})")
+
     # ── PASO 7: PUBLICACION ───────────────────────────────────────────────────
     banner("PASO 7 — Publicacion [PROXIMAMENTE]")
     log.info(f"  Titulo:      {script['titulo']}")
