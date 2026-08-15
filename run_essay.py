@@ -785,8 +785,16 @@ def _clave_visual(v: dict) -> str:
     if t == "foto":
         return f"foto::{v.get('query','')}"
     if t == "grafica":
+        forma = v.get("forma", "barras")
         labels = "|".join(x.get("label", "") for x in v.get("series", []))
-        return f"grafica::{v.get('titulo','')}::{labels}"
+        if labels:                       # barras/linea/reparto: identidad por series
+            return f"grafica::{forma}::{v.get('titulo','')}::{labels}"
+        # Formas de estructura propia (comparacion/pictograma/dispersion/dona/cascada):
+        # NO llevan series → sin esto, varias gráficas sin título colisionan en UNA
+        # sola cache y se reusa la primera (bug: 4 gráficas mostraban la del cold open).
+        import json as _json
+        firma = _json.dumps(v.get("datos", ""), ensure_ascii=False, sort_keys=True)
+        return f"grafica::{forma}::{v.get('titulo','')}::{firma}"
     return f"escena::{v.get('location','')}"
 
 
@@ -799,11 +807,14 @@ def _animadas_on() -> bool:
 def _grafica_spec_animada(v: dict) -> dict:
     """Convierte el spec de gráfica del guion (data_chart) al de graficas_animadas."""
     forma_in = v.get("forma", "barras")
-    # Formas con estructura propia: se pasan TAL CUAL (no llevan `series`).
-    if forma_in == "comparacion":     # dos casos enfrentados (Chile vs Haití, antes/después)
-        return {"forma": "comparacion", "datos": v.get("datos", []),
-                "remate": v.get("remate", ""), "fuente": v.get("fuente", ""),
-                "titulo": v.get("titulo", "")}
+    # Formas con estructura PROPIA (no llevan `series`): se pasan TAL CUAL, con
+    # todas sus llaves nativas (datos, remate, fuente, título, ejes, log_y,
+    # unidad, etiqueta, columnas...). Cubre comparacion + las de graficas_extra.
+    ESTRUCTURA_PROPIA = {"comparacion", "pictograma", "dispersion", "dona", "cascada"}
+    if forma_in in ESTRUCTURA_PROPIA:
+        spec = {k: val for k, val in v.items() if k != "series"}
+        spec["forma"] = forma_in
+        return spec
     if forma_in == "numero":          # una sola cifra titular
         u = (v.get("unidad", "") or "").strip()
         return {"forma": "numero", "datos": v.get("datos", v.get("valor", 0)),
@@ -838,6 +849,13 @@ def _render_grafica_animada(v: dict, dest_mp4: Path) -> str:
     para que el assembler la corte a la duración del segmento sin re-loopear."""
     import subprocess
     from modules.graficas_animadas import render_grafica
+    try:
+        from modules import graficas_extra  # noqa: F401 — registra pictograma/dispersion/dona/cascada
+    except Exception:
+        try:
+            import graficas_extra  # noqa: F401
+        except Exception:
+            pass
     dest_mp4 = Path(dest_mp4)
     raw = dest_mp4.with_suffix(".raw.mp4")
     render_grafica(_grafica_spec_animada(v), str(raw), vertical=False)

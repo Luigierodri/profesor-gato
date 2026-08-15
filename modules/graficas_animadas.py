@@ -392,13 +392,25 @@ def render_grafica(spec: dict, salida: str, vertical: bool = False) -> str:
 
     fig = plt.figure(figsize=(W / dpi, H / dpi), dpi=dpi, facecolor=FONDO)
 
+    # Formas de graficas_extra que ocupan el lienzo completo (pictograma, dona).
+    # Import perezoso y tolerante: si graficas_extra no está, el set queda vacío
+    # y todo se comporta como antes.
+    try:
+        from graficas_extra import PANTALLA_COMPLETA
+    except ImportError:
+        try:
+            from modules.graficas_extra import PANTALLA_COMPLETA
+        except ImportError:
+            PANTALLA_COMPLETA = set()
+
     for f in range(total):
         p = 1.0 if f >= n_entrada else f / max(1, n_entrada - 1)
         fig.clear()
         fig.patch.set_facecolor(FONDO)
 
-        if forma in ("numero", "comparacion"):
-            ax = fig.add_axes([0, 0, 1, 1])
+        if forma in ("numero", "comparacion") or forma in PANTALLA_COMPLETA:
+            ax = fig.add_axes([0.03, 0.10, 0.94, 0.78]
+                              if forma in PANTALLA_COMPLETA else [0, 0, 1, 1])
         else:
             izq = 0.30 if forma == "barras" else 0.11
             ax = fig.add_axes([izq, 0.20, 0.94 - izq, 0.56])
