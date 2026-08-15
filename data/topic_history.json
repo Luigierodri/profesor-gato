@@ -741,5 +741,13 @@
     "categoria": "tecnologia",
     "geo": "latam",
     "trend": "openai"
+  },
+  {
+    "fecha": "2026-08-15",
+    "angulo": "¿Por qué vivir más tiempo se está convirtiendo en un negocio de millones y tú probablemente no podrás pagarlo?",
+    "evento": "economia_longevidad_negocio",
+    "categoria": "sociedad",
+    "geo": "latam",
+    "trend": "longevidad"
   }
 ]
