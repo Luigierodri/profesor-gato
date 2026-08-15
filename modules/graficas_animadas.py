@@ -8,10 +8,12 @@ grandes, cero adorno.
 
 Cuatro formas, elegidas por el trabajo que hace el dato:
 
-    numero   → una sola cifra que ES el titular      ("1.8%")
-    barras   → comparar magnitudes entre categorías
-    linea    → cambio a lo largo del tiempo
-    reparto  → cómo se divide un total (barra 100%)
+    numero      → una sola cifra que ES el titular      ("1.8%")
+    barras      → comparar magnitudes entre categorías
+    linea       → cambio a lo largo del tiempo
+    reparto     → cómo se divide un total (barra 100%)
+    comparacion → dos casos enfrentados, con varias cifras cada uno
+                  (Chile vs Haití, 1985 vs 2017, antes vs después)
 
 Uso:
 
@@ -88,8 +90,15 @@ def _ease(t: float) -> float:
     return 1 - (1 - t) ** 3
 
 
-def _fmt(v: float, unidad: str = "") -> str:
-    if abs(v) >= 1000:
+def _fmt(v: float, unidad: str = "", decimales: int | None = None) -> str:
+    """
+    `decimales` fuerza el formato. Importa para cosas como la magnitud de un
+    sismo: 7.0 se escribe "7,0", nunca "7" — en esa escala el decimal es el
+    dato, no un adorno.
+    """
+    if decimales is not None:
+        s = f"{v:,.{decimales}f}".replace(",", " ").replace(".", ",")
+    elif abs(v) >= 1000:
         s = f"{v:,.0f}".replace(",", " ")
     elif v == int(v):
         s = f"{int(v)}"
@@ -293,11 +302,67 @@ def _dibujar_reparto(ax, spec, p, W, H):
         x += w
 
 
+def _dibujar_comparacion(ax, spec, p, W, H):
+    """
+    Dos casos enfrentados. Para "Chile vs Haití", "1985 vs 2017", etc.
+
+    Cada lado lleva su nombre y hasta tres cifras que suben contando. La
+    cifra marcada como `clave` va en grande; las otras, de apoyo.
+
+    Deliberadamente NO usa dos ejes ni barras comparadas: cuando las
+    magnitudes son de órdenes distintos (8.8 contra 200,000) cualquier
+    escala común miente. Aquí el contraste lo hace el número, no el largo.
+    """
+    izq, der = spec["datos"][0], spec["datos"][1]
+    ax.axis("off")
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+
+    e = _ease(p)
+
+    # separador central
+    ax.plot([0.5, 0.5], [0.06, 0.92], color=TENUE, linewidth=1.6, zorder=1)
+
+    for lado, (caso, cx, color) in enumerate(
+            ((izq, 0.25, SERIES[0]), (der, 0.75, SERIES[1]))):
+
+        retraso = lado * 0.10
+        pl = np.clip((p - retraso) / max(1e-6, 1 - retraso), 0, 1)
+        el = _ease(pl)
+
+        ax.text(cx, 0.90, caso["nombre"].upper(), ha="center", va="center",
+                color=TEXTO, fontsize=34, fontweight="black")
+
+        cifras = caso["cifras"]
+        clave = caso.get("clave", len(cifras) - 1)
+
+        y = 0.66
+        for i, c in enumerate(cifras):
+            val = float(c["valor"]) * el
+            grande = (i == clave)
+
+            ax.text(cx, y, _fmt(val, c.get("unidad", ""), c.get("decimales")),
+                    ha="center", va="center",
+                    color=color if grande else TEXTO,
+                    fontsize=76 if grande else 40,
+                    fontweight="black")
+            ax.text(cx, y - (0.095 if grande else 0.070),
+                    c["etiqueta"].upper(), ha="center", va="center",
+                    color=TEXTO_2, fontsize=19, fontweight="bold")
+
+            y -= 0.26 if grande else 0.20
+
+    if spec.get("remate") and e > 0.75:
+        ax.text(0.5, 0.115, spec["remate"], ha="center", va="center",
+                color=TEXTO, fontsize=27, fontweight="bold")
+
+
 FORMAS = {
     "numero": _dibujar_numero,
     "barras": _dibujar_barras,
     "linea": _dibujar_linea,
     "reparto": _dibujar_reparto,
+    "comparacion": _dibujar_comparacion,
 }
 
 
@@ -332,13 +397,13 @@ def render_grafica(spec: dict, salida: str, vertical: bool = False) -> str:
         fig.clear()
         fig.patch.set_facecolor(FONDO)
 
-        if forma == "numero":
+        if forma in ("numero", "comparacion"):
             ax = fig.add_axes([0, 0, 1, 1])
         else:
             izq = 0.30 if forma == "barras" else 0.11
             ax = fig.add_axes([izq, 0.20, 0.94 - izq, 0.56])
 
-        if spec.get("titulo") and forma != "numero":
+        if spec.get("titulo") and forma not in ("numero", "comparacion"):
             fig.text(0.5, 0.88, spec["titulo"], ha="center", va="center",
                      color=TEXTO, fontsize=38, fontweight="black", wrap=True)
 

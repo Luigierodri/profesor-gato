@@ -798,6 +798,18 @@ def _animadas_on() -> bool:
 
 def _grafica_spec_animada(v: dict) -> dict:
     """Convierte el spec de gráfica del guion (data_chart) al de graficas_animadas."""
+    forma_in = v.get("forma", "barras")
+    # Formas con estructura propia: se pasan TAL CUAL (no llevan `series`).
+    if forma_in == "comparacion":     # dos casos enfrentados (Chile vs Haití, antes/después)
+        return {"forma": "comparacion", "datos": v.get("datos", []),
+                "remate": v.get("remate", ""), "fuente": v.get("fuente", ""),
+                "titulo": v.get("titulo", "")}
+    if forma_in == "numero":          # una sola cifra titular
+        u = (v.get("unidad", "") or "").strip()
+        return {"forma": "numero", "datos": v.get("datos", v.get("valor", 0)),
+                "unidad": "%" if "%" in u else (u if len(u) <= 3 else ""),
+                "titulo": v.get("titulo", ""), "pie": v.get("pie", ""),
+                "fuente": v.get("fuente", "")}
     series = v.get("series") or []
     datos, resaltar = [], None
     for i, s in enumerate(series):
