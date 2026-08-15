@@ -1,7 +1,7 @@
 """
 voz_hook.py — Masterización de voz OPCIONAL (EQ + compresión + -14 LUFS).
 
-Gated por env MASTER_VOZ=1 (apagado por defecto). Usa SIEMPRE recortar=False:
+ON por defecto (MASTER_VOZ=0 la apaga). Usa SIEMPRE recortar=False:
 solo mejora el sonido, NO recorta silencios → conserva la duración exacta, así los
 timestamps de ElevenLabs (subtítulos) siguen alineados. Guarded: si falla, deja el
 audio original intacto.
@@ -22,7 +22,8 @@ log = logging.getLogger("voz_hook")
 
 def masterizar_si_activado(ruta_audio) -> str:
     ruta_audio = str(ruta_audio)
-    if os.environ.get("MASTER_VOZ", "0") != "1":
+    # ON por defecto (−14 LUFS, estándar de YouTube). MASTER_VOZ=0 la apaga.
+    if os.environ.get("MASTER_VOZ", "1") == "0":
         return ruta_audio
     if not ruta_audio or not os.path.exists(ruta_audio):
         return ruta_audio

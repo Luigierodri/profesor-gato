@@ -65,15 +65,16 @@ from matplotlib.patches import FancyBboxPatch
 
 # ── sistema visual ───────────────────────────────────────────────────
 
-FONDO = "#1a1a19"
-TEXTO = "#ffffff"
+FONDO = "#11151e"            # slate de marca Profesor Gato (data_chart BG)
+TEXTO = "#eef0f5"
 TEXTO_2 = "#c3c2b7"
 TENUE = "#3a3a37"
 
-# Orden fijo. Validado en modo oscuro (separación para daltonismo ΔE 8.4,
-# visión normal 19.8, contraste ≥3:1). No reordenar, no ciclar, no generar
-# un quinto color: si hay más categorías, se pliegan en "Otros".
-SERIES = ["#3987e5", "#d95926", "#199e70", "#c98500"]
+# ALINEADO A LA MARCA (dorado/slate del canal, igual que data_chart). SERIES[0] =
+# dorado apagado (barras normales), SERIES[1] = dorado brillante (la barra RESALTADA);
+# los otros dos (teal/coral) solo aparecen en "reparto" multi-categoría. Contraste alto
+# sobre el slate. No ciclar; si hay más de 4 categorías se pliegan en "Otros".
+SERIES = ["#c9a45a", "#f2c56a", "#78bab9", "#dc6e5f"]
 APAGADO = "#4a4a46"          # para las barras que no se resaltan
 OTROS = "#6b6b64"            # el pliegue "Otros", fuera de la paleta de series
 
