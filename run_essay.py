@@ -871,6 +871,11 @@ def _generar_fondos(segmentos: list[dict], carpeta: Path) -> list[str]:
                         from modules.topical_footage import descargar_footage_cc
                         log.info(f"  [bg {idx}] FOOTAGE CC ← {q[:60]}")
                         ruta = str(descargar_footage_cc(q))
+                    # Verifica y CURA el footage (recorta rating cards / reseñas / HUD /
+                    # texto quemado). Seguro: el assembler loopea el clip a la duración
+                    # del segmento, así que un clip más corto no rompe nada.
+                    from modules.footage_hook import verificar_footage
+                    ruta = verificar_footage(ruta, curar=True)
                 elif tipo == "foto":
                     log.info(f"  [bg {idx}] FOTO real ← {v.get('query','')[:60]}")
                     ruta = fondo_16x9(v.get("query", ""), dest)
