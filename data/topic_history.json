@@ -749,5 +749,13 @@
     "categoria": "sociedad",
     "geo": "latam",
     "trend": "longevidad"
+  },
+  {
+    "fecha": "2026-08-16",
+    "angulo": "¿Por qué llueve más en la Ciudad de México que hace 50 años y por qué eso te cuesta dinero en tu recibo, tu seguro y tu departamento?",
+    "evento": "clima_lluvia_cdmx",
+    "categoria": "geografia",
+    "geo": "mexico",
+    "trend": "lluvia"
   }
 ]
