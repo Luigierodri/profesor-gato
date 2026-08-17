@@ -757,5 +757,13 @@
     "categoria": "geografia",
     "geo": "mexico",
     "trend": "lluvia"
+  },
+  {
+    "fecha": "2026-08-17",
+    "angulo": "¿Por qué un ciclón puede destruir una ciudad en 6 horas y nadie te avisó con suficiente tiempo para salvarte?",
+    "evento": "ciencia_ciclones_latam",
+    "categoria": "ciencia",
+    "geo": "latam",
+    "trend": "ciclón"
   }
 ]
