@@ -765,5 +765,13 @@
     "categoria": "ciencia",
     "geo": "latam",
     "trend": "ciclón"
+  },
+  {
+    "fecha": "2026-08-18",
+    "angulo": "¿Por qué el ébola reaparece una y otra vez y ningún país rico se apura a tener la vacuna lista hasta que ya hay muertos?",
+    "evento": "salud_ebola_latam",
+    "categoria": "guerras_conflictos",
+    "geo": "latam",
+    "trend": "brote de ebola"
   }
 ]
