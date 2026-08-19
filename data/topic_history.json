@@ -773,5 +773,13 @@
     "categoria": "guerras_conflictos",
     "geo": "latam",
     "trend": "brote de ebola"
+  },
+  {
+    "fecha": "2026-08-19",
+    "angulo": "¿Por qué los apagones eléctricos cuestan millones y siempre los paga el mismo: tú?",
+    "evento": "economia_electricidad_latam",
+    "categoria": "economia",
+    "geo": "latam",
+    "trend": "apagón eléctrico"
   }
 ]
