@@ -781,5 +781,13 @@
     "categoria": "economia",
     "geo": "latam",
     "trend": "apagón eléctrico"
+  },
+  {
+    "fecha": "2026-08-20",
+    "angulo": "¿Por qué el Banco del Bienestar tiene sucursales en pueblos sin luz eléctrica y aun así millones de mexicanos dependen de él para cobrar?",
+    "evento": "economia_banco_bienestar",
+    "categoria": "politica",
+    "geo": "mexico",
+    "trend": "banco del bienestar"
   }
 ]
