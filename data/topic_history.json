@@ -789,5 +789,13 @@
     "categoria": "politica",
     "geo": "mexico",
     "trend": "banco del bienestar"
+  },
+  {
+    "fecha": "2026-08-21",
+    "angulo": "¿Por qué los portaviones cuestan más que el PIB de varios países latinoamericanos y ningún país de la región puede permitirse uno?",
+    "evento": "historia_portaviones_poder",
+    "categoria": "historia",
+    "geo": "latam",
+    "trend": "portaviones"
   }
 ]
