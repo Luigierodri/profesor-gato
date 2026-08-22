@@ -797,5 +797,13 @@
     "categoria": "historia",
     "geo": "latam",
     "trend": "portaviones"
+  },
+  {
+    "fecha": "2026-08-22",
+    "angulo": "¿Por qué la Liga Española mueve más dinero que el PIB de varios países latinoamericanos y ningún peso de eso regresa a la región que más la consume?",
+    "evento": "futbol_transferencias_dinero",
+    "categoria": "economia",
+    "geo": "latam",
+    "trend": "liga española"
   }
 ]
