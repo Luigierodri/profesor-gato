@@ -22,10 +22,28 @@ from modules import cost_tracker
 log = logging.getLogger("video_animator")
 
 BASE_DIR  = Path(__file__).parent.parent
-VEO_MODEL = "veo-3.1-lite-generate-preview"
+
+# ID GA vigente. El viejo "veo-3.1-lite-generate-preview" fue retirado → daba 404.
+# Fast = barato (~$0.10/seg), ideal para ganchos cortos con el tope de $50/mes.
+# Override por entorno si algún día se quiere el estándar (veo-3.1-generate-001).
+VEO_MODEL = os.getenv("VEO_MODEL", "veo-3.1-fast-generate-001")
+
+# Límite DURO de segundos por clip (guarda de presupuesto, pedido del relanzamiento
+# v2). Veo 3.1 solo acepta 4, 6 u 8 s; la duración pedida se recorta a este tope y
+# se ajusta al valor válido más cercano por debajo.
+VEO_MAX_SEG              = int(os.getenv("VEO_MAX_SEG", "6"))
+_VEO_DURACIONES_VALIDAS  = (4, 6, 8)
 
 VEO_POLL_INTERVAL = 10   # segundos entre polls
 VEO_POLL_MAX      = 60   # máximo 10 minutos
+
+
+def _duracion_veo(segundos: float) -> int:
+    """Ajusta la duración pedida al tope VEO_MAX_SEG y a un valor válido de Veo
+    (4/6/8 s). Nunca devuelve menos de 4 (mínimo que acepta el modelo)."""
+    tope = min(int(segundos), VEO_MAX_SEG)
+    validas = [d for d in _VEO_DURACIONES_VALIDAS if d <= tope]
+    return max(validas) if validas else min(_VEO_DURACIONES_VALIDAS)
 
 
 def _slug(titulo: str) -> str:
@@ -36,10 +54,10 @@ def _slug(titulo: str) -> str:
     )[:30]
 
 
-def _descargar_video_veo(ruta_imagen: str, prompt: str) -> bytes:
+def _descargar_video_veo(ruta_imagen: str, prompt: str, duracion: int = 6) -> bytes:
     """
-    Llama a Veo 3.1 Lite via Vertex AI y devuelve los bytes del video MP4.
-    Lanza excepción si falla.
+    Llama a Veo 3.1 via Vertex AI y devuelve los bytes del video MP4.
+    `duracion`: segundos válidos de Veo (4/6/8). Lanza excepción si falla.
     """
     with open(ruta_imagen, "rb") as f:
         image_b64 = base64.b64encode(f.read()).decode()
@@ -55,7 +73,7 @@ def _descargar_video_veo(ruta_imagen: str, prompt: str) -> bytes:
         "parameters": {
             "aspectRatio": "16:9",
             "sampleCount": 1,
-            "durationSeconds": 6,
+            "durationSeconds": duracion,
         },
     }
 
@@ -153,9 +171,10 @@ def animar_panel(
     numero_panel: int,
     carpeta_salida: str,
     speaker: str = "gato",
+    duracion_seg: float = 6,
 ) -> str | None:
     """
-    Anima un panel PNG con Veo 3.1 Fast.
+    Anima un panel PNG con Veo 3.1.
 
     Args:
         ruta_imagen:     Ruta local al PNG del panel.
@@ -163,6 +182,7 @@ def animar_panel(
         numero_panel:    Número de panel (para el nombre de archivo).
         carpeta_salida:  Carpeta donde guardar el clip .mp4.
         speaker:         "gato" o "bastet".
+        duracion_seg:    Duración pedida; se recorta a VEO_MAX_SEG y a 4/6/8 s.
 
     Returns:
         Ruta al clip .mp4 generado, o None si falla (el ensamblador
@@ -171,7 +191,8 @@ def animar_panel(
     Path(carpeta_salida).mkdir(parents=True, exist_ok=True)
     output_path = Path(carpeta_salida) / f"panel_{numero_panel:02d}.mp4"
 
-    log.info(f"  Animando panel {numero_panel} con Veo 3.1 Fast...")
+    duracion = _duracion_veo(duracion_seg)
+    log.info(f"  Animando panel {numero_panel} con {VEO_MODEL} ({duracion}s)...")
 
     if speaker == "bastet":
         char_desc = "calico cat character with golden headband and plaid skirt, curious expression"
@@ -186,17 +207,16 @@ def animar_panel(
     )
 
     try:
-        video_bytes = _descargar_video_veo(ruta_imagen, prompt)
+        video_bytes = _descargar_video_veo(ruta_imagen, prompt, duracion)
 
         with open(output_path, "wb") as f:
             f.write(video_bytes)
 
         size_mb = output_path.stat().st_size / 1024 / 1024
         log.info(f"  Veo panel_{numero_panel:02d}.mp4 ({size_mb:.1f} MB)")
-        duracion_generada = payload["parameters"]["durationSeconds"]
         cost_tracker.registrar_video(
             VEO_MODEL,
-            duracion_seg=duracion_generada,
+            duracion_seg=duracion,
             ctx=f"Panel {numero_panel} ({speaker})",
         )
         return str(output_path)
@@ -229,8 +249,8 @@ def animar_paneles(
 
     paneles_idx = {p["numero"]: p for p in datos_comic["paneles"]}
 
-    log.info(f"Animando {len(resultados_imagenes)} paneles con Veo 3.1 Fast...")
-    log.info(f"  Modelo:  {VEO_MODEL}")
+    log.info(f"Animando {len(resultados_imagenes)} paneles con Veo 3.1...")
+    log.info(f"  Modelo:  {VEO_MODEL} (tope {VEO_MAX_SEG}s)")
     log.info(f"  Carpeta: {carpeta_salida}")
 
     resultados = []

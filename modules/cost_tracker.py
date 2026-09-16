@@ -61,10 +61,17 @@ _PRECIOS: dict[str, dict] = {
         "tipo": "MÚSICA", "por_segundo": 0.0006, "estimado": True,
     },
     # ── Vertex AI Veo (video) ──
-    # Precios oficiales Vertex AI (mayo 2026):
-    # veo-3.1-lite:  $0.05/seg  — fuente: cloud.google.com/vertex-ai/generative-ai/pricing
-    # veo-3.1-fast:  ~$0.10/seg — estimado, mitad del estándar
+    # IDs GA vigentes (los "-preview"/"lite" fueron retirados → daban 404):
+    #   veo-3.1-fast-generate-001: ~$0.10/seg — fast, default del canal (barato)
+    #   veo-3.1-generate-001:      ~$0.20/seg — estándar
     # veo-3.0:       $0.40/seg  — modelo anterior
+    "veo-3.1-fast-generate-001": {
+        "tipo": "VIDEO", "por_segundo": 0.100, "estimado": True,
+    },
+    "veo-3.1-generate-001": {
+        "tipo": "VIDEO", "por_segundo": 0.200, "estimado": True,
+    },
+    # Alias viejos (retirados) — se dejan por historial de logs:
     "veo-3.1-lite-generate-preview": {
         "tipo": "VIDEO", "por_segundo": 0.050, "estimado": False,
     },
