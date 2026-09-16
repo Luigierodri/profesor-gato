@@ -49,6 +49,16 @@ _SFX_KEYWORDS = {
     "espacio":   "space_ambient.mp3",
     "science":   "lab_bubbles.mp3",
     "laborator": "lab_bubbles.mp3",
+    # Look de noticiero / prensa (relanzamiento v2)
+    "news":      "typewriter_news.mp3",
+    "noticiero": "typewriter_news.mp3",
+    "prensa":    "typewriter_news.mp3",
+    "periodic":  "typewriter_news.mp3",
+    "portada":   "typewriter_news.mp3",
+    "diario":    "typewriter_news.mp3",
+    "drum":      "war_drums.mp3",
+    "tambor":    "war_drums.mp3",
+    "marcha":    "war_drums.mp3",
 }
 
 SFX_DIR = Path(__file__).parent.parent / "assets" / "sfx"
@@ -139,9 +149,11 @@ def _via_ytdlp(descripcion: str, ruta_salida: Path) -> bool:
     return False
 
 
-# ─── MÉTODO 4: SFX local por keyword ─────────────────────────────────────────
+# ─── MÉTODO: SFX local (despensa) por keyword ────────────────────────────────
 
-def _via_sfx_local(descripcion: str, tema: str, ruta_salida: Path) -> bool:
+def _via_sfx_keyword(descripcion: str, tema: str, ruta_salida: Path) -> bool:
+    """SFX local por keyword ESPECÍFICO (la despensa de ElevenLabs, ver
+    generar_despensa_audio.py). Solo copia si hay match real; nada de random."""
     if not SFX_DIR.exists():
         return False
     texto = (descripcion + " " + tema).lower()
@@ -151,15 +163,21 @@ def _via_sfx_local(descripcion: str, tema: str, ruta_salida: Path) -> bool:
             if sfx_file.exists():
                 import shutil as _sh
                 _sh.copy(sfx_file, ruta_salida)
-                log.info(f"  [SFX local] {filename} (keyword: {keyword})")
+                log.info(f"  [SFX despensa] {filename} (keyword: {keyword})")
                 return True
-    # Fallback: cualquier SFX disponible
+    return False
+
+
+def _via_sfx_random(ruta_salida: Path) -> bool:
+    """Último recurso: cualquier SFX local para que el video nunca quede sin ambiente."""
+    if not SFX_DIR.exists():
+        return False
     sfx_files = list(SFX_DIR.glob("*.mp3"))
     if sfx_files:
         import random, shutil as _sh
         elegido = random.choice(sfx_files)
         _sh.copy(elegido, ruta_salida)
-        log.info(f"  [SFX local] {elegido.name} (random fallback)")
+        log.info(f"  [SFX local] {elegido.name} (random, último recurso)")
         return True
     return False
 
@@ -169,33 +187,41 @@ def _via_sfx_local(descripcion: str, tema: str, ruta_salida: Path) -> bool:
 def generar_ambiente(descripcion: str, duracion_video: float, ruta_salida: Path,
                      tema: str = "") -> Path:
     """
-    Genera efecto ambiental contextual. Prueba métodos en orden:
-    Freesound → ElevenLabs → yt-dlp → SFX local
+    Genera efecto ambiental contextual. Orden (relanzamiento v2):
+      1. SFX despensa por keyword — pre-generado con ElevenLabs, $0 y sin tocar la
+         cuota de voz (licencia comercial permanente).
+      2. ElevenLabs en vivo — para descripciones que la despensa no cubre.
+      3. Freesound → yt-dlp — respaldos externos.
+      4. SFX local random — último recurso para no quedar mudo.
 
     Args:
         descripcion:    Campo ambiente_sonoro del script (en inglés)
         duracion_video: Duración total del video
         ruta_salida:    Dónde guardar el .mp3
-        tema:           Tema del video (para keyword matching en SFX local)
+        tema:           Tema del video (para keyword matching en SFX despensa)
     """
     duracion_clip = min(duracion_video, MAX_DURATION)
     ruta_salida.parent.mkdir(parents=True, exist_ok=True)
 
     log.info(f"  Ambiente: \"{descripcion[:65]}\"")
 
-    if _via_freesound(descripcion, ruta_salida):
+    if _via_sfx_keyword(descripcion, tema, ruta_salida):
         return ruta_salida
 
-    log.info("  Freesound fallo, probando ElevenLabs...")
+    log.info("  Sin match en despensa, probando ElevenLabs...")
     if _via_elevenlabs(descripcion, duracion_clip, ruta_salida):
         return ruta_salida
 
-    log.info("  ElevenLabs fallo, probando yt-dlp...")
+    log.info("  ElevenLabs fallo, probando Freesound...")
+    if _via_freesound(descripcion, ruta_salida):
+        return ruta_salida
+
+    log.info("  Freesound fallo, probando yt-dlp...")
     if _via_ytdlp(descripcion, ruta_salida):
         return ruta_salida
 
-    log.info("  yt-dlp fallo, usando SFX local...")
-    if _via_sfx_local(descripcion, tema, ruta_salida):
+    log.info("  yt-dlp fallo, usando SFX local random...")
+    if _via_sfx_random(ruta_salida):
         return ruta_salida
 
     raise RuntimeError("Todos los métodos de generación de ambiente fallaron")

@@ -20,9 +20,13 @@ from modules import cost_tracker
 
 log = logging.getLogger("music_generator")
 
-BASE_DIR    = Path(__file__).parent.parent
-MUSIC_DIR   = BASE_DIR / "assets" / "music" / "generated"
-LYRIA_MODEL = "lyria-002"
+BASE_DIR     = Path(__file__).parent.parent
+MUSIC_DIR    = BASE_DIR / "assets" / "music" / "generated"
+# Despensa reutilizable: camas pre-generadas con ElevenLabs (licencia comercial
+# permanente). Ver generar_despensa_audio.py. Si existe, es la PRIMERA opción de
+# música: $0 por-video y sin tocar la cuota de voz.
+DESPENSA_DIR = BASE_DIR / "assets" / "music" / "despensa"
+LYRIA_MODEL  = "lyria-002"
 
 # Sufijo seguro: fuerza composición ORIGINAL e instrumental. Evita que el
 # filtro de "recitation" de Lyria bloquee el prompt por parecerse a una obra real.
@@ -169,3 +173,45 @@ def generar_musica_lyria(
     except Exception as e:
         log.warning(f"  [Lyria] Error: {e} — video continuará sin música")
         return None
+
+
+# ─── DESPENSA + ORQUESTADOR DE MÚSICA ─────────────────────────────────────────
+
+def _bed_despensa(musica_mood: str) -> Path | None:
+    """
+    Devuelve una cama pre-generada con ElevenLabs (licencia permanente) para el mood,
+    si existe en assets/music/despensa/<mood>/. Reutilizable y $0. None si no hay.
+    """
+    carpeta = DESPENSA_DIR / (musica_mood or "lofi")
+    if carpeta.is_dir():
+        import random
+        camas = sorted(carpeta.glob("*.mp3")) + sorted(carpeta.glob("*.wav"))
+        if camas:
+            return random.choice(camas)
+    return None
+
+
+def seleccionar_musica(
+    musica_mood: str,
+    tema: str,
+    duracion_seg: float,
+    ruta_salida: Path = None,
+    prompt_situacional: str = "",
+) -> Path | None:
+    """
+    Orquestador de música. Orden:
+      1. Despensa ElevenLabs (assets/music/despensa/<mood>/) — reutilizable, licencia
+         permanente, $0 y sin tocar la cuota de voz.
+      2. Lyria (Google) — música fresca por-video (centavos, presupuesto de Cloud).
+      3. None → el ensamblador cae a los tracks estáticos de assets/music/<mood>/.
+
+    Firma compatible con generar_musica_lyria para intercambiarlos sin fricción.
+    """
+    bed = _bed_despensa(musica_mood)
+    if bed:
+        log.info(f"  [Despensa] Cama reutilizable '{musica_mood}': {bed.name}")
+        return bed
+    return generar_musica_lyria(
+        musica_mood, tema, duracion_seg,
+        ruta_salida=ruta_salida, prompt_situacional=prompt_situacional,
+    )

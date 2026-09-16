@@ -1045,7 +1045,7 @@ def correr_essay(tema: str, publicar: bool = False, reuse_audio: str = "",
     sin_musica_idx = len(caps) // 2 if len(caps) >= 4 else -1
     musica_por_capitulo = {}
     try:
-        from modules.music_generator import generar_musica_lyria
+        from modules.music_generator import seleccionar_musica
         beds = {}
         for i, c in enumerate(caps):
             if i == sin_musica_idx:
@@ -1054,7 +1054,7 @@ def correr_essay(tema: str, publicar: bool = False, reuse_audio: str = "",
                 continue
             mm = palette[i % len(palette)]
             if mm not in beds:
-                beds[mm] = generar_musica_lyria(
+                beds[mm] = seleccionar_musica(
                     mm, f"{tema} — {mm}", 45,
                     prompt_situacional=script.get("musica_prompt", ""))
                 log.info(f"  Bed '{mm}': {beds[mm].name if beds[mm] else 'falló'}")

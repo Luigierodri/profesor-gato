@@ -55,7 +55,7 @@ from modules.background_generator import generar_imagenes_por_paneles
 from modules.video_animator       import animar_paneles
 from modules.video_assembler      import VideoAssemblerV4
 from modules.sound_generator      import generar_ambiente
-from modules.music_generator      import generar_musica_lyria
+from modules.music_generator      import generar_musica_lyria, seleccionar_musica
 
 # ─── LOGGING ──────────────────────────────────────────────────────────────────
 
@@ -434,11 +434,11 @@ def correr_pipeline(
     banner("PASO 5.9 — Generando música contextual (Lyria 3)")
     musica_mood = datos_comic.get("musica_mood", "lofi")
     duracion_total_audio = sum(r["duracion_real"] for r in resultados_audio)
-    lyria_path = generar_musica_lyria(musica_mood, tema, duracion_total_audio)
+    lyria_path = seleccionar_musica(musica_mood, tema, duracion_total_audio)
     if lyria_path:
-        log.info(f"  Lyria 3: {lyria_path.name}")
+        log.info(f"  Música: {lyria_path.name}")
     else:
-        log.info(f"  Lyria 3 no disponible — se usarán tracks estáticos [{musica_mood}]")
+        log.info(f"  Sin música generada — se usarán tracks estáticos [{musica_mood}]")
 
     # ── PASO 6: ENSAMBLAR VIDEO ───────────────────────────────────────────────
     banner("PASO 6 — Ensamblando video final")
