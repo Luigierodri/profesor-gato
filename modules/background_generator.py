@@ -2,25 +2,25 @@
 background_generator.py — Generación de Imágenes por Panel
 Proyecto: Profesor Gato
 
-v12: Cadena de fallback de 4 proveedores (todos funcionales en project-71cbc30b):
-1. imagen-4.0-fast-generate-001 — principal (Vertex AI, $0.02/img, 1080p)
-2. imagen-3.0-fast-generate-001 — fallback Google 2 (Vertex AI, más barato)
-3. fal-ai/flux/schnell           — fallback externo 1
-4. gpt-image-1 (OpenAI)         — último recurso
+v13 (relanzamiento v2): Imagen fue RETIRADO por Google el 17 ago 2026. Se migra a
+Nano Banana (Gemini image) vía Vertex AI generateContent. Se quitan del respaldo
+fal.ai (saldo negativo) y OpenAI (agotado).
+
+  • gemini-3.1-flash-image — único generador (Vertex AI, ~$0.13/img), con reintentos.
+
+Aspect ratio nativo por imageConfig.aspectRatio: "1:1" para paneles de Shorts
+(se componen a 9:16 en el assembler) y "16:9" para el ensayo largo.
 
 Auth: Application Default Credentials (gcloud auth application-default login)
 Proyecto GCP: GOOGLE_CLOUD_PROJECT en .env
 """
 
-import os
 import base64
 import logging
 import time
 import requests
 from pathlib import Path
 from datetime import datetime
-from openai import OpenAI
-import fal_client
 from modules.gcp_client import vertex_url, vertex_headers
 from modules import cost_tracker
 
@@ -30,8 +30,9 @@ BASE_DIR   = Path(__file__).parent.parent
 IMAGES_DIR = BASE_DIR / "images"
 IMAGES_DIR.mkdir(exist_ok=True)
 
-IMAGEN4_MODEL  = "imagen-4.0-fast-generate-001"
-IMAGEN3_MODEL  = "imagen-3.0-fast-generate-001"
+# Nano Banana. gemini-3.1-flash-image genera imagen vía generateContent (NO :predict
+# como Imagen). El aspect ratio va en generationConfig.imageConfig.aspectRatio.
+GEMINI_IMG_MODEL = "gemini-3.1-flash-image"
 
 # Estilo visual pixel art 16-bit
 _PIXEL_STYLE = (
@@ -85,61 +86,56 @@ def _construir_prompt(visual_pizarron: str, location: str = "classroom") -> str:
     )
 
 
-def _generar_con_imagen_vertex(model: str, prompt: str, aspect: str = "1:1") -> bytes:
-    """imagen-X via Vertex AI predict endpoint (devuelve bytesBase64Encoded).
-    `aspect` default "1:1" = comportamiento de los Shorts intacto; el ensayo
-    largo pide "16:9"."""
-    url = vertex_url(model, "predict")
+def _generar_con_nano_banana(prompt: str, aspect: str = "1:1") -> bytes:
+    """
+    Genera una imagen con gemini-3.1-flash-image (Nano Banana) vía Vertex AI
+    generateContent. Devuelve los bytes de la imagen (PNG/JPEG inline).
+
+    `aspect`: "1:1" (paneles Shorts, comportamiento intacto) o "16:9" (ensayo).
+    """
+    url = vertex_url(GEMINI_IMG_MODEL, "generateContent")
     payload = {
-        "instances": [{"prompt": prompt}],
-        "parameters": {"sampleCount": 1, "aspectRatio": aspect},
+        "contents": [{"role": "user", "parts": [{"text": prompt}]}],
+        "generationConfig": {
+            "responseModalities": ["IMAGE"],
+            "imageConfig": {"aspectRatio": aspect},
+        },
     }
     resp = requests.post(url, json=payload, headers=vertex_headers(), timeout=120)
     if resp.status_code == 429:
-        raise requests.exceptions.HTTPError(f"429 rate limit en {model}")
+        raise requests.exceptions.HTTPError(f"429 rate limit en {GEMINI_IMG_MODEL}")
     resp.raise_for_status()
     data = resp.json()
-    predictions = data.get("predictions", [])
-    if not predictions:
-        raise ValueError(f"{model} no devolvió predicciones")
-    img_b64 = predictions[0].get("bytesBase64Encoded") or predictions[0].get("b64_json")
-    if not img_b64:
-        raise ValueError(f"{model} sin bytes. Keys: {list(predictions[0].keys())}")
-    return base64.b64decode(img_b64)
 
-
-def _generar_con_flux_schnell(prompt: str, image_size: str = "square_hd") -> bytes:
-    # fal_client usa FAL_KEY; nuestro .env lo expone como FAL_API_KEY
-    fal_key = os.getenv("FAL_API_KEY") or os.getenv("FAL_KEY")
-    if not fal_key:
-        raise ValueError("FAL_API_KEY no está configurada")
-    os.environ["FAL_KEY"] = fal_key
-
-    result = fal_client.run(
-        "fal-ai/flux/schnell",
-        arguments={
-            "prompt": prompt,
-            "image_size": image_size,
-            "num_images": 1,
-            "num_inference_steps": 4,
-        },
+    candidates = data.get("candidates", [])
+    if not candidates:
+        raise ValueError(f"{GEMINI_IMG_MODEL} no devolvió candidates: {str(data)[:200]}")
+    parts = candidates[0].get("content", {}).get("parts", [])
+    for part in parts:
+        inline = part.get("inlineData") or part.get("inline_data")
+        if inline and inline.get("data"):
+            return base64.b64decode(inline["data"])
+    raise ValueError(
+        f"{GEMINI_IMG_MODEL} sin imagen. Parts: {[list(p.keys()) for p in parts]}"
     )
-    image_url = result["images"][0]["url"]
-    resp = requests.get(image_url, timeout=60)
-    resp.raise_for_status()
-    return resp.content
 
 
-def _generar_con_openai(prompt: str) -> bytes:
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-    response = client.images.generate(
-        model="gpt-image-1",
-        prompt=prompt,
-        n=1,
-        size="1024x1024",
-        quality="high",
-    )
-    return base64.b64decode(response.data[0].b64_json)
+def _nano_banana_con_reintentos(prompt: str, aspect: str, ctx: str,
+                                intentos: int = 2) -> bytes:
+    """Nano Banana con reintentos ante fallos transitorios (429/5xx). Registra el
+    costo al primer éxito. Lanza RuntimeError si agota los intentos."""
+    ultimo = None
+    for i in range(intentos):
+        try:
+            img_data = _generar_con_nano_banana(prompt, aspect)
+            cost_tracker.registrar_imagen(GEMINI_IMG_MODEL, n=1, ctx=ctx)
+            return img_data
+        except Exception as e:
+            ultimo = e
+            log.warning(f"    {GEMINI_IMG_MODEL} intento {i+1}/{intentos} falló: {e}")
+            if i < intentos - 1:
+                time.sleep(2 * (i + 1))
+    raise RuntimeError(f"Nano Banana falló ({ctx}): {ultimo}")
 
 
 def generar_imagen_panel(
@@ -151,7 +147,7 @@ def generar_imagen_panel(
     location: str = "classroom",
 ) -> str:
     """
-    Genera la imagen de FONDO del panel con Imagen 4 (fallback: Imagen 3 → FLUX → OpenAI).
+    Genera la imagen de FONDO del panel con Nano Banana (gemini-3.1-flash-image).
     El personaje se superpone en el assembler via sprite overlay — no aparece aquí.
 
     Args:
@@ -168,60 +164,11 @@ def generar_imagen_panel(
     output_path = Path(carpeta_salida) / f"panel_{numero_panel:02d}.png"
 
     log.info(f"  [{speaker.upper()}] Panel {numero_panel}: \"{visual_pizarron[:55]}...\" [{location}]")
+    log.info(f"    {GEMINI_IMG_MODEL} (1:1)...")
 
-    img_data = None
-    errores  = {}
-
-    ctx_panel = f"Panel {numero_panel} ({speaker})"
-
-    # 1. Imagen 4 Fast — principal (Vertex AI, funcional en project-71cbc30b)
-    try:
-        log.info(f"    [1/4] {IMAGEN4_MODEL}...")
-        img_data = _generar_con_imagen_vertex(IMAGEN4_MODEL, prompt)
-        log.info(f"    OK ({IMAGEN4_MODEL})")
-        cost_tracker.registrar_imagen(IMAGEN4_MODEL, n=1, ctx=ctx_panel)
-    except Exception as e:
-        errores["imagen4"] = str(e)
-        log.warning(f"    {IMAGEN4_MODEL} fallo: {e}")
-
-    # 2. Imagen 3 Fast — fallback Google 2 (Vertex AI)
-    if img_data is None:
-        try:
-            log.info(f"    [2/4] {IMAGEN3_MODEL}...")
-            img_data = _generar_con_imagen_vertex(IMAGEN3_MODEL, prompt)
-            log.info(f"    OK ({IMAGEN3_MODEL})")
-            cost_tracker.registrar_imagen(IMAGEN3_MODEL, n=1, ctx=ctx_panel)
-        except Exception as e:
-            errores["imagen3"] = str(e)
-            log.warning(f"    {IMAGEN3_MODEL} fallo: {e}")
-
-    # 3. FLUX Schnell (fal.ai) — sin costo de Vertex, pero registrar si se usa
-    if img_data is None:
-        try:
-            log.info(f"    [3/4] FLUX Schnell (fal.ai)...")
-            img_data = _generar_con_flux_schnell(prompt)
-            log.info(f"    OK (FLUX Schnell)")
-            cost_tracker.registrar_imagen("fal-ai/flux/schnell", n=1, ctx=ctx_panel)
-        except Exception as e:
-            errores["flux"] = str(e)
-            log.warning(f"    FLUX Schnell fallo: {e}")
-
-    # 4. OpenAI gpt-image-1 (último recurso)
-    if img_data is None:
-        try:
-            log.info(f"    [4/4] OpenAI gpt-image-1...")
-            img_data = _generar_con_openai(prompt)
-            log.info(f"    OK (OpenAI)")
-            cost_tracker.registrar_imagen("gpt-image-1", n=1, ctx=ctx_panel)
-        except Exception as e:
-            errores["openai"] = str(e)
-            log.error(f"    OpenAI fallo: {e}")
-
-    if img_data is None:
-        raise RuntimeError(
-            f"Todos los generadores fallaron para panel {numero_panel}. "
-            + " | ".join(f"{k}: {v[:80]}" for k, v in errores.items())
-        )
+    img_data = _nano_banana_con_reintentos(
+        prompt, "1:1", f"Panel {numero_panel} ({speaker})"
+    )
 
     with open(output_path, "wb") as f:
         f.write(img_data)
@@ -237,7 +184,7 @@ def generar_imagenes_por_paneles(
     carpeta_salida: str = None,
 ) -> list[dict]:
     """
-    Genera una imagen por cada panel con Imagen 4 (fallback: Imagen 3 → FLUX → OpenAI).
+    Genera una imagen por cada panel con Nano Banana (gemini-3.1-flash-image).
 
     Args:
         datos_comic:     Dict con estructura del comic (output de script_generator)
@@ -257,7 +204,7 @@ def generar_imagenes_por_paneles(
 
     paneles = datos_comic["paneles"]
 
-    log.info(f"Generando {len(paneles)} imagenes (Imagen4 → Imagen3 → FLUX → OpenAI) pixel art...")
+    log.info(f"Generando {len(paneles)} imagenes (Nano Banana {GEMINI_IMG_MODEL}) pixel art...")
     log.info(f"  Titulo:      {datos_comic['titulo']}")
     log.info(f"  Carpeta:     {carpeta_salida}")
 
@@ -305,31 +252,14 @@ def _construir_prompt_essay(location: str) -> str:
 
 
 def generar_imagen_essay(location: str, output_path) -> str:
-    """Genera UN fondo 16:9 para el ensayo (Imagen4 → Imagen3 → FLUX → OpenAI)."""
+    """Genera UN fondo 16:9 para el ensayo con Nano Banana (gemini-3.1-flash-image)."""
     prompt = _construir_prompt_essay(location)
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    img_data, errores = None, {}
-    ctx = f"Essay bg: {location[:40]}"
-    intentos = [
-        (IMAGEN4_MODEL, lambda: _generar_con_imagen_vertex(IMAGEN4_MODEL, prompt, aspect="16:9")),
-        (IMAGEN3_MODEL, lambda: _generar_con_imagen_vertex(IMAGEN3_MODEL, prompt, aspect="16:9")),
-        ("fal-ai/flux/schnell", lambda: _generar_con_flux_schnell(prompt, image_size="landscape_16_9")),
-    ]
-    for nombre, fn in intentos:
-        try:
-            img_data = fn()
-            cost_tracker.registrar_imagen(nombre, n=1, ctx=ctx)
-            break
-        except Exception as e:
-            errores[nombre] = str(e)
-            log.warning(f"    {nombre} falló: {e}")
-    if img_data is None:
-        raise RuntimeError(
-            f"Fondo de ensayo falló en todos los proveedores ({location[:50]}). "
-            + " | ".join(f"{k}: {v[:80]}" for k, v in errores.items())
-        )
+    img_data = _nano_banana_con_reintentos(
+        prompt, "16:9", f"Essay bg: {location[:40]}"
+    )
     with open(output_path, "wb") as f:
         f.write(img_data)
     log.info(f"  [essay bg] {output_path.name} ({output_path.stat().st_size/1024:.0f} KB)")

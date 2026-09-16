@@ -45,7 +45,11 @@ log = logging.getLogger("cost_tracker")
 # Lyria / Veo:      estimados (sin pricing público confirmado aún)
 
 _PRECIOS: dict[str, dict] = {
-    # ── Vertex AI Imagen ──
+    # ── Vertex AI Gemini Image (Nano Banana) — reemplaza a Imagen (retirado 17 ago 2026) ──
+    "gemini-3.1-flash-image": {
+        "tipo": "IMAGEN", "por_imagen": 0.130, "estimado": False,
+    },
+    # ── Vertex AI Imagen (RETIRADO 17 ago 2026 — se deja el precio por historial) ──
     "imagen-4.0-fast-generate-001": {
         "tipo": "IMAGEN", "por_imagen": 0.020, "estimado": False,
     },
