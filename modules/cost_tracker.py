@@ -46,8 +46,14 @@ log = logging.getLogger("cost_tracker")
 
 _PRECIOS: dict[str, dict] = {
     # ── Vertex AI Gemini Image (Nano Banana) — reemplaza a Imagen (retirado 17 ago 2026) ──
+    "gemini-2.5-flash-image": {
+        "tipo": "IMAGEN", "por_imagen": 0.039, "estimado": False,
+    },
+    "gemini-2.5-flash-image-preview": {
+        "tipo": "IMAGEN", "por_imagen": 0.039, "estimado": True,
+    },
     "gemini-3.1-flash-image": {
-        "tipo": "IMAGEN", "por_imagen": 0.130, "estimado": False,
+        "tipo": "IMAGEN", "por_imagen": 0.130, "estimado": True,
     },
     # ── Vertex AI Imagen (RETIRADO 17 ago 2026 — se deja el precio por historial) ──
     "imagen-4.0-fast-generate-001": {

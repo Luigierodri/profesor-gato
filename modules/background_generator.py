@@ -15,6 +15,7 @@ Auth: Application Default Credentials (gcloud auth application-default login)
 Proyecto GCP: GOOGLE_CLOUD_PROJECT en .env
 """
 
+import os
 import base64
 import logging
 import time
@@ -32,7 +33,11 @@ IMAGES_DIR.mkdir(exist_ok=True)
 
 # Nano Banana. gemini-3.1-flash-image genera imagen vía generateContent (NO :predict
 # como Imagen). El aspect ratio va en generationConfig.imageConfig.aspectRatio.
-GEMINI_IMG_MODEL = "gemini-3.1-flash-image"
+# OJO: el ID debe EXISTIR en Vertex. "gemini-3.1-flash-image" daba 404; el GA
+# estable de Nano Banana en Vertex es "gemini-2.5-flash-image". Configurable por
+# entorno; si el principal da 404 se cae a los respaldos automáticamente.
+GEMINI_IMG_MODEL  = os.getenv("GEMINI_IMG_MODEL", "gemini-2.5-flash-image")
+_GEMINI_FALLBACKS = ["gemini-2.5-flash-image", "gemini-2.5-flash-image-preview"]
 
 # Estilo visual pixel art 16-bit
 _PIXEL_STYLE = (
@@ -86,55 +91,65 @@ def _construir_prompt(visual_pizarron: str, location: str = "classroom") -> str:
     )
 
 
-def _generar_con_nano_banana(prompt: str, aspect: str = "1:1") -> bytes:
+def _generar_con_nano_banana(prompt: str, aspect: str, model: str) -> bytes:
     """
-    Genera una imagen con gemini-3.1-flash-image (Nano Banana) vía Vertex AI
+    Genera una imagen con un modelo Gemini image (Nano Banana) vía Vertex AI
     generateContent. Devuelve los bytes de la imagen (PNG/JPEG inline).
 
-    `aspect`: "1:1" (paneles Shorts, comportamiento intacto) o "16:9" (ensayo).
+    `aspect`: "1:1" (paneles Shorts) o "16:9" (ensayo).  `model`: ID de Vertex.
     """
-    url = vertex_url(GEMINI_IMG_MODEL, "generateContent")
+    url = vertex_url(model, "generateContent")
     payload = {
         "contents": [{"role": "user", "parts": [{"text": prompt}]}],
         "generationConfig": {
-            "responseModalities": ["IMAGE"],
+            # TEXT+IMAGE es lo más compatible entre 2.5 y 3.x (el parser ignora el texto).
+            "responseModalities": ["TEXT", "IMAGE"],
             "imageConfig": {"aspectRatio": aspect},
         },
     }
     resp = requests.post(url, json=payload, headers=vertex_headers(), timeout=120)
     if resp.status_code == 429:
-        raise requests.exceptions.HTTPError(f"429 rate limit en {GEMINI_IMG_MODEL}")
+        raise requests.exceptions.HTTPError(f"429 rate limit en {model}")
     resp.raise_for_status()
     data = resp.json()
 
     candidates = data.get("candidates", [])
     if not candidates:
-        raise ValueError(f"{GEMINI_IMG_MODEL} no devolvió candidates: {str(data)[:200]}")
+        raise ValueError(f"{model} no devolvió candidates: {str(data)[:200]}")
     parts = candidates[0].get("content", {}).get("parts", [])
     for part in parts:
         inline = part.get("inlineData") or part.get("inline_data")
         if inline and inline.get("data"):
             return base64.b64decode(inline["data"])
-    raise ValueError(
-        f"{GEMINI_IMG_MODEL} sin imagen. Parts: {[list(p.keys()) for p in parts]}"
-    )
+    raise ValueError(f"{model} sin imagen. Parts: {[list(p.keys()) for p in parts]}")
 
 
 def _nano_banana_con_reintentos(prompt: str, aspect: str, ctx: str,
                                 intentos: int = 2) -> bytes:
-    """Nano Banana con reintentos ante fallos transitorios (429/5xx). Registra el
-    costo al primer éxito. Lanza RuntimeError si agota los intentos."""
+    """
+    Genera con Nano Banana probando varios IDs de modelo (por si uno da 404) y con
+    reintentos ante fallos transitorios. Registra el costo con el modelo que sirvió.
+    """
+    candidatos = []
+    for m in [GEMINI_IMG_MODEL, *_GEMINI_FALLBACKS]:
+        if m not in candidatos:
+            candidatos.append(m)
+
     ultimo = None
-    for i in range(intentos):
-        try:
-            img_data = _generar_con_nano_banana(prompt, aspect)
-            cost_tracker.registrar_imagen(GEMINI_IMG_MODEL, n=1, ctx=ctx)
-            return img_data
-        except Exception as e:
-            ultimo = e
-            log.warning(f"    {GEMINI_IMG_MODEL} intento {i+1}/{intentos} falló: {e}")
-            if i < intentos - 1:
-                time.sleep(2 * (i + 1))
+    for model in candidatos:
+        for i in range(intentos):
+            try:
+                img_data = _generar_con_nano_banana(prompt, aspect, model)
+                cost_tracker.registrar_imagen(model, n=1, ctx=ctx)
+                return img_data
+            except Exception as e:
+                ultimo = e
+                log.warning(f"    {model} intento {i+1}/{intentos} falló: {e}")
+                # 404 = el modelo no existe en Vertex → no insistir, pasar al siguiente ID.
+                if "404" in str(e):
+                    break
+                if i < intentos - 1:
+                    time.sleep(2 * (i + 1))
     raise RuntimeError(f"Nano Banana falló ({ctx}): {ultimo}")
 
 
