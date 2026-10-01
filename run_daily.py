@@ -143,7 +143,7 @@ def _detectar_pasos_completados(lineas: list[str]) -> set[str]:
 
 # ── Pipeline principal ────────────────────────────────────────────────────────
 
-def correr_pipeline() -> RunResult:
+def correr_pipeline(no_publish: bool = False) -> RunResult:
     resultado = RunResult()
     resultado.fecha  = datetime.now(MEX_TZ).strftime("%Y-%m-%d")
     resultado.inicio = datetime.now(MEX_TZ).strftime("%H:%M:%S")
@@ -187,6 +187,14 @@ def correr_pipeline() -> RunResult:
         log.info(f"\n⚠ Pipeline terminó con errores (exit={exit_code}) — intentando publicar de todos modos")
 
     # ── PUBLISHER.PY (YouTube) ────────────────────────────────────────────────
+    if no_publish:
+        log.info("\n⏭  Modo --no-publish: se OMITE publisher.py y tiktok_publisher.py (prueba sin publicar).")
+        log.info("   El video quedó armado; revísalo en el artefacto del run.")
+        resultado.fin = datetime.now(MEX_TZ).strftime("%H:%M:%S")
+        log.info(resultado.resumen())
+        _guardar_resumen(resultado)
+        return resultado
+
     log.info("\n▶ Fase publicación: publisher.py (YouTube)")
     pub_code, pub_lineas = _correr_proceso([PYTHON, "publisher.py"], "publisher")
 
@@ -284,6 +292,7 @@ def _proxima_ejecucion() -> str:
 def main():
     parser = argparse.ArgumentParser(description="Scheduler diario Profesor Gato")
     parser.add_argument("--now",    action="store_true", help="Dispara el pipeline ahora mismo")
+    parser.add_argument("--no-publish", action="store_true", help="Corre el pipeline pero NO publica (prueba)")
     parser.add_argument("--status", action="store_true", help="Muestra próxima ejecución y sale")
     args = parser.parse_args()
 
@@ -301,8 +310,9 @@ def main():
         return
 
     if args.now:
-        log.info("Modo --now: disparando pipeline inmediatamente...")
-        correr_pipeline()
+        modo = " (SIN publicar)" if args.no_publish else ""
+        log.info(f"Modo --now{modo}: disparando pipeline inmediatamente...")
+        correr_pipeline(no_publish=args.no_publish)
         return
 
     # Modo scheduler normal

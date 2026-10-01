@@ -34,7 +34,7 @@ def vertex_headers() -> dict:
 
 def vertex_url(model: str, method: str) -> str:
     """URL del endpoint de Vertex AI para un modelo y método dados."""
-    project  = os.getenv("GOOGLE_CLOUD_PROJECT", "profesor-gato-prod")
+    project  = os.getenv("GOOGLE_CLOUD_PROJECT", "project-71cbc30b-23ca-40b4-a93")
     location = os.getenv("GOOGLE_CLOUD_LOCATION", "us-central1")
     base = f"https://{location}-aiplatform.googleapis.com/v1"
     return f"{base}/projects/{project}/locations/{location}/publishers/google/models/{model}:{method}"

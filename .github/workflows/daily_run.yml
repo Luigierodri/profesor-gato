@@ -2,8 +2,13 @@ name: Profesor Gato - Run Diario
 
 on:
   schedule:
-    - cron: "0 13 * * *"   # 7:00am hora Ciudad de México (UTC-6)
+    - cron: "0 13 * * 1,3,5"   # 7:00am MX (UTC-6), lun/mié/vie — 3 shorts/semana (relanzamiento v2)
   workflow_dispatch:         # permite disparar manualmente desde GitHub
+    inputs:
+      publicar:
+        description: "Publicar a YouTube/TikTok (DESMÁRCALO para una prueba sin publicar)"
+        type: boolean
+        default: true
 
 jobs:
   run-pipeline:
@@ -50,6 +55,8 @@ jobs:
       - name: Ejecutar pipeline
         env:
           PYTHONIOENCODING: utf-8
+          VEO_OFF: "1"   # modo lean: sin gasto de Veo, Ken Burns estático (relanzamiento v2)
+          PUBLICAR: ${{ github.event_name == 'schedule' && 'true' || inputs.publicar }}
           GOOGLE_CLOUD_PROJECT: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
           GOOGLE_CLOUD_LOCATION: ${{ secrets.GOOGLE_CLOUD_LOCATION }}
           FAL_API_KEY: ${{ secrets.FAL_API_KEY }}
@@ -65,7 +72,11 @@ jobs:
           TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
           TIKTOK_REFRESH_TOKEN: ${{ secrets.TIKTOK_REFRESH_TOKEN }}
           GOOGLE_DRIVE_FOLDER_ID: ${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
-        run: python run_daily.py --now
+        run: |
+          EXTRA=""
+          if [ "$PUBLICAR" != "true" ]; then EXTRA="--no-publish"; fi
+          echo "PUBLICAR=$PUBLICAR  ->  python run_daily.py --now $EXTRA"
+          python run_daily.py --now $EXTRA
 
       - name: Guardar estado (historial + métricas) (commit de vuelta)
         if: always()
