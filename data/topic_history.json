@@ -829,5 +829,13 @@
     "categoria": "historia",
     "geo": "latam",
     "trend": "argentina - bolivia"
+  },
+  {
+    "fecha": "2026-10-01",
+    "angulo": "¿Por qué América vs Cruz Azul mueve más dinero que el PIB de varias ciudades mexicanas?",
+    "evento": "america_cruz_azul",
+    "categoria": "deportes",
+    "geo": "mexico",
+    "trend": "américa vs cruz azul"
   }
 ]
