@@ -14,6 +14,7 @@ Flujo de uso:
 
 import sys
 import json
+import random
 import xml.etree.ElementTree as ET
 import requests
 if hasattr(sys.stdout, "reconfigure"):
@@ -121,10 +122,75 @@ def obtener_reddit_educativo(limite: int = 10) -> list[dict]:
     return temas[:limite]
 
 
+# ─── CURIOSIDADES EVERGREEN (fuente propia, no depende de noticias) ───────────
+# El corazón del canal nuevo: curiosidad sobre cómo funciona el mundo. Estos temas
+# NO caducan y le dan al canal una veta propia más allá de la economía/noticias.
+# Se eligen al azar cada día y entran con score alto para ganar seguido.
+_CURIOSIDADES_EVERGREEN = [
+    # Animales / naturaleza
+    "por qué tu gato se queda viendo el agua",
+    "por qué los gatos ronronean",
+    "por qué los perros ladean la cabeza cuando les hablas",
+    "por qué las abejas mueren cuando pican",
+    "por qué el mar es salado",
+    "por qué los tiburones son más viejos que los árboles",
+    "por qué las palomas mueven la cabeza al caminar",
+    # Ciencia cotidiana / cuerpo
+    "por qué bostezar es contagioso",
+    "por qué no puedes hacerte cosquillas a ti mismo",
+    "por qué te suenan las tripas cuando tienes hambre",
+    "por qué odias el sonido de tu propia voz grabada",
+    "por qué te sudan las manos cuando estás nervioso",
+    "por qué el chile pica y por qué nos encanta",
+    "por qué el café te despierta y luego te traiciona",
+    "por qué el cielo es azul pero el atardecer es rojo",
+    "por qué los recuerdos con olor son tan intensos",
+    # Psicología / vida diaria
+    "por qué abres el refri aunque sepas que no hay nada",
+    "por qué el domingo en la tarde te da bajón",
+    "por qué el lunes se siente tan pesado",
+    "por qué el tiempo pasa más rápido cuando creces",
+    "por qué la música de tu adolescencia te marca para siempre",
+    "por qué dos personas recuerdan distinto la misma cosa",
+    "por qué nos gusta tener miedo en el cine y las montañas rusas",
+    "por qué ves caras en los enchufes y las nubes",
+    "por qué procrastinas lo que más te importa",
+    # Historia / cultura con alma
+    "por qué Colombia parece repetir la misma historia una y otra vez",
+    "por qué creíamos que la Tierra era plana",
+    "por qué las pirámides siguen de pie después de miles de años",
+    "por qué el reloj gira en 'sentido horario'",
+    "por qué damos la mano para saludar",
+    "por qué brindamos chocando los vasos",
+    # Dinero/mundo, pero desde la CURIOSIDAD
+    "por qué el dinero vale algo si es solo papel",
+    "por qué casi todo cuesta 9.99 y no 10",
+    "por qué las ciudades como la de México se están hundiendo",
+    # Espacio / grande
+    "por qué siempre vemos la misma cara de la Luna",
+    "por qué no sentimos que la Tierra gira a mil kilómetros por hora",
+    "por qué el espacio es silencioso",
+]
+
+
+def obtener_curiosidades_evergreen(limite: int = 6) -> list[dict]:
+    """Muestra al azar del pool evergreen. Score alto (6) para que la curiosidad
+    gane seguido frente a noticias/economía, sin excluirlas del todo."""
+    muestra = random.sample(_CURIOSIDADES_EVERGREEN,
+                            min(limite, len(_CURIOSIDADES_EVERGREEN)))
+    temas = [{"tema": t, "fuente": "Evergreen/curiosidad", "score": 6} for t in muestra]
+    print(f"  Evergreen: {len(temas)} curiosidades del pool")
+    return temas
+
+
 # ─── BOOST DE VIRALIDAD ───────────────────────────────────────────────────────
 
 _KEYWORDS_BOOST = [
-    # Economía personal / dinero — NUESTRA VETA MÁS VIRAL ("¿Quién gana con la inflación?")
+    # Curiosidad / ciencia cotidiana — LA VETA NUEVA DEL CANAL
+    "por qué", "por que", "cómo funciona", "como funciona", "cerebro", "mente",
+    "gato", "gatos", "perro", "animal", "sueño", "sueños", "cuerpo", "ciencia",
+    "espacio", "universo", "historia", "misterio", "curios",
+    # Economía personal / dinero — sigue siendo UNA veta fuerte (no la única)
     "inflación", "inflacion", "precio", "precios", "gasolina", "salario",
     "salarios", "peso", "dólar", "dolar", "renta", "tasa", "deuda", "deudas",
     "impuesto", "impuestos", "canasta", "crédito", "credito", "hipoteca",
@@ -160,6 +226,7 @@ def detectar_temas_del_dia() -> list[dict]:
     """
     print("\nDetectando temas virales del dia en LATAM...")
     candidatos = (
+        obtener_curiosidades_evergreen() +
         obtener_trends_google() +
         obtener_noticias_educativas() +
         obtener_reddit_educativo()
