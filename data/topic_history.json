@@ -805,5 +805,13 @@
     "categoria": "economia",
     "geo": "latam",
     "trend": "liga española"
+  },
+  {
+    "fecha": "2026-10-01",
+    "angulo": "argentina - bolivia",
+    "evento": "",
+    "categoria": "",
+    "geo": "latam",
+    "trend": ""
   }
 ]
