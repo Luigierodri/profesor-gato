@@ -28,6 +28,11 @@ BASE_DIR  = Path(__file__).parent.parent
 # Override por entorno si algún día se quiere el estándar (veo-3.1-generate-001).
 VEO_MODEL = os.getenv("VEO_MODEL", "veo-3.1-fast-generate-001")
 
+# MODO LEAN: VEO_OFF=1 apaga Veo por completo (no llama la API, no gasta). Cada
+# panel cae a Ken Burns estático en el ensamblador. Es el interruptor más barato
+# para reactivar el canal sin el gasto de animación (ver relanzamiento v2).
+VEO_OFF = os.getenv("VEO_OFF", "0").strip().lower() in ("1", "true", "yes", "on")
+
 # Límite DURO de segundos por clip (guarda de presupuesto, pedido del relanzamiento
 # v2). Veo 3.1 solo acepta 4, 6 u 8 s; la duración pedida se recorta a este tope y
 # se ajusta al valor válido más cercano por debajo.
@@ -188,6 +193,9 @@ def animar_panel(
         Ruta al clip .mp4 generado, o None si falla (el ensamblador
         hace fallback a Ken Burns con la imagen estática).
     """
+    if VEO_OFF:
+        return None  # modo lean: Ken Burns estático en el ensamblador
+
     Path(carpeta_salida).mkdir(parents=True, exist_ok=True)
     output_path = Path(carpeta_salida) / f"panel_{numero_panel:02d}.mp4"
 
@@ -243,6 +251,11 @@ def animar_paneles(
     Returns:
         La misma lista con 'ruta_video' añadida (None = Ken Burns fallback).
     """
+    # Modo lean: Veo apagado → todos los paneles con Ken Burns estático, $0.
+    if VEO_OFF:
+        log.info(f"VEO_OFF=1 (modo lean): {len(resultados_imagenes)} paneles con Ken Burns estático, sin gasto de Veo.")
+        return [{**img_r, "ruta_video": None} for img_r in resultados_imagenes]
+
     if carpeta_salida is None:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         carpeta_salida = f"videos/clips/{_slug(datos_comic['titulo'])}_{timestamp}"
