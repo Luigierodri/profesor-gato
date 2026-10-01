@@ -821,5 +821,13 @@
     "categoria": "economia",
     "geo": "mexico",
     "trend": "jovenes construyendo el futuro"
+  },
+  {
+    "fecha": "2026-10-01",
+    "angulo": "¿Por qué Argentina y Bolivia llevan décadas peleando por el mismo gas?",
+    "evento": "argentina_bolivia_gas",
+    "categoria": "historia",
+    "geo": "latam",
+    "trend": "argentina - bolivia"
   }
 ]
