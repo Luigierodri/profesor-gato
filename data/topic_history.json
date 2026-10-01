@@ -813,5 +813,13 @@
     "categoria": "",
     "geo": "latam",
     "trend": ""
+  },
+  {
+    "fecha": "2026-10-01",
+    "angulo": "¿Por qué el gobierno mexicano te paga por no trabajar y eso puede salirte caro?",
+    "evento": "jovenes_construyendo_futuro",
+    "categoria": "economia",
+    "geo": "mexico",
+    "trend": "jovenes construyendo el futuro"
   }
 ]
