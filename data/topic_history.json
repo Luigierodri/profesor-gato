@@ -837,5 +837,13 @@
     "categoria": "deportes",
     "geo": "mexico",
     "trend": "américa vs cruz azul"
+  },
+  {
+    "fecha": "2026-10-02",
+    "angulo": "¿Por qué el dinero vale algo si es solo papel?",
+    "evento": "valor_dinero_fiat",
+    "categoria": "economia",
+    "geo": "latam",
+    "trend": "por qué el dinero vale algo si es solo papel"
   }
 ]
