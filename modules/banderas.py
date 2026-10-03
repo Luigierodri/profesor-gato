@@ -83,11 +83,12 @@ def bandera_circular(pais_o_iso: str, size: int = 240, aro: str = "#F2C56A") -> 
         return None
     iso = src.stem.split("_")[0]
     FLAGS_DIR.mkdir(parents=True, exist_ok=True)
-    dest = FLAGS_DIR / f"{iso}_circ_{size}.png"
+    dest = FLAGS_DIR / f"{iso}_coin_{size}.png"
     if dest.exists() and dest.stat().st_size > 400:
         return dest
     try:
-        from PIL import Image, ImageDraw, ImageFilter
+        import numpy as np
+        from PIL import Image, ImageDraw, ImageFilter, ImageChops
         flag = Image.open(src).convert("RGBA")
         w, h = flag.size
         s = min(w, h)
@@ -95,32 +96,51 @@ def bandera_circular(pais_o_iso: str, size: int = 240, aro: str = "#F2C56A") -> 
         flag = flag.resize((size, size), Image.LANCZOS)
 
         R = size // 2
-        aro_w = max(5, int(size * 0.07))
-        glow = int(size * 0.16)
-        S = size + 2 * (aro_w + glow)
+        aro_w = max(7, int(size * 0.095))     # aro más grueso para el metal
+        pad = int(size * 0.26)                # espacio para aro + sombra
+        S = size + 2 * pad
         c = S // 2
-        rr = _rgb(aro)
-
-        # bandera recortada en círculo
-        mask = Image.new("L", (size, size), 0)
-        ImageDraw.Draw(mask).ellipse([0, 0, size - 1, size - 1], fill=255)
-        flag_circ = Image.new("RGBA", (size, size), (0, 0, 0, 0))
-        flag_circ.paste(flag, (0, 0), mask)
 
         canvas = Image.new("RGBA", (S, S), (0, 0, 0, 0))
-        # glow dorado suave detrás
-        gl = Image.new("RGBA", (S, S), (0, 0, 0, 0))
-        ImageDraw.Draw(gl).ellipse([c - R - aro_w, c - R - aro_w, c + R + aro_w, c + R + aro_w],
-                                   fill=rr + (130,))
-        canvas.alpha_composite(gl.filter(ImageFilter.GaussianBlur(glow * 0.7)))
-        # bandera
+
+        # 1) SOMBRA (oscura, desplazada y difuminada): hace que la moneda "flote"
+        sh = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+        ImageDraw.Draw(sh).ellipse(
+            [c - R - aro_w, c - R - aro_w, c + R + aro_w, c + R + aro_w], fill=(0, 0, 0, 185))
+        sh = sh.filter(ImageFilter.GaussianBlur(size * 0.075))
+        canvas.alpha_composite(ImageChops.offset(sh, int(size * 0.03), int(size * 0.06)))
+
+        # 2) ARO METÁLICO: degradado DIAGONAL (brillo arriba-izq → bronce abajo-der)
+        yy, xx = np.mgrid[0:S, 0:S].astype(float)
+        tdiag = np.clip(((xx / S) + (yy / S)) / 2.0, 0, 1)        # 0=arriba-izq, 1=abajo-der
+        hi = np.array(_rgb("#FCEAB0"), float)
+        mid = np.array(_rgb("#E7BC63"), float)
+        lo = np.array(_rgb("#7A5A26"), float)
+        seg = tdiag * 2
+        col = np.where(seg[..., None] < 1,
+                       hi + (mid - hi) * seg[..., None],
+                       mid + (lo - mid) * (seg[..., None] - 1))
+        grad = Image.fromarray(np.dstack([col.astype(np.uint8),
+                                          np.full((S, S), 255, np.uint8)]), "RGBA")
+        anillo_mask = Image.new("L", (S, S), 0)
+        dm = ImageDraw.Draw(anillo_mask)
+        dm.ellipse([c - R - aro_w // 2, c - R - aro_w // 2, c + R + aro_w // 2, c + R + aro_w // 2], fill=255)
+        dm.ellipse([c - R + aro_w // 2, c - R + aro_w // 2, c + R - aro_w // 2, c + R - aro_w // 2], fill=0)
+        canvas.paste(grad, (0, 0), anillo_mask)
+
+        # 3) bandera recortada en círculo (dentro del aro)
+        ri = R - aro_w // 2
+        fmask = Image.new("L", (size, size), 0)
+        ImageDraw.Draw(fmask).ellipse([aro_w // 2, aro_w // 2, size - aro_w // 2, size - aro_w // 2], fill=255)
+        flag_circ = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+        flag_circ.paste(flag, (0, 0), fmask)
         canvas.alpha_composite(flag_circ, (c - R, c - R))
-        # aro dorado + filo oscuro interior (para profundidad)
+
+        # 4) filos finos (profundidad) + brillo especular arriba-izquierda
         dr = ImageDraw.Draw(canvas)
-        dr.ellipse([c - R - aro_w // 2, c - R - aro_w // 2, c + R + aro_w // 2, c + R + aro_w // 2],
-                   outline=rr, width=aro_w)
-        dr.ellipse([c - R, c - R, c + R - 1, c + R - 1],
-                   outline=(25, 19, 12, 200), width=max(2, aro_w // 3))
+        dr.ellipse([c - ri, c - ri, c + ri, c + ri], outline=(20, 14, 8, 210), width=max(2, aro_w // 4))
+        dr.arc([c - R - aro_w // 2, c - R - aro_w // 2, c + R + aro_w // 2, c + R + aro_w // 2],
+               start=160, end=250, fill=(255, 248, 220, 230), width=max(2, aro_w // 3))
         canvas.save(dest)
         return dest
     except Exception as e:
