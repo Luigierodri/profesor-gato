@@ -28,6 +28,28 @@ VOICE_SETTINGS = {
     "use_speaker_boost":  True
 }
 
+# ─── PALETA DE VOCES (relanzamiento v2 — decidida con Luigi el 2 oct 2026) ─────
+# Se usa plenamente con el formato NARRADOR (pendiente el motor visual). El pipeline
+# viejo (Gato+Bastet) sigue con VOICE_ID/VOICE_SETTINGS de arriba hasta migrar.
+#   narrador → clon NUEVO por el motor v3: expresivo y "llamativo" (suena a personaje).
+#   luigi    → clon VIEJO: la voz REAL de Luigi, para partes personales/clave/intro.
+#   alt      → clon NUEVO por el multilingüe estándar: tercer sabor (otro personaje).
+# Ojo cuota: v3 puede gastar más; medir en el 1er video completo antes de fijarlo a todo.
+VOCES = {
+    "narrador": {
+        "voice_id": "HYuP2xaFnR5s4JxYFYme", "model": "eleven_v3",
+        "settings": {"stability": 0.45, "similarity_boost": 0.85, "style": 0.60, "use_speaker_boost": True},
+    },
+    "luigi": {
+        "voice_id": "jVhLuw5HHSDD176mpezF", "model": "eleven_multilingual_v2",
+        "settings": {"stability": 0.45, "similarity_boost": 0.85, "style": 0.45, "use_speaker_boost": True},
+    },
+    "alt": {
+        "voice_id": "HYuP2xaFnR5s4JxYFYme", "model": "eleven_multilingual_v2",
+        "settings": {"stability": 0.40, "similarity_boost": 0.85, "style": 0.50, "use_speaker_boost": True},
+    },
+}
+
 # ─── PRESUPUESTO ELEVENLABS (cuota por ciclo, COMPARTIDA con Partida Guardada) ──
 # Misma cuenta/API key que PG. modules/voice_budget lleva un contador local por
 # ciclo (archivo compartido en el home) y avisa antes de reventar la cuota. Reset
