@@ -19,13 +19,13 @@ log = logging.getLogger("mapa")
 BASE_DIR = Path(__file__).parent.parent
 GEOJSON  = BASE_DIR / "assets" / "geo" / "world_110m.geojson"
 
-# Paleta de identidad del canal.
-_BG      = "#141c26"   # slate oscuro (fondo)
-_OTROS   = "#2b3a4d"   # países atenuados
-_BORDE   = "#141c26"   # borde sutil entre países
-_GOLD    = "#E9C46A"   # país resaltado (dorado del canal)
-_GOLD_HL = "#F6DC97"   # contorno del resaltado
-_TEXTO   = "#F6DC97"
+# Paleta de identidad del canal (MEZCLA v2: café cálido + dorado, no azul-slate).
+_BG      = "#1b140d"   # café/espresso oscuro (fondo)
+_OTROS   = "#3a3022"   # países atenuados (café medio)
+_BORDE   = "#1b140d"   # borde sutil entre países
+_GOLD    = "#F2C56A"   # país resaltado (dorado del canal)
+_GOLD_HL = "#F9DF9E"   # contorno del resaltado
+_TEXTO   = "#F9DF9E"
 
 # Nombres en español comunes → como vienen en el GeoJSON (inglés).
 _ALIAS = {

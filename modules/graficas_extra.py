@@ -179,7 +179,18 @@ def _dibujar_dispersion(ax, spec, p, W, H):
 
     tams = [float(q.get("tam", 1)) for q in puntos]
     tmax = max(tams) or 1
-    e = _ease(p)
+
+    # Banderas: si el punto trae "iso" o un "nombre" de país, ponemos la BANDERA en vez
+    # de la burbuja (mucho más vivo que un círculo de color). Import tolerante.
+    from matplotlib.offsetbox import OffsetImage, AnnotationBbox
+    import matplotlib.image as mpimg
+    try:
+        from modules.banderas import bandera
+    except ImportError:
+        try:
+            from banderas import bandera
+        except ImportError:
+            bandera = lambda *a, **k: None
 
     for i, q in enumerate(puntos):
         retraso = (i % 5) * 0.05
@@ -188,16 +199,41 @@ def _dibujar_dispersion(ax, spec, p, W, H):
 
         g = int(q.get("grupo", 0))
         color = SERIES_TODOS_PARES[g % len(SERIES_TODOS_PARES)]
-        # área proporcional al dato, no el radio
-        area = 260 + 5200 * (tams[i] / tmax)
-        ax.scatter([q["x"]], [q["y"]], s=area * ei,
-                   facecolor=color, alpha=0.72,
-                   edgecolor=FONDO, linewidth=2.5, zorder=3)
+        area = 260 + 5200 * (tams[i] / tmax)   # área ∝ dato, no radio
 
-        # etiqueta directa: en video no hay leyenda que valga
+        flag = None
+        label_dy = 26          # cuánto sube la etiqueta (se ajusta a la bandera)
+        if ei > 0.35:
+            try:
+                flag = bandera(q.get("iso") or q.get("nombre", ""))
+            except Exception:
+                flag = None
+
+        if flag:
+            try:
+                img = mpimg.imread(str(flag))
+                zoom = max(0.08, (0.32 + 0.42 * (tams[i] / tmax)) * ei)
+                oi = OffsetImage(img, zoom=zoom)
+                ab = AnnotationBbox(
+                    oi, (q["x"], q["y"]), frameon=True, pad=0.12,
+                    bboxprops=dict(edgecolor=color, linewidth=3,
+                                   facecolor=FONDO, boxstyle="round,pad=0.10"),
+                    zorder=3)
+                ax.add_artist(ab)
+                # la etiqueta debe quedar ARRIBA de la bandera (alto en puntos ≈ px*zoom)
+                label_dy = int(16 + (img.shape[0] * zoom) / 2)
+            except Exception:
+                flag = None
+
+        if not flag:   # respaldo: burbuja de color
+            ax.scatter([q["x"]], [q["y"]], s=area * ei,
+                       facecolor=color, alpha=0.72,
+                       edgecolor=FONDO, linewidth=2.5, zorder=3)
+
+        # etiqueta directa (en video no hay leyenda que valga)
         if q.get("nombre") and ei > 0.6:
             ax.annotate(q["nombre"], (q["x"], q["y"]),
-                        textcoords="offset points", xytext=(0, 22),
+                        textcoords="offset points", xytext=(0, label_dy),
                         ha="center", color=TEXTO, fontsize=19,
                         fontweight="bold", zorder=4)
 

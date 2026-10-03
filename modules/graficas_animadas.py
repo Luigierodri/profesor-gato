@@ -67,18 +67,18 @@ from matplotlib.patches import FancyBboxPatch
 
 # ── sistema visual ───────────────────────────────────────────────────
 
-FONDO = "#11151e"            # slate de marca Profesor Gato (data_chart BG)
-TEXTO = "#eef0f5"
-TEXTO_2 = "#c3c2b7"
-TENUE = "#3a3a37"
+# PALETA "MEZCLA" (relanzamiento v2, decidida con Luigi): fondo CAFÉ oscuro premium
+# (adiós al azul-slate aburrido) + colores de datos VIVOS. Cálida con identidad.
+FONDO = "#1b140d"            # café/espresso oscuro de marca Profesor Gato
+TEXTO = "#F5EEE2"            # blanco cálido
+TEXTO_2 = "#C9B89B"          # texto secundario cálido
+TENUE = "#4a3f2e"            # rejilla/ejes tenues (cálidos)
 
-# ALINEADO A LA MARCA (dorado/slate del canal, igual que data_chart). SERIES[0] =
-# dorado apagado (barras normales), SERIES[1] = dorado brillante (la barra RESALTADA);
-# los otros dos (teal/coral) solo aparecen en "reparto" multi-categoría. Contraste alto
-# sobre el slate. No ciclar; si hay más de 4 categorías se pliegan en "Otros".
-SERIES = ["#c9a45a", "#f2c56a", "#78bab9", "#dc6e5f"]
-APAGADO = "#4a4a46"          # para las barras que no se resaltan
-OTROS = "#6b6b64"            # el pliegue "Otros", fuera de la paleta de series
+# Colores de datos VIVOS sobre el café: dorado, teal, coral, violeta, lima.
+# SERIES[0]=dorado (base/barras), SERIES[1]=teal (la RESALTADA); resto en multi-serie.
+SERIES = ["#F2C56A", "#3FD3C2", "#FF6B5E", "#9B8CFF", "#B6E05A"]
+APAGADO = "#5a4e3a"          # barras no resaltadas (café medio)
+OTROS = "#6b5d45"            # el pliegue "Otros" (café claro)
 
 FPS = 30
 DUR_ENTRADA = 1.25           # segundos de animación

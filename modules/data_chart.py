@@ -37,13 +37,14 @@ log = logging.getLogger("data_chart")
 W, H = 1920, 1080
 
 # ── Identidad visual del canal ────────────────────────────────────────────────
-BG        = (17, 21, 30)       # slate oscuro
-BG_BANDA  = (24, 30, 42)       # banda superior del título
-GOLD      = (242, 197, 106)    # dorado de marca (igual al del assembler)
-GOLD_SOFT = (150, 124, 74)     # dorado apagado (barras no resaltadas)
-INK       = (238, 240, 245)    # texto principal
-INK_SOFT  = (150, 158, 172)    # texto secundario / fuente
-TRACK     = (34, 40, 54)       # riel de fondo de cada barra
+# PALETA MEZCLA v2: café cálido + dorado (no azul-slate).
+BG        = (27, 20, 13)       # café/espresso oscuro
+BG_BANDA  = (38, 29, 19)       # banda superior del título
+GOLD      = (242, 197, 106)    # dorado de marca
+GOLD_SOFT = (90, 78, 58)       # dorado/café apagado (barras no resaltadas)
+INK       = (245, 238, 226)    # texto principal (blanco cálido)
+INK_SOFT  = (201, 184, 155)    # texto secundario / fuente (cálido)
+TRACK     = (46, 37, 26)       # riel de fondo de cada barra (café)
 
 # Zona segura: el personaje ocupa la esquina inf. der. (~470px de ancho anclado abajo)
 # y los subtítulos van abajo-centro. Dejamos margen a la derecha y abajo.
