@@ -67,7 +67,68 @@ def bandera(pais_o_iso: str, ancho: int = 160) -> Path | None:
     return None
 
 
+def _rgb(hx: str) -> tuple:
+    hx = hx.lstrip("#")
+    return tuple(int(hx[i:i + 2], 16) for i in (0, 2, 4))
+
+
+def bandera_circular(pais_o_iso: str, size: int = 240, aro: str = "#F2C56A") -> Path | None:
+    """
+    Badge CIRCULAR tipo moneda: la bandera recortada en círculo + aro dorado + glow
+    suave, con esquinas transparentes. Se cachea. Devuelve Path (o None).
+    `size` = diámetro de la bandera en px; `aro` = color del aro (hex).
+    """
+    src = bandera(pais_o_iso, ancho=320)
+    if not src:
+        return None
+    iso = src.stem.split("_")[0]
+    FLAGS_DIR.mkdir(parents=True, exist_ok=True)
+    dest = FLAGS_DIR / f"{iso}_circ_{size}.png"
+    if dest.exists() and dest.stat().st_size > 400:
+        return dest
+    try:
+        from PIL import Image, ImageDraw, ImageFilter
+        flag = Image.open(src).convert("RGBA")
+        w, h = flag.size
+        s = min(w, h)
+        flag = flag.crop(((w - s) // 2, (h - s) // 2, (w - s) // 2 + s, (h - s) // 2 + s))
+        flag = flag.resize((size, size), Image.LANCZOS)
+
+        R = size // 2
+        aro_w = max(5, int(size * 0.07))
+        glow = int(size * 0.16)
+        S = size + 2 * (aro_w + glow)
+        c = S // 2
+        rr = _rgb(aro)
+
+        # bandera recortada en círculo
+        mask = Image.new("L", (size, size), 0)
+        ImageDraw.Draw(mask).ellipse([0, 0, size - 1, size - 1], fill=255)
+        flag_circ = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+        flag_circ.paste(flag, (0, 0), mask)
+
+        canvas = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+        # glow dorado suave detrás
+        gl = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+        ImageDraw.Draw(gl).ellipse([c - R - aro_w, c - R - aro_w, c + R + aro_w, c + R + aro_w],
+                                   fill=rr + (130,))
+        canvas.alpha_composite(gl.filter(ImageFilter.GaussianBlur(glow * 0.7)))
+        # bandera
+        canvas.alpha_composite(flag_circ, (c - R, c - R))
+        # aro dorado + filo oscuro interior (para profundidad)
+        dr = ImageDraw.Draw(canvas)
+        dr.ellipse([c - R - aro_w // 2, c - R - aro_w // 2, c + R + aro_w // 2, c + R + aro_w // 2],
+                   outline=rr, width=aro_w)
+        dr.ellipse([c - R, c - R, c + R - 1, c + R - 1],
+                   outline=(25, 19, 12, 200), width=max(2, aro_w // 3))
+        canvas.save(dest)
+        return dest
+    except Exception as e:
+        log.warning(f"  [bandera_circular] {iso}: {e}")
+        return None
+
+
 if __name__ == "__main__":
     import sys
     for q in (sys.argv[1:] or ["Colombia", "Japon", "Estados Unidos", "Chile"]):
-        print(q, "->", iso_de_pais(q), bandera(q))
+        print(q, "->", iso_de_pais(q), bandera_circular(q))

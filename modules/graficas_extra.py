@@ -185,10 +185,10 @@ def _dibujar_dispersion(ax, spec, p, W, H):
     from matplotlib.offsetbox import OffsetImage, AnnotationBbox
     import matplotlib.image as mpimg
     try:
-        from modules.banderas import bandera
+        from modules.banderas import bandera_circular as bandera
     except ImportError:
         try:
-            from banderas import bandera
+            from banderas import bandera_circular as bandera
         except ImportError:
             bandera = lambda *a, **k: None
 
@@ -211,17 +211,13 @@ def _dibujar_dispersion(ax, spec, p, W, H):
 
         if flag:
             try:
-                img = mpimg.imread(str(flag))
-                zoom = max(0.08, (0.32 + 0.42 * (tams[i] / tmax)) * ei)
+                img = mpimg.imread(str(flag))   # badge circular (ya trae aro + glow)
+                zoom = max(0.08, (0.30 + 0.40 * (tams[i] / tmax)) * ei)
                 oi = OffsetImage(img, zoom=zoom)
-                ab = AnnotationBbox(
-                    oi, (q["x"], q["y"]), frameon=True, pad=0.12,
-                    bboxprops=dict(edgecolor=color, linewidth=3,
-                                   facecolor=FONDO, boxstyle="round,pad=0.10"),
-                    zorder=3)
+                ab = AnnotationBbox(oi, (q["x"], q["y"]), frameon=False, zorder=3)
                 ax.add_artist(ab)
-                # la etiqueta debe quedar ARRIBA de la bandera (alto en puntos ≈ px*zoom)
-                label_dy = int(16 + (img.shape[0] * zoom) / 2)
+                # la etiqueta queda ARRIBA de la moneda (alto en puntos ≈ px*zoom)
+                label_dy = int(12 + (img.shape[0] * zoom) / 2)
             except Exception:
                 flag = None
 
