@@ -202,7 +202,9 @@ def fondo_16x9(query: str, output_path, carpeta_tmp: Path = None) -> str | None:
     (mejor cobertura en Commons). None → el pipeline cae al fondo pixel-art.
     """
     output_path = Path(output_path)
-    tmp = carpeta_tmp or (output_path.parent / "_wiki_src")
+    # Carpeta temporal ÚNICA por archivo de salida: evita que dos llamadas distintas
+    # (dos segmentos) compartan el cache wiki_00.jpg y se contaminen entre sí.
+    tmp = carpeta_tmp or (output_path.parent / f"_wiki_{output_path.stem}")
     candidatas = buscar_imagenes(query, n=4, carpeta=tmp)
     for src in candidatas:
         try:
