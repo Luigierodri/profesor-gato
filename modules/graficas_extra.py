@@ -318,12 +318,50 @@ def _dibujar_dona(ax, spec, p, W, H):
                 color=TEXTO_2, fontsize=25, fontweight="bold")
 
 
+# ── MAPA DE CALOR (heatmap) ──────────────────────────────────────────
+def _dibujar_calor(ax, spec, p, W, H):
+    """
+    Matriz de intensidad con la paleta del canal (slate → dorado).
+    spec = {"filas":["A","B"..], "columnas":["X","Y"..],
+            "valores":[[..],[..]], "unidad":"", "titulo":"", "fuente":""}
+    Para comparar DOS dimensiones a la vez (ej. países × décadas).
+    """
+    from matplotlib.colors import LinearSegmentedColormap
+    filas = spec.get("filas", [])
+    cols  = spec.get("columnas", [])
+    M = np.array(spec["valores"], dtype=float)
+    ax.set_facecolor(FONDO)
+
+    cmap = LinearSegmentedColormap.from_list(
+        "gato_calor", ["#1a2230", "#3b3a33", APAGADO, SERIES[0], SERIES[1]])
+    vmin, vmax = float(np.nanmin(M)), float(np.nanmax(M))
+    im = ax.imshow(M, cmap=cmap, aspect="auto", vmin=vmin, vmax=vmax)
+    im.set_alpha(_ease(p))  # entra con un fundido suave
+
+    ax.set_xticks(range(len(cols)));  ax.set_xticklabels(cols,  color=TEXTO_2, fontsize=20)
+    ax.set_yticks(range(len(filas))); ax.set_yticklabels(filas, color=TEXTO_2, fontsize=20)
+    ax.tick_params(length=0)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+
+    if p > 0.45:  # los números entran cuando ya se ven las celdas
+        umbral = vmin + (vmax - vmin) * 0.62
+        for i in range(M.shape[0]):
+            for j in range(M.shape[1]):
+                v = M[i, j]
+                ax.text(j, i, _fmt(v, spec.get("unidad", "")), ha="center", va="center",
+                        color=("#11151e" if v >= umbral else TEXTO),
+                        fontsize=19, fontweight="bold", alpha=_ease(min(1.0, (p - 0.45) / 0.4)))
+
+
 FORMAS.update({
     "pictograma": _dibujar_pictograma,
     "dispersion": _dibujar_dispersion,
     "cascada": _dibujar_cascada,
     "dona": _dibujar_dona,
+    "calor": _dibujar_calor,
 })
 
-# Estas dos ocupan todo el lienzo, sin ejes ni título arriba
+# Estas ocupan todo el lienzo (sin ejes a la izquierda; el título va arriba).
+# El heatmap NO va aquí: necesita margen izquierdo para las etiquetas de fila.
 PANTALLA_COMPLETA = {"pictograma", "dona"}
