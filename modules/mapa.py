@@ -19,11 +19,12 @@ log = logging.getLogger("mapa")
 BASE_DIR = Path(__file__).parent.parent
 GEOJSON  = BASE_DIR / "assets" / "geo" / "world_110m.geojson"
 
-# Paleta de identidad del canal (MEZCLA v2: café cálido + dorado, no azul-slate).
-_BG      = "#1b140d"   # café/espresso oscuro (fondo)
-_OTROS   = "#3a3022"   # países atenuados (café medio)
-_BORDE   = "#1b140d"   # borde sutil entre países
-_GOLD    = "#F2C56A"   # país resaltado (dorado del canal)
+# Identidad del canal. El color base lo cambia aplicar_tema() (default negro-oro);
+# el DORADO del país resaltado es constante en todos los temas.
+_BG      = "#070707"   # negro profundo (fondo, lo sobreescribe el tema)
+_OTROS   = "#2a2a2a"   # países atenuados
+_BORDE   = "#070707"   # borde sutil entre países
+_GOLD    = "#F2C56A"   # país resaltado (dorado del canal — constante)
 _GOLD_HL = "#F9DF9E"   # contorno del resaltado
 _TEXTO   = "#F9DF9E"
 

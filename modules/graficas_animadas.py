@@ -465,10 +465,15 @@ def aplicar_tema(nombre: str = "cafe"):
     return nombre
 
 
+# Tema por DEFAULT del canal = negro-oro (la referencia de Luigi). Se aplica al
+# cargar el módulo para que graficas_extra/mapa/data_chart hereden sus colores.
+aplicar_tema("negro_oro")
+
+
 # ── render ───────────────────────────────────────────────────────────
 
 def render_grafica(spec: dict, salida: str, vertical: bool = False) -> str:
-    aplicar_tema(spec.get("tema", "cafe"))   # el spec puede elegir el tema del video
+    aplicar_tema(spec.get("tema", "negro_oro"))   # el spec puede elegir el tema del video
     forma = spec.get("forma", "barras")
     if forma not in FORMAS:
         sys.exit(f"Forma desconocida: {forma}. Usa: {', '.join(FORMAS)}")
