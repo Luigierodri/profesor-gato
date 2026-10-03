@@ -98,7 +98,12 @@ def generar_mapa(pais: str, out_path, w: int = 1920, h: int = 1080) -> str | Non
 
     fig = plt.figure(figsize=(w / 100, h / 100), dpi=100)
     fig.patch.set_facecolor(_BG)
-    ax = fig.add_axes([0, 0, 1, 1]); ax.set_facecolor(_BG); ax.axis("off")
+    try:
+        from modules.graficas_animadas import pintar_fondo_gradiente
+        pintar_fondo_gradiente(fig)   # luz cálida arriba-izq (profundidad)
+    except Exception:
+        pass
+    ax = fig.add_axes([0, 0, 1, 1]); ax.set_facecolor("none"); ax.axis("off")
 
     # bbox del país objetivo (para encuadrar con contexto)
     tx, ty = [], []

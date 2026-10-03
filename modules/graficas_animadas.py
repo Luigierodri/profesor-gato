@@ -85,6 +85,29 @@ DUR_ENTRADA = 1.25           # segundos de animación
 DUR_HOLD = 1.6               # segundos quieto al final
 
 
+def _rgbf(hx: str):
+    hx = hx.lstrip("#")
+    return [int(hx[i:i + 2], 16) / 255 for i in (0, 2, 4)]
+
+
+def pintar_fondo_gradiente(fig, c_luz: str = "#392b19", c_osc: str = "#0e0a06",
+                           luz=(0.17, 0.14)):
+    """Fondo con LUZ CÁLIDA que entra de arriba-izquierda y se difumina a oscuro
+    (profundidad premium, no plano). Se dibuja detrás de todo. Devuelve el ax de fondo."""
+    H2, W2 = 240, 426          # baja resolución; imshow lo escala suave (rápido)
+    yy, xx = np.mgrid[0:H2, 0:W2].astype(float)
+    xn, yn = xx / W2, yy / H2
+    d = np.sqrt((xn - luz[0]) ** 2 + (yn - luz[1]) ** 2)
+    d /= d.max()
+    t = np.clip(d ** 0.85, 0, 1)[..., None]
+    a = np.array(_rgbf(c_luz)); b = np.array(_rgbf(c_osc))
+    img = a * (1 - t) + b * t
+    axb = fig.add_axes([0, 0, 1, 1], zorder=-100)
+    axb.axis("off")
+    axb.imshow(img, extent=[0, 1, 0, 1], aspect="auto", interpolation="bilinear")
+    return axb
+
+
 def _ease(t: float) -> float:
     """Ease-out cúbico. Entra rápido, se asienta. Sin rebote."""
     return 1 - (1 - t) ** 3
@@ -407,6 +430,7 @@ def render_grafica(spec: dict, salida: str, vertical: bool = False) -> str:
         p = 1.0 if f >= n_entrada else f / max(1, n_entrada - 1)
         fig.clear()
         fig.patch.set_facecolor(FONDO)
+        pintar_fondo_gradiente(fig)   # luz cálida arriba-izq (profundidad premium)
 
         if forma in ("numero", "comparacion") or forma in PANTALLA_COMPLETA:
             ax = fig.add_axes([0.03, 0.10, 0.94, 0.78]
@@ -420,6 +444,7 @@ def render_grafica(spec: dict, salida: str, vertical: bool = False) -> str:
                      color=TEXTO, fontsize=38, fontweight="black", wrap=True)
 
         dibujar(ax, spec, p, W, H)
+        ax.patch.set_facecolor("none")   # deja ver el degradado del fondo
 
         if spec.get("fuente"):
             fig.text(0.5, 0.055, f"Fuente: {spec['fuente']}", ha="center",
