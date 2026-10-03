@@ -45,6 +45,71 @@ def _run(cmd):
                    encoding="utf-8", errors="replace")
 
 
+def _sfx_local(descripcion: str, out: Path) -> bool:
+    """Resuelve un SFX de la DESPENSA local por keyword ($0, sin tocar la cuota de
+    voz ni la red). Solo si hay match real; si no, el segmento va sin efecto."""
+    try:
+        from modules.sound_generator import _via_sfx_keyword
+        return _via_sfx_keyword(descripcion or "", "", out)
+    except Exception:
+        return False
+
+
+def _mezclar_sfx(voz: Path, sfx_src: Path, out: Path, dur: float):
+    """Mezcla un acento de SFX al INICIO del segmento, por DEBAJO de la voz."""
+    t = min(2.4, max(0.8, dur))
+    _run([FF, "-y", "-loglevel", "error", "-i", str(voz), "-i", str(sfx_src),
+          "-filter_complex",
+          f"[1:a]atrim=0:{t:.2f},afade=t=out:st={max(0.1, t-0.4):.2f}:d=0.4,"
+          f"volume=0.22[s];"
+          "[0:a][s]amix=inputs=2:duration=first:dropout_transition=0:normalize=0[a]",
+          "-map", "[a]", "-c:a", "libmp3lame", "-q:a", "3", str(out)])
+
+
+def _concat_con_transiciones(clips, out: Path, work: Path, tipos) -> bool:
+    """Une los clips con xfade (video) + acrossfade (audio). `tipos` = lista de
+    (transicion, dur) por frontera (len = n-1). Devuelve True si lo logró; si no,
+    False (el caller cae a concat seco para no romper el render)."""
+    try:
+        n = len(clips)
+        if n < 2:
+            return False
+        durs = [_dur(c) for c in clips]
+        if any(d <= 0 for d in durs):
+            return False
+        fg = []
+        for i in range(n):
+            fg.append(f"[{i}:v]scale={W}:{H}:force_original_aspect_ratio=increase,"
+                      f"crop={W}:{H},fps=30,format=yuv420p,setsar=1,settb=AVTB[v{i}]")
+            fg.append(f"[{i}:a]aformat=sample_rates=48000:channel_layouts=stereo,"
+                      f"asettb=AVTB[a{i}]")
+        cur_v, cur_a, acc = "[v0]", "[a0]", durs[0]
+        for i in range(1, n):
+            trans, T = tipos[i - 1]
+            T = min(T, durs[i] - 0.05, durs[i - 1] - 0.05, acc - 0.05)
+            if T <= 0.05:
+                trans, T = "fade", 0.1
+            off = max(0.0, acc - T)
+            ov, oa = f"[vv{i}]", f"[aa{i}]"
+            fg.append(f"{cur_v}[v{i}]xfade=transition={trans}:duration={T:.3f}:"
+                      f"offset={off:.3f}{ov}")
+            fg.append(f"{cur_a}[a{i}]acrossfade=d={T:.3f}:c1=tri:c2=tri{oa}")
+            cur_v, cur_a, acc = ov, oa, acc + durs[i] - T
+        fgfile = work / "transiciones_fg.txt"
+        fgfile.write_text(";\n".join(fg), encoding="utf-8")
+        cmd = [FF, "-y", "-loglevel", "error"]
+        for c in clips:
+            cmd += ["-i", str(c)]
+        cmd += ["-filter_complex_script", str(fgfile), "-map", cur_v, "-map", cur_a,
+                "-c:v", "libx264", "-crf", "20", "-pix_fmt", "yuv420p",
+                "-c:a", "aac", "-b:a", "192k", str(out)]
+        _run(cmd)
+        return out.exists() and _dur(out) > 0
+    except Exception as e:
+        log.warning(f"  transiciones omitidas ({e}) — corte seco")
+        return False
+
+
 def _dur(path) -> float:
     r = subprocess.run([FP, "-v", "error", "-show_entries", "format=duration",
                         "-of", "csv=p=0", str(path)], capture_output=True, text=True)
@@ -97,6 +162,19 @@ def _clip_segmento(seg: dict, idx: int, tema: str, work: Path) -> tuple:
     _tts(texto, voz, audio)
     d = _dur(audio) + 0.35
 
+    # SFX del segmento (acento al inicio, por debajo de la voz). $0, despensa local.
+    audio_use = audio
+    sfx_desc = seg.get("sfx")
+    if sfx_desc:
+        sfx_src = work / f"x{idx:03d}.mp3"
+        if _sfx_local(str(sfx_desc), sfx_src):
+            mix = work / f"am{idx:03d}.mp3"
+            try:
+                _mezclar_sfx(audio, sfx_src, mix, _dur(audio))
+                audio_use = mix
+            except Exception as e:
+                log.warning(f"  sfx seg {idx} omitido: {e}")
+
     clip = work / f"c{idx:03d}.mp4"
     visual = seg.get("visual") or {}
     if visual.get("tipo") == "grafica" and seg.get("datos"):
@@ -135,16 +213,16 @@ def _clip_segmento(seg: dict, idx: int, tema: str, work: Path) -> tuple:
         from modules.tipografia import render_palabra_cinetica
         key = work / f"k{idx:03d}.mov"
         render_palabra_cinetica(str(clave), key, dur=min(max(d - 0.3, 1.2), 2.6))
-        _run([FF, "-y", "-loglevel", "error", "-i", str(clip), "-i", str(audio), "-i", str(key),
+        _run([FF, "-y", "-loglevel", "error", "-i", str(clip), "-i", str(audio_use), "-i", str(key),
               "-filter_complex", "[0:v][2:v]overlay=eof_action=pass[v]",
               "-map", "[v]", "-map", "1:a",
               "-c:v", "libx264", "-crf", "20", "-pix_fmt", "yuv420p",
               "-c:a", "aac", "-b:a", "192k", "-shortest", str(seg_out)])
     else:
-        _run([FF, "-y", "-loglevel", "error", "-i", str(clip), "-i", str(audio),
+        _run([FF, "-y", "-loglevel", "error", "-i", str(clip), "-i", str(audio_use),
               "-c:v", "libx264", "-crf", "20", "-pix_fmt", "yuv420p",
               "-c:a", "aac", "-b:a", "192k", "-shortest", str(seg_out)])
-    return seg_out, audio, d, texto
+    return seg_out, audio_use, d, texto
 
 
 def armar_video(script: dict, out_path, tema: str = None, work: Path = None,
@@ -160,37 +238,74 @@ def armar_video(script: dict, out_path, tema: str = None, work: Path = None,
 
     tema_texto = script.get("titulo", "")
     segs = script.get("segmentos", [])
-    clips, audios, textos = [], [], []
+    # Sabor musical por defecto si un segmento no trae "musica" propia.
+    mus_default = (script.get("musica_global") or
+                   "warm cinematic documentary score, strings and piano, emotional")
+    clips, audios, textos, durs, flavors = [], [], [], [], []
     for i, seg in enumerate(segs, 1):
         seg["_tema_texto"] = tema_texto
         log.info(f"  Seg {i}/{len(segs)} [{seg.get('voz')}] {(seg.get('visual') or {}).get('tipo')}")
         c, a, d, t = _clip_segmento(seg, i, tema, work)
         clips.append(c); audios.append(a); textos.append(t)
+        durs.append(_dur(c))
+        flavors.append((seg.get("musica") or "").strip() or mus_default)
 
-    # concat de clips (mismos parámetros)
-    lst = work / "list.txt"
-    lst.write_text("".join(f"file '{Path(c).as_posix()}'\n" for c in clips), encoding="utf-8")
+    # Transición por frontera: fundido a NEGRO al cambiar de capítulo (respira),
+    # disolvencia corta dentro del mismo capítulo (fluido sin arrastrar).
+    tipos = []
+    for i in range(1, len(clips)):
+        ca, cb = segs[i].get("capitulo", ""), segs[i - 1].get("capitulo", "")
+        if ca and cb and ca != cb:
+            tipos.append(("fadeblack", 0.45))
+        else:
+            tipos.append(("fade", 0.22))
+
     video = work / "video_concat.mp4"
-    _run([FF, "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", str(lst),
-          "-c:v", "libx264", "-crf", "20", "-pix_fmt", "yuv420p", "-c:a", "aac", str(video)])
+    con_transiciones = _concat_con_transiciones(clips, video, work, tipos)
+    if not con_transiciones:                       # fallback: corte seco (nunca rompe)
+        lst = work / "list.txt"
+        lst.write_text("".join(f"file '{Path(c).as_posix()}'\n" for c in clips), encoding="utf-8")
+        _run([FF, "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", str(lst),
+              "-c:v", "libx264", "-crf", "20", "-pix_fmt", "yuv420p", "-c:a", "aac", str(video)])
 
-    # voz completa (para el karaoke) + guion de texto
+    # voz completa para el karaoke: SIEMPRE del audio del video final, para que los
+    # subtítulos queden alineados aunque las transiciones hayan acortado la línea.
     voz_full = work / "voz_full.mp3"
-    alst = work / "alist.txt"
-    alst.write_text("".join(f"file '{Path(a).as_posix()}'\n" for a in audios), encoding="utf-8")
-    _run([FF, "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", str(alst),
-          "-c:a", "libmp3lame", "-q:a", "3", str(voz_full)])
+    try:
+        _run([FF, "-y", "-loglevel", "error", "-i", str(video), "-vn",
+              "-c:a", "libmp3lame", "-q:a", "3", str(voz_full)])
+    except Exception:
+        alst = work / "alist.txt"
+        alst.write_text("".join(f"file '{Path(a).as_posix()}'\n" for a in audios), encoding="utf-8")
+        _run([FF, "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", str(alst),
+              "-c:a", "libmp3lame", "-q:a", "3", str(voz_full)])
     guion_txt = work / "guion.txt"
     guion_txt.write_text(" ".join(textos), encoding="utf-8")
 
     actual = video
-    # música de fondo (despensa/Lyria) a bajo volumen
+    # música de fondo a bajo volumen. Por defecto, TEMÁTICA por escena (cumbia/
+    # aire colombiano cuando toca); MUSICA_TEMATICA=0 vuelve a la despensa de moods.
     if con_musica:
         try:
-            from modules.music_generator import seleccionar_musica
-            total = _dur(video)
-            mood = script.get("musica_mood", "ambient_misterioso")
-            mus = seleccionar_musica(mood, tema_texto, total)
+            mus = None
+            if os.getenv("MUSICA_TEMATICA", "1") != "0":
+                # fusiona bloques consecutivos del mismo sabor
+                bloques = []
+                for fl, du in zip(flavors, durs):
+                    if bloques and bloques[-1][0] == fl:
+                        bloques[-1] = (fl, bloques[-1][1] + du)
+                    else:
+                        bloques.append((fl, du))
+                from modules.musica_tematica import cama_por_escena
+                gen = os.getenv("MUSICA_TEMATICA_GEN", "1") != "0"
+                log.info(f"  música temática: {len(bloques)} sabores — "
+                         + " | ".join(f"{f[:24]}" for f, _ in bloques))
+                mus = cama_por_escena(bloques, work, generar=gen)
+            if not mus:
+                from modules.music_generator import seleccionar_musica
+                total = _dur(video)
+                mood = script.get("musica_mood", "ambient_misterioso")
+                mus = seleccionar_musica(mood, tema_texto, total)
             if mus:
                 con_mus = work / "con_musica.mp4"
                 _run([FF, "-y", "-loglevel", "error", "-i", str(actual), "-stream_loop", "-1",

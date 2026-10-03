@@ -61,6 +61,23 @@ REGLAS DURAS DE VISUAL:
 - Solo imágenes de dominio público / Creative Commons (Wikimedia). Evita obras aún protegidas.
 - Apartidista: el Gato lee datos, no milita.
 
+═══ MÚSICA QUE IDENTIFICA LA ESCENA (campo "musica" por segmento) ═══
+La música debe DAR ALMA y ubicar al espectador: cuando el tema es Colombia/Macondo,
+que suene a Colombia (cumbia, aire andino); en lo histórico, algo solemne; en el
+clímax, tensión. NO una cama genérica para todo.
+- Cada segmento PUEDE llevar "musica": una frase corta EN INGLÉS describiendo el
+  estilo instrumental (ej. "nostalgic colombian cumbia, accordion, instrumental";
+  "solemn andean colombian, flutes, orchestral"; "dark tense strings, suspense";
+  "hopeful warm strings, piano"). SIN voz cantada, es música de fondo.
+- REGLA DE CUOTA (importante): usa POCOS sabores distintos y REPÍTELOS (idealmente
+  3-5 en todo el video, uno por "mood"). Mantén el MISMO "musica" en segmentos
+  seguidos del mismo capítulo; cámbialo solo cuando cambia la emoción/escena.
+- NUNCA pidas una grabación con derechos (no "Colombian national anthem recording");
+  pide el ESTILO para que se genere una versión propia royalty-free (ej. "solemn
+  patriotic anthem style, orchestral, instrumental").
+- "musica_global" (nivel raíz): el sabor por defecto del video, para los segmentos
+  que no traigan "musica" propio.
+
 ═══ EXACTITUD (NO negociable — el canal se juega la credibilidad) ═══
 TODO dato debe ser REAL y verificable. Reglas:
 - Si recibes una FICHA DE DATOS VERIFICADOS, es tu ÚNICA fuente de cifras, fechas, nombres y hechos. Úsala al pie de la letra.
@@ -77,6 +94,7 @@ TODO dato debe ser REAL y verificable. Reglas:
   "descripcion_social": "2-3 frases para la descripción de YouTube",
   "hashtags": ["#...", "#..."],
   "capitulos": ["Nombre capítulo 1", "..."],
+  "musica_global": "sabor musical por defecto, en inglés (ej. 'warm cinematic documentary, strings and piano')",
   "segmentos": [
     {
       "n": 1,
@@ -90,6 +108,7 @@ TODO dato debe ser REAL y verificable. Reglas:
         "clave": "palabra/cifra dorada o null"
       },
       "datos": null,
+      "musica": "estilo musical instrumental de ESTE segmento en inglés (o null para usar musica_global); repite el mismo sabor en segmentos seguidos del mismo mood",
       "gato": "pose del Profesor Gato si APARECE en este segmento (recortado, reaccionando), o null. OCASIONAL (2-5 veces en todo el video, no más). Poses: 'gancho' (intriga/apertura), 'senala' (apunta a un mapa/dato), 'revela' (dato bomba), 'explica', 'piensa', 'indignado', 'dinero' (codicia), 'cierre' (cálido, al final). El Gato va con voz 'luigi'.",
       "sfx": "opcional: efecto en inglés (ej. 'crowd roar'), o null"
     }

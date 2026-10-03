@@ -134,6 +134,8 @@ def generar_largo(tema: str, outline=None, ficha_datos: str = "") -> dict:
         raw = raw.strip()
     script = json.loads(raw)
     script.setdefault("tema", "negro_oro")
+    mg = script.get("musica_global")
+    script["musica_global"] = mg.strip() if isinstance(mg, str) and mg.strip() else None
 
     segs = script.get("segmentos", [])
     for i, s in enumerate(segs, 1):
@@ -160,6 +162,8 @@ def generar_largo(tema: str, outline=None, ficha_datos: str = "") -> dict:
             s["visual"]["tipo"] = "escena_ia"
         sfx = s.get("sfx")
         s["sfx"] = sfx.strip() if isinstance(sfx, str) and sfx.strip() else None
+        mus = s.get("musica")
+        s["musica"] = mus.strip() if isinstance(mus, str) and mus.strip() else None
 
     total_words = sum(len(s["narracion"].split()) for s in segs)
     n_gato = sum(1 for s in segs if s["gato"])
