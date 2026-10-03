@@ -147,8 +147,22 @@ def buscar_imagenes(tema: str, n: int = 6, carpeta: Path = None) -> list[Path]:
     return descargados
 
 
+def _detectar_caras(im_rgb) -> list[tuple]:
+    """Caras (x,y,w,h) en la imagen PIL dada, o [] si no hay cv2/no detecta."""
+    try:
+        import cv2, numpy as np
+        gris = cv2.cvtColor(np.array(im_rgb), cv2.COLOR_RGB2GRAY)
+        casc = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+        caras = casc.detectMultiScale(gris, scaleFactor=1.1, minNeighbors=6,
+                                      minSize=(max(40, gris.shape[0] // 12),) * 2)
+        return [tuple(int(v) for v in c) for c in caras]
+    except Exception:
+        return []
+
+
 def _cover_16x9(src: Path, dest: Path, w: int = 1920, h: int = 1080) -> str:
-    """Escala una imagen para CUBRIR 16:9 y recorta al centro (sin deformar)."""
+    """Escala para CUBRIR 16:9 (sin deformar) y recorta. Si hay CARAS, encuadra para
+    NO cortarlas (deja aire arriba); si no, recorta al centro."""
     from PIL import Image
     with Image.open(src) as im:
         im = im.convert("RGB")
@@ -156,8 +170,24 @@ def _cover_16x9(src: Path, dest: Path, w: int = 1920, h: int = 1080) -> str:
         escala = max(w / sw, h / sh)
         nw, nh = int(sw * escala + 0.5), int(sh * escala + 0.5)
         im = im.resize((nw, nh), Image.LANCZOS)
-        x0 = (nw - w) // 2
-        y0 = (nh - h) // 2
+
+        x0, y0 = (nw - w) // 2, (nh - h) // 2  # default: centro
+        caras = _detectar_caras(im)
+        if caras:
+            fx0 = min(c[0] for c in caras)
+            fy0 = min(c[1] for c in caras)
+            fx1 = max(c[0] + c[2] for c in caras)
+            fy1 = max(c[1] + c[3] for c in caras)
+            mh = int(h * 0.14)   # aire sobre las cabezas
+            # vertical: deja aire arriba; si no caben todas, prioriza las cabezas
+            y0 = fy0 - mh
+            if y0 + h < fy1:
+                y0 = (fy0 + fy1) // 2 - h // 2
+            # horizontal: centra en el grupo de caras
+            x0 = (fx0 + fx1) // 2 - w // 2
+            x0 = max(0, min(x0, nw - w))
+            y0 = max(0, min(y0, nh - h))
+
         im = im.crop((x0, y0, x0 + w, y0 + h))
         dest.parent.mkdir(parents=True, exist_ok=True)
         im.save(dest, "PNG")
