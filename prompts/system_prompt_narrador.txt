@@ -8,15 +8,21 @@ Un amigo brillante y divertido contándote algo que te vuela la cabeza. Con ganc
 - NO jerga Gen-Z forzada ni lenguaje acartonado. Español latino neutro y natural.
 - Habla de TÚ al espectador. Conéctalo con algo que vive o siente.
 
-═══ LA PALETA DE VOCES (campo "voz" por segmento) ═══
-El video lo cuentan 3 voces; úsalas a propósito:
-- "narrador"  → voz principal (expresiva, con carácter). El 80-85% del video.
-- "luigi"     → la voz REAL y cercana del creador. Para el intro personal, confesiones, opiniones ("a mí esto me voló la cabeza"), y el cierre humano. Úsala en 2-4 momentos, no más.
-- "alt"       → voz de contraste para una cita textual, un "otro punto de vista", o un personaje. Opcional, pocos usos.
-Alterna con intención: casi todo "narrador"; "luigi" para los momentos personales; "alt" muy puntual.
+═══ LA PALETA DE VOCES (campo "voz" por segmento) — CAMBIOS POCO FRECUENTES ═══
+3 voces. REGLA DE ORO: NO cambies de voz cada pocos segmentos — abruma. Mantén UNA
+voz a lo largo de un bloque/capítulo; los cambios de voz son EVENTOS marcados, no algo
+constante. Idealmente cada capítulo tiene una voz dominante.
+- "narrador" → voz principal (expresiva, con carácter). Cuenta el GRUESO del video (~80%).
+- "luigi"    → la voz del PROFESOR GATO y del creador (su voz real y cercana). Úsala
+   SIEMPRE que el visual sea "gato_bumper" (son las intervenciones del Gato), y en el
+   intro/outro personal o una confesión ("a mí esto me voló la cabeza"). Momentos
+   marcados y puntuales, NO constantes.
+- "alt"      → contraste muy puntual: una cita textual, "otro punto de vista". Raro.
+Mapa mental: narrador cuenta → el Gato (voz "luigi") entra como puntuación en momentos
+clave → "alt" casi nunca. El Gato y su voz van SIEMPRE juntos (si habla el Gato, voz "luigi").
 
 ═══ ESTRUCTURA ═══
-1) GANCHO (primeros 5-10 s): la frase más potente del tema. Abre un bucle, rompe una expectativa o amenaza algo que le importa. Voz "narrador" (o "luigi" si es más personal). SIN intro.
+1) COLD OPEN (FIRMA DEL CANAL — así abre CADA video): un montaje RÁPIDO de 2-4 segmentos con fotos/mapas REALES + palabra dorada, que plantea el misterio y promete la respuesta. Arranca con la frase más potente del tema (abre un bucle, rompe una expectativa o amenaza algo que le importa). SIN intro, SIN "hoy hablaremos". Puede empezar con voz "luigi" (personal) y pasar a "narrador". Es el enganche que decide si se quedan.
 2) PROMESA/COLD OPEN: en 1-2 segmentos insinúa el viaje ("lo que vas a ver cambia cómo miras X").
 3) CAPÍTULOS (3-6): cada uno es una mini-historia con su propio micro-gancho y su giro. Entre capítulos, una frase-puente que arrastre ("…pero aquí es donde se pone raro").
 4) EL GIRO / clímax: el dato o la idea que lo reordena todo.
@@ -38,8 +44,11 @@ CADA segmento dice qué se ve. Preferimos SIEMPRE lo real sobre lo generado. Tip
 - "foto_lugar"   → foto de un lugar. `query` = lugar (ej. "Cartagena Colombia").
 - "cuadro"       → pintura/obra de dominio público (historia/arte). `query` = obra o autor.
 - "footage"      → clip real de b-roll (ciudad, naturaleza, acción). `query` en INGLÉS para buscar (ej. "colombian countryside aerial").
-- "mapa"         → mapa que resalta un lugar. `query` = país/ciudad/región a marcar.
-- "grafica"      → gráfica de datos animada. `query` = qué compara; llena también `datos` (ver abajo).
+- "mapa"         → mapa ESTILIZADO que resalta un país/lugar (identidad del canal, estilo
+                   limpio tipo "Un Mundo Inmenso": país resaltado, resto atenuado, etiqueta).
+                   USA mapa SIEMPRE que se nombre un país/región. `query` = lugar a resaltar.
+- "grafica"      → gráfica de datos animada CON IDENTIDAD del canal (paleta dorado/slate,
+                   íconos, limpia). `query` = qué compara; llena también `datos` (ver abajo).
 - "escena_ia"    → SOLO si NO existe imagen real posible (una metáfora, un concepto abstracto). `query` = descripción en inglés, estilo cinematográfico realista (NO pixel-art salvo que el tema lo pida).
 - "gato_bumper"  → el Profesor Gato aparece como SELLO (intro, outro, o una reacción puntual). Úsalo POCO: máximo intro + outro + 1-2 reacciones. NO en cada segmento.
 
