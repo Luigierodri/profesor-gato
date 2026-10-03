@@ -22,6 +22,10 @@ from config import ELEVENLABS_API_KEY, VOCES
 from modules import selector_visual, movimiento
 from modules.graficas_animadas import aplicar_tema, render_grafica
 from modules.num_es import normalizar_numeros_es
+from modules.pronunciacion import corregir_pronunciacion
+
+# El Profesor Gato SIEMPRE habla con esta voz (su voz real/cercana). Nunca se mezcla.
+VOZ_GATO = "luigi"
 
 log = logging.getLogger("ensamblador_narrador")
 
@@ -54,7 +58,7 @@ def _tts(texto: str, voz: str, out: Path):
     v = VOCES.get(voz, VOCES["narrador"])
     r = requests.post(
         f"https://api.elevenlabs.io/v1/text-to-speech/{v['voice_id']}",
-        json={"text": normalizar_numeros_es(texto), "model_id": v["model"],
+        json={"text": corregir_pronunciacion(normalizar_numeros_es(texto)), "model_id": v["model"],
               "voice_settings": v["settings"]},
         headers={"xi-api-key": ELEVENLABS_API_KEY, "Content-Type": "application/json",
                  "Accept": "audio/mpeg"}, timeout=180)
@@ -86,6 +90,9 @@ def _clip_segmento(seg: dict, idx: int, tema: str, work: Path) -> tuple:
     """Devuelve (clip_con_audio, audio, dur, texto). El clip ya trae la palabra dorada."""
     texto = seg.get("narracion", "").strip()
     voz = seg.get("voz", "narrador")
+    # Si el Gato APARECE en este segmento, habla SÍ o SÍ con su voz (nunca se mezcla).
+    if seg.get("gato") in GATO_POSES:
+        voz = VOZ_GATO
     audio = work / f"a{idx:03d}.mp3"
     _tts(texto, voz, audio)
     d = _dur(audio) + 0.35
