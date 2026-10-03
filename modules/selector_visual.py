@@ -109,13 +109,17 @@ def obtener_visual(visual: dict, tema: str, out_dir: Path, idx: int) -> dict:
             return R(r, "wikimedia", tipo_real="foto_lugar")
         return R(_via_escena(query, img_out), "escena_ia", tipo_real="escena_ia")
 
-    # 4) Mapa: por ahora un mapa real de Wikimedia (TODO: mapa animado propio).
+    # 4) Mapa ESTILIZADO con identidad del canal (modules/mapa.py). Respaldo: foto del lugar.
     if tipo == "mapa":
-        r = (_via_wikimedia(f"{query} location map", img_out)
-             or _via_wikimedia(f"{query} map", img_out))
+        try:
+            from modules import mapa as _mapa
+            r = _mapa.generar_mapa(query, str(img_out.with_suffix(".png")))
+        except Exception as e:
+            log.warning(f"  [mapa] {query[:40]}: {e}")
+            r = None
         if r:
-            return R(r, "wikimedia_map", tipo_real="mapa")
-        r = _via_wikimedia(query, img_out)
+            return R(r, "mapa_identidad", tipo_real="mapa")
+        r = _via_wikimedia(query, img_out)  # respaldo: foto del lugar
         if r:
             return R(r, "wikimedia", tipo_real="foto_lugar")
         return R(_via_escena(query, img_out), "escena_ia", tipo_real="escena_ia")
