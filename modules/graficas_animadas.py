@@ -137,6 +137,27 @@ def _fmt(v: float, unidad: str = "", decimales: int | None = None) -> str:
     return f"{s}{unidad}"
 
 
+def _unidad_corta(unidad: str) -> str:
+    """Unidad COMPACTA para la etiqueta de cada barra (evita que un texto largo
+    como 'millones de personas' se salga del marco). La unidad completa va en el
+    título/subtítulo, no repetida en cada barra."""
+    u = (unidad or "").lower()
+    if not u.strip():
+        return ""
+    if "bill" in u or "mil mill" in u:
+        return " mil M"
+    if "mill" in u or u.strip() == "m":
+        return " M"
+    if "%" in u or "por ciento" in u:
+        return "%"
+    if "$" in u or "dólar" in u or "dolar" in u or "usd" in u:
+        return " USD"
+    if "km" in u:
+        return " km²" if "2" in u or "²" in u else " km"
+    # unidad corta de verdad (≤5 chars): se deja; si es larga, se omite en la barra
+    return f" {unidad.strip()}" if len(unidad.strip()) <= 5 else ""
+
+
 # ── formas ───────────────────────────────────────────────────────────
 
 def _dibujar_numero(ax, spec, p, W, H):
@@ -176,7 +197,12 @@ def _dibujar_barras(ax, spec, p, W, H):
     ax.set_xticks([])
     ax.tick_params(left=False)
 
-    vmax = max(valores) * 1.24
+    # Margen derecho según el LARGO de la etiqueta compacta más larga, para que
+    # el valor nunca se corte (el bug de "…millones de personas" cortado).
+    u_corta = _unidad_corta(unidad)
+    max_lbl = max((len(_fmt(v, "") + u_corta) for v in valores), default=3)
+    headroom = 1.18 + min(0.9, max_lbl * 0.028)
+    vmax = max(valores) * headroom
     ax.set_xlim(0, vmax)
     ax.set_ylim(-0.55, n - 0.45)
     ax.invert_yaxis()
@@ -219,7 +245,7 @@ def _dibujar_barras(ax, spec, p, W, H):
                 fontsize=27, fontweight="bold")
 
         if pi > 0.08:
-            ax.text(largo + vmax * 0.02, i, _fmt(largo, unidad),
+            ax.text(largo + vmax * 0.02, i, _fmt(largo, "") + u_corta,
                     ha="left", va="center",
                     color=color if color != APAGADO else TEXTO_2,
                     fontsize=30, fontweight="black")

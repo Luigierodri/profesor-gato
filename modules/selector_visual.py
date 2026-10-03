@@ -124,6 +124,16 @@ def obtener_visual(visual: dict, tema: str, out_dir: Path, idx: int) -> dict:
             return R(r, "wikimedia", tipo_real="foto_lugar")
         return R(_via_escena(query, img_out), "escena_ia", tipo_real="escena_ia")
 
+    # 4b) Cultura pop (personaje de serie/película/juego): Wikimedia (actor/obra) →
+    #     si no hay, se GENERA un "film still" cinematográfico coherente con la escena.
+    if tipo == "foto_cultura":
+        r = _via_wikimedia(query, img_out)
+        if r:
+            return R(r, "wikimedia", tipo_real="foto_cultura")
+        prompt = (f"{query}, cinematic film still, dramatic cinematic lighting, "
+                  f"photorealistic, movie scene, shallow depth of field")
+        return R(_via_escena(prompt, img_out), "escena_ia", tipo_real="escena_ia")
+
     # 5) Fotos / cuadros (lo más común): Wikimedia → footage → escena_ia.
     if tipo in _TIPOS_FOTO:
         r = _via_wikimedia(query, img_out)

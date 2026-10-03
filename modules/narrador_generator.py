@@ -24,8 +24,11 @@ log = logging.getLogger("narrador_generator")
 NARRADOR_MAX_TOKENS = 24000
 
 VOCES_VALIDAS = set(VOCES.keys()) if VOCES else {"narrador", "luigi", "alt"}
-VISUALES_VALIDOS = {"foto_persona", "foto_evento", "foto_lugar", "cuadro", "footage",
-                    "mapa", "grafica", "escena_ia", "gato_bumper"}
+VISUALES_VALIDOS = {"foto_persona", "foto_evento", "foto_lugar", "cuadro", "foto_cultura",
+                    "footage", "mapa", "grafica", "escena_ia", "titulo", "gato_bumper"}
+# Nombres de capítulo que son del Gato anfitrión (cold open / título / cierre).
+_CAP_HOST = ("cold open", "cold-open", "titulo", "título", "intro", "apertura",
+             "cierre", "outro", "despedida", "final")
 MOVIMIENTOS = {"parallax", "zoom_in", "paneo", "paneo_der", "paneo_izq", "corte_rapido"}
 GATO_POSES = {"gancho", "explica", "revela", "cierre", "senala", "indignado", "piensa", "dinero"}
 # El Profesor Gato SIEMPRE habla con esta voz (coherente con ensamblador_narrador).
@@ -51,6 +54,57 @@ def _normalizar_visual(v) -> dict:
     clave = clave.strip() if isinstance(clave, str) and clave.strip() else None
     return {"tipo": tipo, "query": (v.get("query") or "").strip(),
             "movimiento": mov, "clave": clave}
+
+
+def _es_cap_host(cap: str) -> bool:
+    c = (cap or "").lower()
+    return any(k in c for k in _CAP_HOST)
+
+
+def _enforce_voces(script: dict):
+    """El Profesor Gato es el anfitrión. UNA voz por capítulo, sostenida:
+    - cold open / título / cierre → siempre "luigi" (el Gato).
+    - cada capítulo de contenido → UNA sola voz en el cuerpo; el Gato (luigi)
+      PRESENTA el capítulo en su primer segmento. Casi todos luigi; máximo 2
+      capítulos con voz invitada "narrador". Nunca se alterna dentro del capítulo."""
+    from collections import Counter
+    segs = script.get("segmentos", [])
+    orden = []
+    for s in segs:
+        c = s.get("capitulo", "")
+        if c and c not in orden:
+            orden.append(c)
+
+    desired = {}
+    for cap in orden:
+        if _es_cap_host(cap):
+            desired[cap] = "luigi"
+            continue
+        votos = Counter((s.get("voz") or "luigi") for s in segs if s.get("capitulo") == cap)
+        tot = sum(votos.values())
+        narr = votos.get("narrador", 0)
+        desired[cap] = "narrador" if (tot and narr / tot >= 0.6) else "luigi"
+    # máximo 2 capítulos invitados (narrador); el resto vuelve al Gato
+    invitados = [c for c in orden if desired[c] == "narrador"]
+    for extra in invitados[2:]:
+        desired[extra] = "luigi"
+
+    content_caps = {c for c in orden if not _es_cap_host(c)}
+    ya_presento = set()
+    for s in segs:
+        cap = s.get("capitulo", "")
+        voz_cap = desired.get(cap, "luigi")
+        tipo = (s.get("visual") or {}).get("tipo")
+        if tipo == "titulo":
+            s["voz"] = "luigi"
+        elif cap in content_caps and cap not in ya_presento:
+            ya_presento.add(cap)
+            s["voz"] = "luigi"               # el Gato presenta el capítulo
+        else:
+            s["voz"] = voz_cap
+        if s.get("gato") and s["voz"] != "luigi":
+            s["gato"] = None                 # el Gato solo aparece cuando habla él
+    return script
 
 
 def _normalizar_datos(d):
@@ -165,13 +219,22 @@ def generar_largo(tema: str, outline=None, ficha_datos: str = "") -> dict:
         mus = s.get("musica")
         s["musica"] = mus.strip() if isinstance(mus, str) and mus.strip() else None
 
+    # El Gato es el anfitrión: una voz por capítulo, sin saltos.
+    _enforce_voces(script)
+
     total_words = sum(len(s["narracion"].split()) for s in segs)
-    n_gato = sum(1 for s in segs if s["gato"])
     n_graf = sum(1 for s in segs if s["visual"]["tipo"] == "grafica")
     n_mapa = sum(1 for s in segs if s["visual"]["tipo"] == "mapa")
+    # voz por capítulo (para verificar que no haya saltos)
+    from collections import OrderedDict
+    cap_voz = OrderedDict()
+    for s in segs:
+        cap_voz.setdefault(s.get("capitulo", ""), s["voz"])
     print(f"✅ Largo generado: \"{script.get('titulo','(sin título)')}\" — "
-          f"{len(segs)} segmentos, ~{total_words} palabras, {n_graf} gráficas, "
-          f"{n_mapa} mapas, {n_gato} apariciones del Gato")
+          f"{len(segs)} segmentos, ~{total_words} palabras, {n_graf} gráficas, {n_mapa} mapas")
+    print("   Voz por capítulo:")
+    for cap, v in cap_voz.items():
+        print(f"     [{v:8s}] {cap}")
     return script
 
 

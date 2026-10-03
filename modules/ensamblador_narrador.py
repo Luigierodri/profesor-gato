@@ -151,6 +151,72 @@ def _grafica_de_datos(datos: dict, out_mp4: Path, tema: str):
     render_grafica(spec, str(out_mp4))
 
 
+def _titulo_card(titulo: str, out_png: Path):
+    """Tarjeta de TÍTULO (fondo cálido degradado + 'PROFESOR GATO presenta' + título
+    grande dorado con resplandor). Se usa justo tras el cold open, con un golpe (SFX)."""
+    from PIL import Image, ImageDraw, ImageFont, ImageFilter
+    img = Image.new("RGB", (W, H), (7, 7, 7))
+    # degradado radial cálido desde arriba-izquierda
+    grad = Image.new("L", (W, H), 0)
+    gd = ImageDraw.Draw(grad)
+    cx, cy, rmax = int(W * 0.30), int(H * 0.22), int(W * 0.95)
+    for r in range(rmax, 0, -6):
+        a = int(70 * (1 - r / rmax))
+        gd.ellipse([cx - r, cy - r, cx + r, cy + r], fill=a)
+    luz = Image.new("RGB", (W, H), (120, 86, 40))
+    img = Image.composite(luz, img, grad)
+
+    def _f(px, bold=True):
+        for fp in (["C:/Windows/Fonts/ariblk.ttf"] if bold else []) + \
+                  ["C:/Windows/Fonts/arialbd.ttf", "C:/Windows/Fonts/arial.ttf"]:
+            if os.path.exists(fp):
+                return ImageFont.truetype(fp, px)
+        return ImageFont.load_default()
+
+    d = ImageDraw.Draw(img)
+    oro, oro_glow, blanco = (242, 197, 106), (248, 222, 150), (238, 232, 220)
+
+    # kicker
+    kick = "P R O F E S O R   G A T O   P R E S E N T A"
+    fk = _f(34, bold=False)
+    wk = d.textbbox((0, 0), kick, font=fk)[2]
+    d.text(((W - wk) // 2, int(H * 0.30)), kick, font=fk, fill=oro)
+
+    # título grande (ajusta tamaño para que quepa; envuelve a 2 líneas si hace falta)
+    titulo = (titulo or "").strip().upper()
+    size = 118
+    fT = _f(size)
+    while d.textbbox((0, 0), titulo, font=fT)[2] > W * 0.84 and size > 52:
+        size -= 6
+        fT = _f(size)
+    # envolver en 2 líneas si aún es muy ancho
+    lineas = [titulo]
+    if d.textbbox((0, 0), titulo, font=fT)[2] > W * 0.84:
+        palabras = titulo.split()
+        mid = len(palabras) // 2
+        lineas = [" ".join(palabras[:mid]), " ".join(palabras[mid:])]
+    y = int(H * 0.42)
+    glow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    gdz = ImageDraw.Draw(glow)
+    for ln in lineas:
+        w = d.textbbox((0, 0), ln, font=fT)[2]
+        gdz.text(((W - w) // 2, y), ln, font=fT, fill=oro_glow + (255,))
+        y += int(size * 1.12)
+    glow = glow.filter(ImageFilter.GaussianBlur(size * 0.10))
+    img.paste(Image.alpha_composite(img.convert("RGBA"), glow).convert("RGB"), (0, 0))
+    d = ImageDraw.Draw(img)
+    y = int(H * 0.42)
+    for ln in lineas:
+        w = d.textbbox((0, 0), ln, font=fT)[2]
+        d.text(((W - w) // 2, y), ln, font=fT, fill=oro,
+               stroke_width=max(2, size // 30), stroke_fill=(22, 16, 8))
+        y += int(size * 1.12)
+
+    # filo dorado bajo el título
+    d.rectangle([int(W * 0.40), y + 14, int(W * 0.60), y + 20], fill=oro)
+    img.save(out_png)
+
+
 def _clip_segmento(seg: dict, idx: int, tema: str, work: Path) -> tuple:
     """Devuelve (clip_con_audio, audio, dur, texto). El clip ya trae la palabra dorada."""
     texto = seg.get("narracion", "").strip()
@@ -161,6 +227,10 @@ def _clip_segmento(seg: dict, idx: int, tema: str, work: Path) -> tuple:
     audio = work / f"a{idx:03d}.mp3"
     _tts(texto, voz, audio)
     d = _dur(audio) + 0.35
+
+    # La tarjeta de título lleva un GOLPE (el "pum" cuando sube la música).
+    if (seg.get("visual") or {}).get("tipo") == "titulo" and not seg.get("sfx"):
+        seg["sfx"] = "thunder"
 
     # SFX del segmento (acento al inicio, por debajo de la voz). $0, despensa local.
     audio_use = audio
@@ -177,7 +247,11 @@ def _clip_segmento(seg: dict, idx: int, tema: str, work: Path) -> tuple:
 
     clip = work / f"c{idx:03d}.mp4"
     visual = seg.get("visual") or {}
-    if visual.get("tipo") == "grafica" and seg.get("datos"):
+    if visual.get("tipo") == "titulo":
+        card = work / f"titulo_{idx:03d}.png"
+        _titulo_card(visual.get("query") or texto, card)
+        movimiento.foto_a_clip(str(card), str(clip), dur=d, movimiento="zoom_in", w=W, h=H)
+    elif visual.get("tipo") == "grafica" and seg.get("datos"):
         g = work / f"g{idx:03d}.mp4"
         _grafica_de_datos(seg["datos"], g, tema)
         _video_a_duracion(g, d, clip)
