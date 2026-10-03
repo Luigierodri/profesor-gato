@@ -32,6 +32,8 @@ FF = shutil.which("ffmpeg") or os.path.join(_FFDIR, "ffmpeg.exe")
 FP = shutil.which("ffprobe") or os.path.join(_FFDIR, "ffprobe.exe")
 FONT = "C\\:/Windows/Fonts/arialbd.ttf"
 W, H = 1920, 1080
+GATO_DIR = BASE_DIR / "images" / "personajes" / "gato"
+GATO_POSES = {"gancho", "explica", "revela", "cierre", "senala", "indignado", "piensa", "dinero"}
 
 
 def _run(cmd):
@@ -105,6 +107,20 @@ def _clip_segmento(seg: dict, idx: int, tema: str, work: Path) -> tuple:
             _run([FF, "-y", "-loglevel", "error", "-f", "lavfi", "-i",
                   f"color=c=0x070707:s={W}x{H}:d={d:.3f}", "-c:v", "libx264", str(clip)])
 
+    # El PROFESOR GATO aparece recortado en una pose (si el segmento lo pide),
+    # deslizándose desde la derecha. Ocasional — lo marca el guion con "gato".
+    gato_pose = seg.get("gato")
+    if gato_pose in GATO_POSES:
+        sprite = GATO_DIR / f"gato_{gato_pose}.png"
+        if sprite.exists():
+            clip_g = work / f"cg{idx:03d}.mp4"
+            _run([FF, "-y", "-loglevel", "error", "-i", str(clip), "-i", str(sprite),
+                  "-filter_complex",
+                  "[1]scale=-1:640[g];"
+                  "[0][g]overlay=x='if(lt(t,0.45),W-(w*(t/0.45)),W-w-20)':y=H-h+30[v]",
+                  "-map", "[v]", "-c:v", "libx264", "-crf", "20", "-pix_fmt", "yuv420p", str(clip_g)])
+            clip = clip_g
+
     # mux voz + palabra CINÉTICA (letra por letra + resplandor), solo si hay clave
     seg_out = work / f"s{idx:03d}.mp4"
     clave = (seg.get("visual") or {}).get("clave")
@@ -150,21 +166,6 @@ def armar_video(script: dict, out_path, tema: str = None, work: Path = None,
     video = work / "video_concat.mp4"
     _run([FF, "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", str(lst),
           "-c:v", "libx264", "-crf", "20", "-pix_fmt", "yuv420p", "-c:a", "aac", str(video)])
-
-    # SELLO del canal: el Profesor Gato pequeño en la esquina inferior izquierda
-    # (abajo-derecha la ocupan a veces los datos; el karaoke va abajo-centro).
-    gato = BASE_DIR / "assets" / "profesor_gato.png"
-    if gato.exists():
-        sellado = work / "video_sello.mp4"
-        try:
-            _run([FF, "-y", "-loglevel", "error", "-i", str(video), "-i", str(gato),
-                  "-filter_complex", "[1]scale=-1:190,format=rgba,colorchannelmixer=aa=0.95[g];"
-                                     "[0][g]overlay=44:H-h-44[v]",
-                  "-map", "[v]", "-map", "0:a", "-c:v", "libx264", "-crf", "20",
-                  "-pix_fmt", "yuv420p", "-c:a", "copy", str(sellado)])
-            video = sellado
-        except Exception as e:
-            log.warning(f"  sello del Gato omitido: {e}")
 
     # voz completa (para el karaoke) + guion de texto
     voz_full = work / "voz_full.mp3"
