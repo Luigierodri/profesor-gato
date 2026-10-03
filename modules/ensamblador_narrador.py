@@ -105,18 +105,22 @@ def _clip_segmento(seg: dict, idx: int, tema: str, work: Path) -> tuple:
             _run([FF, "-y", "-loglevel", "error", "-f", "lavfi", "-i",
                   f"color=c=0x070707:s={W}x{H}:d={d:.3f}", "-c:v", "libx264", str(clip)])
 
-    # mux voz + palabra dorada
+    # mux voz + palabra CINÉTICA (letra por letra + resplandor), solo si hay clave
     seg_out = work / f"s{idx:03d}.mp4"
     clave = (seg.get("visual") or {}).get("clave")
-    vf = []
     if clave:
-        c = str(clave).replace("'", "")
-        vf = ["-vf", (f"drawtext=fontfile='{FONT}':text='{c}':fontcolor=0xF2C56A:fontsize=92:"
-                      f"x=(w-text_w)/2:y=h*0.10:box=1:boxcolor=0x000000AA:boxborderw=24:"
-                      f"borderw=3:bordercolor=black")]
-    _run([FF, "-y", "-loglevel", "error", "-i", str(clip), "-i", str(audio), *vf,
-          "-c:v", "libx264", "-crf", "20", "-pix_fmt", "yuv420p",
-          "-c:a", "aac", "-b:a", "192k", "-shortest", str(seg_out)])
+        from modules.tipografia import render_palabra_cinetica
+        key = work / f"k{idx:03d}.mov"
+        render_palabra_cinetica(str(clave), key, dur=min(max(d - 0.3, 1.2), 2.6))
+        _run([FF, "-y", "-loglevel", "error", "-i", str(clip), "-i", str(audio), "-i", str(key),
+              "-filter_complex", "[0:v][2:v]overlay=eof_action=pass[v]",
+              "-map", "[v]", "-map", "1:a",
+              "-c:v", "libx264", "-crf", "20", "-pix_fmt", "yuv420p",
+              "-c:a", "aac", "-b:a", "192k", "-shortest", str(seg_out)])
+    else:
+        _run([FF, "-y", "-loglevel", "error", "-i", str(clip), "-i", str(audio),
+              "-c:v", "libx264", "-crf", "20", "-pix_fmt", "yuv420p",
+              "-c:a", "aac", "-b:a", "192k", "-shortest", str(seg_out)])
     return seg_out, audio, d, texto
 
 
@@ -146,6 +150,21 @@ def armar_video(script: dict, out_path, tema: str = None, work: Path = None,
     video = work / "video_concat.mp4"
     _run([FF, "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", str(lst),
           "-c:v", "libx264", "-crf", "20", "-pix_fmt", "yuv420p", "-c:a", "aac", str(video)])
+
+    # SELLO del canal: el Profesor Gato pequeño en la esquina inferior izquierda
+    # (abajo-derecha la ocupan a veces los datos; el karaoke va abajo-centro).
+    gato = BASE_DIR / "assets" / "profesor_gato.png"
+    if gato.exists():
+        sellado = work / "video_sello.mp4"
+        try:
+            _run([FF, "-y", "-loglevel", "error", "-i", str(video), "-i", str(gato),
+                  "-filter_complex", "[1]scale=-1:190,format=rgba,colorchannelmixer=aa=0.95[g];"
+                                     "[0][g]overlay=44:H-h-44[v]",
+                  "-map", "[v]", "-map", "0:a", "-c:v", "libx264", "-crf", "20",
+                  "-pix_fmt", "yuv420p", "-c:a", "copy", str(sellado)])
+            video = sellado
+        except Exception as e:
+            log.warning(f"  sello del Gato omitido: {e}")
 
     # voz completa (para el karaoke) + guion de texto
     voz_full = work / "voz_full.mp3"
