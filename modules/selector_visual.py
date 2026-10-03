@@ -35,7 +35,10 @@ _TIPOS_FOTO = {"foto_persona", "foto_evento", "foto_lugar", "cuadro"}
 
 def _via_wikimedia(query: str, out_jpg: Path) -> str | None:
     try:
-        return wikimedia_fetcher.fondo_16x9(query, out_jpg)
+        # Carpeta temporal ÚNICA por segmento: evita que un segmento reuse la foto
+        # descargada por otro (wikimedia_fetcher cachea como wiki_00.jpg).
+        tmp = Path(out_jpg).parent / f"_wiki_{Path(out_jpg).stem}"
+        return wikimedia_fetcher.fondo_16x9(query, out_jpg, carpeta_tmp=tmp)
     except Exception as e:
         log.warning(f"  [wiki] '{query[:40]}': {e}")
         return None

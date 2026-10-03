@@ -60,16 +60,21 @@ def _obtener_urls(titulos: list[str]) -> list[dict]:
     )
     with urllib.request.urlopen(req, timeout=10) as r:
         data = json.loads(r.read())
-    candidatos = []
+    # La API devuelve las páginas DESORDENADAS (por pageid), perdiendo el ranking de
+    # relevancia de la búsqueda. Mapeamos por título y luego devolvemos EN EL ORDEN
+    # de `titulos` (relevancia) — así la 1a foto de "Gabriel García Márquez" es la de
+    # él, no una imagen grande e irrelevante que se colaba por tamaño.
+    por_titulo: dict[str, dict] = {}
     for page in data.get("query", {}).get("pages", {}).values():
+        t = page.get("title")
         for info in page.get("imageinfo") or []:
             mime = info.get("mime", "")
-            # thumburl es la URL del thumbnail; url es el original (bloqueado)
-            thumb_url = info.get("thumburl") or info.get("url", "")
+            thumb_url = info.get("thumburl") or info.get("url", "")   # thumburl=thumbnail; url=original (bloqueado)
             width = info.get("thumbwidth") or info.get("width", 0)
-            if mime in _ALLOWED_MIME and thumb_url and width >= _MIN_WIDTH:
-                candidatos.append({"url": thumb_url, "mime": mime, "width": width})
-    return candidatos
+            if mime in _ALLOWED_MIME and thumb_url and width >= _MIN_WIDTH and t not in por_titulo:
+                por_titulo[t] = {"url": thumb_url, "mime": mime, "width": width, "title": t}
+            break
+    return [por_titulo[t] for t in titulos if t in por_titulo]
 
 
 def buscar_imagenes(tema: str, n: int = 6, carpeta: Path = None) -> list[Path]:
@@ -115,9 +120,9 @@ def buscar_imagenes(tema: str, n: int = 6, carpeta: Path = None) -> list[Path]:
         log.info("  Wikimedia sin candidatos (¿ratelimit silencioso?) — pausa y reintento")
         time.sleep(8)
 
-    # Ordenar por ancho (preferir imágenes más grandes)
-    candidatos.sort(key=lambda c: c["width"], reverse=True)
-
+    # NO reordenar por tamaño: perdía la relevancia (una imagen enorme irrelevante se
+    # colaba de primera). Respetamos el orden de la búsqueda (más relevante primero);
+    # _MIN_WIDTH ya descarta las muy chicas.
     descargados: list[Path] = []
     for i, c in enumerate(candidatos):
         if len(descargados) >= n:
