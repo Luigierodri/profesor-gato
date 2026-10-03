@@ -90,6 +90,7 @@ TODO dato debe ser REAL y verificable. Reglas:
         "clave": "palabra/cifra dorada o null"
       },
       "datos": null,
+      "gato": "pose del Profesor Gato si APARECE en este segmento (recortado, reaccionando), o null. OCASIONAL (2-5 veces en todo el video, no más). Poses: 'gancho' (intriga/apertura), 'senala' (apunta a un mapa/dato), 'revela' (dato bomba), 'explica', 'piensa', 'indignado', 'dinero' (codicia), 'cierre' (cálido, al final). El Gato va con voz 'luigi'.",
       "sfx": "opcional: efecto en inglés (ej. 'crowd roar'), o null"
     }
   ]
