@@ -90,10 +90,17 @@ def _rgbf(hx: str):
     return [int(hx[i:i + 2], 16) / 255 for i in (0, 2, 4)]
 
 
-def pintar_fondo_gradiente(fig, c_luz: str = "#392b19", c_osc: str = "#0e0a06",
+# Colores del DEGRADADO del fondo (los cambia aplicar_tema según el tema del canal).
+_LUZ = "#392b19"   # luz (arriba-izquierda)
+_OSC = "#0e0a06"   # oscuro (abajo-derecha)
+
+
+def pintar_fondo_gradiente(fig, c_luz: str = None, c_osc: str = None,
                            luz=(0.17, 0.14)):
-    """Fondo con LUZ CÁLIDA que entra de arriba-izquierda y se difumina a oscuro
-    (profundidad premium, no plano). Se dibuja detrás de todo. Devuelve el ax de fondo."""
+    """Fondo con LUZ que entra de arriba-izquierda y se difumina a oscuro (profundidad
+    premium). Usa los colores del TEMA activo (_LUZ/_OSC) si no se pasan. Devuelve el ax."""
+    c_luz = c_luz or _LUZ
+    c_osc = c_osc or _OSC
     H2, W2 = 240, 426          # baja resolución; imshow lo escala suave (rápido)
     yy, xx = np.mgrid[0:H2, 0:W2].astype(float)
     xn, yn = xx / W2, yy / H2
@@ -389,9 +396,79 @@ FORMAS = {
 }
 
 
+# ── TEMAS DE COLOR ────────────────────────────────────────────────────
+# El color base VARÍA según el tema del video, pero la IDENTIDAD se mantiene:
+# dorado (#F2C56A = series[0] siempre), luz cálida degradada, monedas, layout.
+
+def _h2rgb(hx):
+    hx = hx.lstrip("#")
+    return tuple(int(hx[i:i + 2], 16) for i in (0, 2, 4))
+
+
+_ORO = "#F2C56A"   # dorado de marca (constante en todos los temas)
+
+TEMAS = {
+    # historia / cultura
+    "cafe": dict(luz="#392b19", osc="#0e0a06", fondo="#1b140d", texto="#F5EEE2",
+                 texto2="#C9B89B", tenue="#4a3f2e", apagado="#5a4e3a", otros="#6b5d45",
+                 map_otros="#3a3022",
+                 series=[_ORO, "#3FD3C2", "#FF6B5E", "#9B8CFF", "#B6E05A"]),
+    # el de la referencia (gris/negro + amarillo)
+    "negro_oro": dict(luz="#2d2a20", osc="#070707", fondo="#121212", texto="#F3EFE4",
+                      texto2="#B8B4A6", tenue="#34312a", apagado="#3a382f", otros="#4a473e",
+                      map_otros="#2a2a2a",
+                      series=[_ORO, "#FFB23E", "#E8D58A", "#7FB8C9", "#D98C6A"]),
+    # ciencia / espacio / misterio
+    "azul_noche": dict(luz="#172a46", osc="#060912", fondo="#0c1526", texto="#EAF0FA",
+                       texto2="#9FB0C8", tenue="#2a3952", apagado="#2c3a50", otros="#3a4a64",
+                       map_otros="#22324a",
+                       series=[_ORO, "#4FD6E8", "#7CA3FF", "#C77DFF", "#5AE0A0"]),
+    # naturaleza / animales
+    "verde_bosque": dict(luz="#1b3522", osc="#060f08", fondo="#0e1c12", texto="#EAF5EC",
+                         texto2="#A6C2AC", tenue="#2a4432", apagado="#2c4634", otros="#3a5a44",
+                         map_otros="#22402c",
+                         series=[_ORO, "#5BE08A", "#FFB23E", "#4FD6E8", "#FF6B5E"]),
+    # política / poder / drama
+    "vino": dict(luz="#3d1a27", osc="#10060a", fondo="#22101a", texto="#F7E9EE",
+                 texto2="#C9A6B2", tenue="#4a2634", apagado="#4a2a36", otros="#5a3444",
+                 map_otros="#3a2230",
+                 series=[_ORO, "#FF6B8A", "#FFB23E", "#C77DFF", "#5AE0A0"]),
+}
+
+
+def aplicar_tema(nombre: str = "cafe"):
+    """Cambia la paleta del canal al tema dado (en graficas, mapas y estáticas),
+    manteniendo el dorado y la luz. Devuelve el nombre aplicado."""
+    import sys
+    t = TEMAS.get(nombre, TEMAS["cafe"])
+    objetivos = [sys.modules[__name__]]
+    for mn in ("modules.graficas_extra", "graficas_extra"):
+        if mn in sys.modules:
+            objetivos.append(sys.modules[mn]); break
+    for m in objetivos:
+        m.FONDO, m.TEXTO, m.TEXTO_2, m.TENUE = t["fondo"], t["texto"], t["texto2"], t["tenue"]
+        m.SERIES, m.APAGADO, m.OTROS = list(t["series"]), t["apagado"], t["otros"]
+        m._LUZ, m._OSC = t["luz"], t["osc"]
+        if hasattr(m, "SERIES_TODOS_PARES"):
+            m.SERIES_TODOS_PARES = list(t["series"])[:3]
+    for mn in ("modules.mapa", "mapa"):
+        if mn in sys.modules:
+            mp = sys.modules[mn]
+            mp._BG, mp._BORDE, mp._OTROS = t["osc"], t["osc"], t["map_otros"]
+            break
+    for mn in ("modules.data_chart", "data_chart"):
+        if mn in sys.modules:
+            dc = sys.modules[mn]
+            dc.BG, dc.BG_BANDA = _h2rgb(t["osc"]), _h2rgb(t["fondo"])
+            dc.INK, dc.INK_SOFT, dc.TRACK = _h2rgb(t["texto"]), _h2rgb(t["texto2"]), _h2rgb(t["map_otros"])
+            break
+    return nombre
+
+
 # ── render ───────────────────────────────────────────────────────────
 
 def render_grafica(spec: dict, salida: str, vertical: bool = False) -> str:
+    aplicar_tema(spec.get("tema", "cafe"))   # el spec puede elegir el tema del video
     forma = spec.get("forma", "barras")
     if forma not in FORMAS:
         sys.exit(f"Forma desconocida: {forma}. Usa: {', '.join(FORMAS)}")
