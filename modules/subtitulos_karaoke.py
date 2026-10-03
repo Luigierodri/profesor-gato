@@ -58,8 +58,8 @@ class Estilo:
 
     fuente: str = "Montserrat ExtraBold"
     tamano: int = 78                  # px sobre 1080 de ancho
-    color_base: str = "&H00FFFFFF"    # blanco       (ASS = &HAABBGGRR)
-    color_activo: str = "&H0000D4FF"  # amarillo     (BGR invertido)
+    color_base: str = "&H00FFFFFF"    # blanco              (ASS = &HAABBGGRR)
+    color_activo: str = "&H006AC5F2"  # DORADO del canal #F2C56A (palabra activa)
     color_borde: str = "&H00000000"   # negro
     grosor_borde: int = 5
     sombra: int = 2
