@@ -44,6 +44,9 @@ GATO_POSES = {"gancho", "explica", "revela", "cierre", "senala", "indignado", "p
 # cortan en los momentos clave (campo "gato"). El audio del clip se descarta (va la voz).
 HERO_DIR = BASE_DIR / "assets" / "hero"
 GATO_TALK = HERO_DIR / "gato hablando set.mp4"
+GATO_OUTRO = HERO_DIR / "gato_outro.mp4"           # cierre/despedida
+STING = HERO_DIR / "sting_gatocast.mp4"            # transición entre capítulos
+BASTET_DIR = HERO_DIR                               # clips de Bastet corresponsal
 # pose del guion → clip de reacción PREFERIDO (si Luigi aún no lo generó, cae al
 # fallback de abajo). Nombres de archivo en assets/hero/.
 _POSE_A_CLIP = {
@@ -58,6 +61,41 @@ _POSE_A_CLIP = {
 }
 # Si el clip preferido no existe aún, se usa el primero disponible de esta lista.
 _FALLBACK_CLIPS = ["gato_react_enfasis.mp4", "gato_react_enojado.mp4"]
+
+
+def _prep_sting(work: Path) -> Path:
+    """Prepara el sting (GATO-CAST) a ~1.4s, 1080p, con audio SILENCIOSO (para que el
+    concat/transiciones tengan pista de audio). Se inserta entre capítulos."""
+    out = work / "sting_prep.mp4"
+    dur = min(1.5, _dur(STING) or 1.5)
+    _run([FF, "-y", "-loglevel", "error", "-i", str(STING),
+          "-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo",
+          "-t", f"{dur:.3f}",
+          "-filter_complex",
+          f"[0:v]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},"
+          f"setsar=1,format=yuv420p[v]",
+          "-map", "[v]", "-map", "1:a", "-c:v", "libx264", "-crf", "20",
+          "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-shortest", str(out)])
+    return out
+
+
+def _cap_es_host(cap: str) -> bool:
+    c = (cap or "").lower()
+    return any(k in c for k in ("cold open", "cold-open", "titulo", "título",
+                                "intro", "apertura", "cierre", "outro", "despedida", "final"))
+
+
+def _bastet_clip_para(query: str):
+    """Clip de BASTET corresponsal por keyword: assets/hero/bastet_<algo>.mp4 cuyo
+    nombre aparezca en la query; si no, cualquier bastet_*.mp4; si no hay, None."""
+    import re as _re
+    qlow = (query or "").lower()
+    bastets = sorted(HERO_DIR.glob("bastet*.mp4"))
+    for f in bastets:
+        clave = f.stem.lower().replace("bastet", "").replace("_", " ").strip()
+        if clave and clave in qlow:
+            return f
+    return bastets[0] if bastets else None
 
 
 def _gato_clip_para(pose: str):
@@ -304,8 +342,17 @@ def _clip_segmento(seg: dict, idx: int, tema: str, work: Path) -> tuple:
     # HERO CLIP del Gato a pantalla completa: la ENTRADA (gato_podcast) o un CORTE
     # a reacción cuando el segmento lo pide (campo "gato"). El audio del clip se descarta.
     hero_clip = None
-    if tipo == "gato_podcast" and GATO_TALK.exists():
-        hero_clip = GATO_TALK
+    if tipo in ("gato_podcast", "gato_outro"):
+        cap = (seg.get("capitulo") or "").lower()
+        es_cierre = tipo == "gato_outro" or any(
+            k in cap for k in ("cierre", "outro", "despedida", "final"))
+        if es_cierre and GATO_OUTRO.exists():
+            hero_clip = GATO_OUTRO          # el cierre usa el clip de despedida
+        elif GATO_TALK.exists():
+            hero_clip = GATO_TALK
+    elif tipo == "bastet":
+        # Bastet corresponsal: clip propio (assets/hero/bastet_<algo>.mp4) por keyword.
+        hero_clip = _bastet_clip_para(visual.get("query", ""))
     elif tipo != "titulo" and seg.get("gato"):
         hero_clip = _gato_clip_para(seg.get("gato"))
     usou_hero = False
@@ -395,12 +442,37 @@ def armar_video(script: dict, out_path, tema: str = None, work: Path = None,
         durs.append(_dur(c))
         flavors.append((seg.get("musica") or "").strip() or mus_default)
 
-    # Transición por frontera: fundido a NEGRO al cambiar de capítulo (respira),
-    # disolvencia corta dentro del mismo capítulo (fluido sin arrastrar).
+    # Unificamos en items y, si hay STING, lo insertamos entre capítulos de CONTENIDO
+    # (no en cold open/título/cierre) como transición marca del canal.
+    caps = [seg.get("capitulo", "") for seg in segs]
+    items = [{"clip": clips[i], "dur": durs[i], "flavor": flavors[i], "cap": caps[i]}
+             for i in range(len(clips))]
+    if STING.exists():
+        try:
+            sting_clip = _prep_sting(work)
+            sting_dur = _dur(sting_clip)
+            nuevos = []
+            for i, it in enumerate(items):
+                if (i > 0 and it["cap"] != items[i - 1]["cap"]
+                        and not _cap_es_host(it["cap"]) and not _cap_es_host(items[i - 1]["cap"])):
+                    nuevos.append({"clip": sting_clip, "dur": sting_dur,
+                                   "flavor": items[i - 1]["flavor"], "cap": "__sting__"})
+                nuevos.append(it)
+            items = nuevos
+        except Exception as e:
+            log.warning(f"  sting omitido: {e}")
+    clips = [it["clip"] for it in items]
+    durs = [it["dur"] for it in items]
+    flavors = [it["flavor"] for it in items]
+    caps = [it["cap"] for it in items]
+
+    # Transición por frontera: el sting ES la transición (fade corto); fundido a NEGRO
+    # al cambiar de capítulo sin sting; disolvencia corta dentro del mismo capítulo.
     tipos = []
     for i in range(1, len(clips)):
-        ca, cb = segs[i].get("capitulo", ""), segs[i - 1].get("capitulo", "")
-        if ca and cb and ca != cb:
+        if caps[i] == "__sting__" or caps[i - 1] == "__sting__":
+            tipos.append(("fade", 0.18))
+        elif caps[i] and caps[i - 1] and caps[i] != caps[i - 1]:
             tipos.append(("fadeblack", 0.45))
         else:
             tipos.append(("fade", 0.22))

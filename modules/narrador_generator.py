@@ -12,6 +12,7 @@ script_generator = Shorts). NO los toca.
 
 import json
 import logging
+import os
 
 import anthropic
 
@@ -23,10 +24,15 @@ log = logging.getLogger("narrador_generator")
 # Headroom para un largo de 8-12 min (40-60 segmentos). Igual que el essay.
 NARRADOR_MAX_TOKENS = 24000
 
+# El GUION se escribe con el modelo MÁS capaz (más enganchador) = Opus. El
+# fact_checker sigue en Sonnet (barato, solo busca datos). Configurable por env;
+# si el modelo no está disponible, cae a CLAUDE_MODEL (Sonnet) automáticamente.
+NARRADOR_MODEL = os.getenv("NARRADOR_MODEL", "claude-opus-4-8")
+
 VOCES_VALIDAS = set(VOCES.keys()) if VOCES else {"narrador", "luigi", "alt"}
 VISUALES_VALIDOS = {"foto_persona", "foto_evento", "foto_lugar", "cuadro", "foto_cultura",
                     "novela", "footage", "mapa", "grafica", "escena_ia", "titulo",
-                    "gato_podcast", "gato_bumper"}
+                    "gato_podcast", "gato_outro", "bastet", "gato_bumper"}
 # Nombres de capítulo que son del Gato anfitrión (cold open / título / cierre).
 _CAP_HOST = ("cold open", "cold-open", "titulo", "título", "intro", "apertura",
              "cierre", "outro", "despedida", "final")
@@ -117,11 +123,14 @@ def _es_cap_host(cap: str) -> bool:
 
 
 def _enforce_voces(script: dict):
-    """SOLO EL PROFESOR GATO habla (voz "luigi") en TODO el video. Nada de voces
-    invitadas ni cambios — Luigi fue claro: una sola voz, la del Gato, de principio
-    a fin. (narrador/alt quedan sin usar por ahora.)"""
+    """El PROFESOR GATO (voz "luigi") narra TODO — sin cambios de voz. ÚNICA
+    excepción: BASTET corresponsal (visual tipo "bastet"), que es otro personaje
+    y habla con su propia voz "alt" (alivio cómico puntual)."""
     for s in script.get("segmentos", []):
-        s["voz"] = "luigi"
+        if (s.get("visual") or {}).get("tipo") == "bastet":
+            s["voz"] = "alt"
+        else:
+            s["voz"] = "luigi"
     return script
 
 
@@ -181,17 +190,27 @@ def generar_largo(tema: str, outline=None, ficha_datos: str = "") -> dict:
                          "fechas y nombres — lo que no esté aquí NO lo afirmes):\n"
                          + ficha_datos)
 
-    print(f"🎬 Generando LARGO (narrador): {tema}")
-    with client.messages.stream(
-        model=CLAUDE_MODEL,
-        max_tokens=NARRADOR_MAX_TOKENS,
-        system=_cargar_prompt(),
-        messages=[{"role": "user", "content": user_message}],
-    ) as stream:
-        message = stream.get_final_message()
+    system_prompt = _cargar_prompt()
+
+    def _generar(modelo):
+        with client.messages.stream(
+            model=modelo, max_tokens=NARRADOR_MAX_TOKENS,
+            system=system_prompt,
+            messages=[{"role": "user", "content": user_message}],
+        ) as stream:
+            return stream.get_final_message()
+
+    print(f"🎬 Generando LARGO (narrador) con {NARRADOR_MODEL}: {tema}")
+    modelo_usado = NARRADOR_MODEL
+    try:
+        message = _generar(NARRADOR_MODEL)
+    except Exception as e:
+        log.warning(f"  {NARRADOR_MODEL} no disponible ({e}); uso {CLAUDE_MODEL}")
+        modelo_usado = CLAUDE_MODEL
+        message = _generar(CLAUDE_MODEL)
     try:
         cost_tracker.registrar_tokens(
-            modelo=CLAUDE_MODEL,
+            modelo=modelo_usado,
             in_tok=message.usage.input_tokens, out_tok=message.usage.output_tokens,
             ctx=f"Largo narrador: {tema[:40]}",
         )
