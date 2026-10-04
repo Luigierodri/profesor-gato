@@ -44,26 +44,33 @@ GATO_POSES = {"gancho", "explica", "revela", "cierre", "senala", "indignado", "p
 # cortan en los momentos clave (campo "gato"). El audio del clip se descarta (va la voz).
 HERO_DIR = BASE_DIR / "assets" / "hero"
 GATO_TALK = HERO_DIR / "gato hablando set.mp4"
-# pose del guion → clip de reacción (las que no tengan match usan 'enfasis' genérico)
+# pose del guion → clip de reacción PREFERIDO (si Luigi aún no lo generó, cae al
+# fallback de abajo). Nombres de archivo en assets/hero/.
 _POSE_A_CLIP = {
     "indignado": "gato_react_enojado.mp4",
-    "revela":    "gato_react_enfasis.mp4",
+    "dinero":    "gato_react_enojado.mp4",
+    "revela":    "gato_react_sorprendido.mp4",
+    "gancho":    "gato_react_sorprendido.mp4",
+    "piensa":    "gato_react_pensativo.mp4",
+    "cierre":    "gato_react_rie.mp4",
     "senala":    "gato_react_enfasis.mp4",
     "explica":   "gato_react_enfasis.mp4",
-    "gancho":    "gato_react_enfasis.mp4",
-    "dinero":    "gato_react_enojado.mp4",
-    "piensa":    "gato_react_enfasis.mp4",
-    "cierre":    "gato_react_enfasis.mp4",
 }
+# Si el clip preferido no existe aún, se usa el primero disponible de esta lista.
+_FALLBACK_CLIPS = ["gato_react_enfasis.mp4", "gato_react_enojado.mp4"]
 
 
 def _gato_clip_para(pose: str):
-    """Devuelve el HERO CLIP de reacción para una pose, si existe el archivo."""
-    nombre = _POSE_A_CLIP.get(pose or "")
-    if not nombre:
+    """HERO CLIP de reacción para una pose. Si el preferido no existe todavía,
+    cae a uno disponible (así funciona aunque falten clips por generar)."""
+    if not pose:
         return None
-    p = HERO_DIR / nombre
-    return p if p.exists() else None
+    for nombre in [_POSE_A_CLIP.get(pose, "")] + _FALLBACK_CLIPS:
+        if nombre:
+            p = HERO_DIR / nombre
+            if p.exists():
+                return p
+    return None
 
 
 _PP_DIR = HERO_DIR / "_pingpong"
