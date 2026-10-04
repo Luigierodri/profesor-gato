@@ -196,14 +196,26 @@ def obtener_visual(visual: dict, tema: str, out_dir: Path, idx: int) -> dict:
     #     assets/novela/<slug>.(png|jpg); si no existe, se GENERA cinematográfico.
     if tipo == "novela":
         import re as _re
-        slug = _re.sub(r"[^\w]+", "_", (query or "").lower()).strip("_")[:50]
+        qlow = (query or "").lower()
+        slug = _re.sub(r"[^\w]+", "_", qlow).strip("_")[:50]
         nov_dir = BASE_DIR / "assets" / "novela"
+        nov_dir.mkdir(parents=True, exist_ok=True)
+        # 1) match EXACTO por slug de la query
         for ext in (".png", ".jpg", ".jpeg", ".webp"):
             cand = nov_dir / f"{slug}{ext}"
             if cand.exists():
                 dest = out_dir / f"seg_{idx:03d}{ext}"
                 shutil.copy(cand, dest)
                 return R(dest, "novela_asset", tipo_real="novela")
+        # 2) match por KEYWORD: si guardas 'aureliano.png', cualquier query con
+        #    'aureliano' lo usa (nombres simples, sin copiar el slug largo).
+        for f in sorted(nov_dir.glob("*.*")):
+            if f.suffix.lower() in (".png", ".jpg", ".jpeg", ".webp"):
+                clave = f.stem.lower().replace("_", " ").strip()
+                if clave and clave in qlow:
+                    dest = out_dir / f"seg_{idx:03d}{f.suffix}"
+                    shutil.copy(f, dest)
+                    return R(dest, "novela_asset", tipo_real="novela")
         prompt = (f"{query}, One Hundred Years of Solitude Netflix series style, "
                   f"cinematic film still, dramatic warm lighting, photorealistic, "
                   f"Colombian magical realism, shallow depth of field")
