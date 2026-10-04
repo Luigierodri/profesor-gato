@@ -57,6 +57,41 @@ def _normalizar_visual(v) -> dict:
             "movimiento": mov, "clave": clave}
 
 
+_FOTO_TIPOS = {"foto_persona", "foto_evento", "foto_lugar", "cuadro"}
+_STOP = {"el", "la", "los", "las", "un", "una", "de", "del", "en", "y", "que", "por",
+         "con", "su", "al", "lo", "es", "the", "of", "a"}
+
+
+def _es_concreta(query: str) -> bool:
+    """¿La query apunta a algo CONCRETO con nombre (persona/evento/lugar/año)? Si es
+    una idea abstracta en minúsculas ('despojo de tierras'), devuelve False → no se le
+    pone una foto random de Wikimedia."""
+    import re as _re
+    q = query or ""
+    if _re.search(r"\b\d{4}\b", q):                      # tiene un año
+        return True
+    caps = [t for t in q.split() if t[:1].isupper() and t.lower() not in _STOP and len(t) > 2]
+    return len(caps) >= 1                                 # tiene un nombre propio
+
+
+def _sanear_visuales(script: dict):
+    """Evita imágenes INCOHERENTES y REPETIDAS: foto abstracta → el Gato la narra;
+    foto concreta repetida → el Gato (para no repetir la misma imagen)."""
+    vistas = set()
+    for s in script.get("segmentos", []):
+        v = s.get("visual") or {}
+        tipo = v.get("tipo")
+        q = (v.get("query") or "").strip()
+        if tipo in _FOTO_TIPOS:
+            if not _es_concreta(q):
+                v["tipo"] = "gato_podcast"                # idea abstracta → el Gato
+            elif q.lower() in vistas:
+                v["tipo"] = "gato_podcast"                # ya se mostró → no repetir
+            else:
+                vistas.add(q.lower())
+    return script
+
+
 def _es_cap_host(cap: str) -> bool:
     c = (cap or "").lower()
     return any(k in c for k in _CAP_HOST)
@@ -222,6 +257,8 @@ def generar_largo(tema: str, outline=None, ficha_datos: str = "") -> dict:
 
     # El Gato es el anfitrión: una voz por capítulo, sin saltos.
     _enforce_voces(script)
+    # Evita imágenes incoherentes/repetidas (abstractas → el Gato las narra).
+    _sanear_visuales(script)
 
     total_words = sum(len(s["narracion"].split()) for s in segs)
     n_graf = sum(1 for s in segs if s["visual"]["tipo"] == "grafica")

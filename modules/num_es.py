@@ -53,6 +53,17 @@ def _entero_a_palabras(n: int) -> str:   # 0..999_999_999
 # Entero con separador de miles (,) o 4+ dígitos, NO seguido de decimal (.###).
 _RE_NUM = re.compile(r"\$?\d{1,3}(?:,\d{3})+(?!\.\d)|\$?\d{4,}(?!\.\d)")
 
+# Formato LATINO: el punto es separador de MILES (200.000 = doscientos mil,
+# 1.978 = mil novecientos setenta y ocho, 262.197 = ...). Se detecta como uno o
+# más grupos de EXACTAMENTE 3 dígitos tras el punto. Se quita el punto ANTES de
+# procesar decimales, para que "200.000" no se lea "doscientos punto cero cero".
+# OJO: "7.4" o "3.6" (1-2 dígitos) NO caen aquí → siguen siendo decimales.
+_RE_MILES_LATIN = re.compile(r"\b\d{1,3}(?:\.\d{3})+\b")
+
+
+def _miles_latin(texto: str) -> str:
+    return _RE_MILES_LATIN.sub(lambda m: m.group(0).replace(".", ""), texto)
+
 # Apócope: "uno/veintiuno" → "un/veintiún" antes de un sustantivo masculino.
 _RE_APOC = re.compile(
     r"\b(veinti)?uno(?=\s+(?:mil|millones|mill[oó]n|pesos|d[oó]lares|barriles|"
@@ -95,6 +106,7 @@ def normalizar_numeros_es(texto: str) -> str:
         return texto
 
     texto = _normalizar_siglas(texto)
+    texto = _miles_latin(texto)                              # 200.000 → 200000 (miles latino)
     texto = _RE_DEC.sub(_decimal_a_palabras, texto)          # decimales primero
     texto = re.sub(r"\s*%", " por ciento", texto)            # 3.6% → ... por ciento
 

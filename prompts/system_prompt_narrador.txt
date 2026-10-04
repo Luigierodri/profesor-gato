@@ -83,11 +83,21 @@ Movimiento (campo "movimiento"): "parallax" (foto con profundidad, el default pa
 Tipografía cinética (campo "clave"): la PALABRA o cifra clave del segmento que salta en pantalla en dorado, o null si no aplica.
 
 REGLAS DURAS DE VISUAL:
-- COHERENCIA DE TONO (lo más importante — el creador odió ver un CARNAVAL alegre sobre
-  "200.000 muertos"): la imagen SIEMPRE debe cuadrar con lo que se dice. En un segmento
-  sobre muerte/violencia/tragedia, NADA de fiestas, carnavales, desfiles, colores
-  festivos ni gente celebrando. Si hablas de una masacre, muestra duelo/archivo/ruinas,
-  no una celebración. Que la query sea ESPECÍFICA para no traer una imagen random alegre.
+- FOTOS SOLO PARA COSAS CONCRETAS CON NOMBRE (regla #1, la que más falla): usa
+  foto_persona/foto_evento/foto_lugar/cuadro ÚNICAMENTE cuando hay un SUJETO REAL,
+  específico y nombrable del que existe foto (una persona con nombre y apellido, un
+  evento con año, un lugar concreto, una obra). La `query` DEBE llevar ese nombre propio
+  o año. Para una IDEA ABSTRACTA (el despojo, el ciclo, la paz, un patrón, una emoción,
+  "las elecciones", "la violencia") NO uses foto_* — Wikimedia devuelve basura random
+  (una niña feliz sobre la palabra "DESPOJO", un collage de aniversario sobre "elecciones
+  de alcaldes"; eso pasó y quedó horrible). Para lo abstracto usa:
+    · "gato_podcast" → el Gato lo narra en su set (siempre coherente), o
+    · "footage" → b-roll concreto con query en INGLÉS de una ESCENA real (ej. "empty
+      rural farmland aerial", "old documents archive", "colombian countryside dusk").
+- COHERENCIA DE TONO: la imagen SIEMPRE cuadra con lo que se dice. En un segmento sobre
+  muerte/violencia/tragedia, NADA de fiestas, carnavales, desfiles ni gente celebrando.
+- NO REPITAS la misma imagen/persona en segmentos distintos: si ya mostraste a alguien,
+  cambia de visual (otra foto, el Gato, footage, un dato). Varía.
 - Si nombras a una persona, un evento o un lugar → su FOTO/mapa real ese segmento. Nada abstracto cuando existe lo concreto. Usa el nombre EXACTO y completo en la query.
 - Para personajes de ficción o de una obra (novela/serie/juego) usa "foto_cultura" con el
   medio en la query (Netflix, HBO, el nombre del juego), para que salga ESE personaje y no

@@ -22,6 +22,25 @@ _THUMB_WIDTH = 1200   # thumbnail size — Wikimedia allows this without 429
 _DELAY = 0.5          # seconds between downloads
 
 
+# Títulos de archivo que casi siempre son INCOHERENTES para un tema serio (fiesta
+# alegre sobre muertos, collage de aniversario, logos, íconos). Se descartan salvo
+# que el propio tema los pida (ej. si buscas "carnaval" no se filtra "carnaval").
+_TITULO_VETADO = (
+    "carnaval", "carnival", "festival", "fiesta", "fireworks", "pirotecnia",
+    "aniversario", "anniversary", "parade", "desfile", "pageant", "reinado",
+    "cosplay", "comic con", "mascot", "concert", "concierto", "wedding", "boda",
+    "quinceañera", "graduation", "logo", "icon", "clip art", "clipart", "emoji",
+    "coat of arms", "escudo de", "flag of", "bandera de", "stamp", "sello postal",
+    "banknote", "billete de", "coin of", "moneda de",
+)
+
+
+def _vetar_titulo(titulo: str, query: str) -> bool:
+    t = titulo.lower()
+    q = (query or "").lower()
+    return any(w in t and w not in q for w in _TITULO_VETADO)
+
+
 def _buscar_titulos(query: str, limit: int = 15) -> list[str]:
     params = urllib.parse.urlencode({
         "action": "query",
@@ -36,7 +55,8 @@ def _buscar_titulos(query: str, limit: int = 15) -> list[str]:
     )
     with urllib.request.urlopen(req, timeout=10) as r:
         data = json.loads(r.read())
-    return [item["title"] for item in data.get("query", {}).get("search", [])]
+    titulos = [item["title"] for item in data.get("query", {}).get("search", [])]
+    return [t for t in titulos if not _vetar_titulo(t, query)]
 
 
 def _obtener_urls(titulos: list[str]) -> list[dict]:

@@ -66,6 +66,26 @@ def _gato_clip_para(pose: str):
     return p if p.exists() else None
 
 
+_PP_DIR = HERO_DIR / "_pingpong"
+
+
+def _hero_pingpong(src: Path) -> Path:
+    """Devuelve una versión PALÍNDROMO (va y vuelve) del hero clip, cacheada. Así el
+    loop es CONTINUO (el final empalma con el inicio) y el Gato no se 'reinicia'."""
+    _PP_DIR.mkdir(parents=True, exist_ok=True)
+    out = _PP_DIR / (Path(src).stem + "_pp.mp4")
+    try:
+        if out.exists() and out.stat().st_size > 10000:
+            return out
+        _run([FF, "-y", "-loglevel", "error", "-i", str(src),
+              "-filter_complex", "[0:v]reverse[r];[0:v][r]concat=n=2:v=1:a=0[v]",
+              "-map", "[v]", "-an", "-c:v", "libx264", "-crf", "20",
+              "-pix_fmt", "yuv420p", str(out)])
+        return out if out.exists() else Path(src)
+    except Exception:
+        return Path(src)
+
+
 def _run(cmd):
     subprocess.run(cmd, check=True, capture_output=True, text=True,
                    encoding="utf-8", errors="replace")
@@ -284,7 +304,8 @@ def _clip_segmento(seg: dict, idx: int, tema: str, work: Path) -> tuple:
     usou_hero = False
 
     if hero_clip:
-        _video_a_duracion(Path(hero_clip), d, clip)   # cubre 16:9, loopea/corta, mudo
+        # loop ping-pong (va y vuelve) para que sea CONTINUO, sin "reinicio" visible
+        _video_a_duracion(_hero_pingpong(Path(hero_clip)), d, clip)
         usou_hero = True
     elif tipo == "titulo":
         card = work / f"titulo_{idx:03d}.png"
