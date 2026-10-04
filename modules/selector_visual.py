@@ -21,6 +21,10 @@ import shutil
 from pathlib import Path
 
 from modules import wikimedia_fetcher, topical_footage, background_generator
+try:
+    from modules import pexels_fetcher
+except Exception:
+    pexels_fetcher = None
 
 log = logging.getLogger("selector_visual")
 
@@ -99,8 +103,15 @@ def obtener_visual(visual: dict, tema: str, out_dir: Path, idx: int) -> dict:
     if tipo == "grafica":
         return R(None, None, tipo_real="grafica")
 
-    # 3) Footage CC real
+    # 3) Footage / b-roll real. Pexels (banco grande, royalty-free, video) PRIMERO.
     if tipo == "footage":
+        if pexels_fetcher and pexels_fetcher.disponible():
+            r = pexels_fetcher.buscar_video(query, out_dir / f"seg_{idx:03d}.mp4")
+            if r:
+                return R(r, "pexels_video", es_video=True)
+            r = pexels_fetcher.buscar_foto(query, img_out)
+            if r:
+                return R(r, "pexels_foto")
         r = _via_footage(query, out_dir)
         if r:
             return R(r, "topical_footage_cc", es_video=True)
@@ -141,11 +152,15 @@ def obtener_visual(visual: dict, tema: str, out_dir: Path, idx: int) -> dict:
                   f"photorealistic, movie scene, shallow depth of field")
         return R(_via_escena(prompt, img_out), "escena_ia", tipo_real="escena_ia")
 
-    # 5) Fotos / cuadros (lo más común): Wikimedia → footage → escena_ia.
+    # 5) Fotos / cuadros (lo más común): Wikimedia → Pexels → footage → escena_ia.
     if tipo in _TIPOS_FOTO:
         r = _via_wikimedia(query, img_out)
         if r:
             return R(r, "wikimedia")
+        if pexels_fetcher and pexels_fetcher.disponible():
+            r = pexels_fetcher.buscar_foto(query, img_out)
+            if r:
+                return R(r, "pexels_foto")
         r = _via_footage(query, out_dir)
         if r:
             return R(r, "topical_footage_cc", es_video=True, tipo_real="footage")

@@ -64,7 +64,12 @@ CADA segmento dice qué se ve. Preferimos SIEMPRE lo real sobre lo generado. Tip
 - "foto_evento"  → foto de un hecho/época. `query` = evento + año (ej. "Bogotazo 1948").
 - "foto_lugar"   → foto de un lugar. `query` = lugar (ej. "Cartagena Colombia").
 - "cuadro"       → pintura/obra de dominio público (historia/arte). `query` = obra o autor.
-- "footage"      → clip real de b-roll (ciudad, naturaleza, acción). `query` en INGLÉS para buscar (ej. "colombian countryside aerial").
+- "footage"      → clip real de b-roll o foto de un banco GRANDE royalty-free (Pexels):
+                   ciudad, naturaleza, gente, objetos, AMBIENTE y conceptos. `query` en
+                   INGLÉS y CONCRETA de una ESCENA (ej. "abandoned farmland aerial", "ballot
+                   box voting hands", "old documents archive", "colombian countryside dusk",
+                   "protest crowd silhouette"). ÚSALO para TODO lo abstracto/ambiente en vez
+                   de una foto (así nunca sale una imagen random incoherente).
 - "mapa"         → mapa ESTILIZADO que resalta un país/lugar (identidad del canal, estilo
                    limpio tipo "Un Mundo Inmenso": país resaltado, resto atenuado, etiqueta).
                    USA mapa SIEMPRE que se nombre un país/región. `query` = lugar a resaltar.
@@ -92,10 +97,11 @@ REGLAS DURAS DE VISUAL:
   o año. Para una IDEA ABSTRACTA (el despojo, el ciclo, la paz, un patrón, una emoción,
   "las elecciones", "la violencia") NO uses foto_* — Wikimedia devuelve basura random
   (una niña feliz sobre la palabra "DESPOJO", un collage de aniversario sobre "elecciones
-  de alcaldes"; eso pasó y quedó horrible). Para lo abstracto usa:
-    · "gato_podcast" → el Gato lo narra en su set (siempre coherente), o
-    · "footage" → b-roll concreto con query en INGLÉS de una ESCENA real (ej. "empty
-      rural farmland aerial", "old documents archive", "colombian countryside dusk").
+  de alcaldes"; eso pasó y quedó horrible). Para lo abstracto usa, EN ESTE ORDEN:
+    · "footage" → b-roll/foto de Pexels con query en INGLÉS de una ESCENA concreta que
+      REPRESENTE la idea (despojo→"empty abandoned farmland", elecciones→"ballot box
+      voting hands", violencia→"dark smoke ruins"). ESTE es el preferido para lo abstracto.
+    · "gato_podcast" → el Gato lo narra en su set (respaldo si no hay escena clara).
 - COHERENCIA DE TONO: la imagen SIEMPRE cuadra con lo que se dice. En un segmento sobre
   muerte/violencia/tragedia, NADA de fiestas, carnavales, desfiles ni gente celebrando.
 - NO REPITAS la misma imagen/persona en segmentos distintos: si ya mostraste a alguien,
