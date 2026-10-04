@@ -111,18 +111,25 @@ def obtener_visual(visual: dict, tema: str, out_dir: Path, idx: int) -> dict:
 
     # 4) Mapa ESTILIZADO con identidad del canal (modules/mapa.py). Respaldo: foto del lugar.
     if tipo == "mapa":
-        try:
-            from modules import mapa as _mapa
-            r = _mapa.generar_mapa(query, str(img_out.with_suffix(".png")))
-        except Exception as e:
-            log.warning(f"  [mapa] {query[:40]}: {e}")
-            r = None
-        if r:
-            return R(r, "mapa_identidad", tipo_real="mapa")
-        r = _via_wikimedia(query, img_out)  # respaldo: foto del lugar
-        if r:
-            return R(r, "wikimedia", tipo_real="foto_lugar")
-        return R(_via_escena(query, img_out), "escena_ia", tipo_real="escena_ia")
+        from modules import mapa as _mapa
+        # La query puede venir sucia ("Colombia municipios masacres"); probamos el
+        # texto completo y luego el/los nombres propios, para que SIEMPRE salga el
+        # mapa estilizado del PAÍS y no un mapa regional feo de Wikimedia.
+        caps = " ".join(t for t in query.split() if t[:1].isupper())
+        intentos = [q for q in (query, caps, query.split()[0] if query.split() else "") if q]
+        r = None
+        for q in dict.fromkeys(intentos):           # sin duplicados, en orden
+            try:
+                r = _mapa.generar_mapa(q, str(img_out.with_suffix(".png")))
+            except Exception as e:
+                log.warning(f"  [mapa] {q[:40]}: {e}")
+                r = None
+            if r:
+                return R(r, "mapa_identidad", tipo_real="mapa")
+        # sin mapa estilizado: NO traemos un mapa random de Wikimedia (sale feo) →
+        # mejor una escena generada coherente del lugar.
+        return R(_via_escena(f"map of {query}, clean stylized", img_out),
+                 "escena_ia", tipo_real="escena_ia")
 
     # 4b) Cultura pop (personaje de serie/película/juego): Wikimedia (actor/obra) →
     #     si no hay, se GENERA un "film still" cinematográfico coherente con la escena.
