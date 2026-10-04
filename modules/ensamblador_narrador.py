@@ -322,9 +322,12 @@ def _clip_segmento(seg: dict, idx: int, tema: str, work: Path) -> tuple:
         elif vr["ruta"]:
             movimiento.foto_a_clip(vr["ruta"], str(clip), dur=d,
                                    movimiento=vr.get("movimiento", "zoom_in"), w=W, h=H)
-        else:   # sin visual: negro
+        elif GATO_TALK.exists():   # sin visual real → el set del Gato (NUNCA negro)
+            _video_a_duracion(_hero_pingpong(GATO_TALK), d, clip)
+            usou_hero = True
+        else:                       # último recurso: degradado cálido (no negro plano)
             _run([FF, "-y", "-loglevel", "error", "-f", "lavfi", "-i",
-                  f"color=c=0x070707:s={W}x{H}:d={d:.3f}", "-c:v", "libx264", str(clip)])
+                  f"color=c=0x1b140d:s={W}x{H}:d={d:.3f}", "-c:v", "libx264", str(clip)])
 
     # El PROFESOR GATO aparece recortado en una pose (si el segmento lo pide),
     # deslizándose desde la derecha. Ocasional — lo marca el guion con "gato".

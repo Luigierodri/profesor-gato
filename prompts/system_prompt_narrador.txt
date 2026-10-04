@@ -60,7 +60,10 @@ El tema NUNCA puede sentirse como una clase de historia muerta. Amárralo a algo
 
 ═══ VISUAL POR SEGMENTO (campo "visual") ═══
 CADA segmento dice qué se ve. Preferimos SIEMPRE lo real sobre lo generado. Tipos:
-- "foto_persona" → foto real de una persona nombrada. `query` = nombre propio exacto (ej. "Gabriel García Márquez").
+- "foto_persona" → foto real de una persona nombrada. `query` = SOLO el nombre propio
+                   exacto, SIN adjetivos ni contexto (ej. "Gabriel García Márquez", NUNCA
+                   "Gabriel García Márquez joven escritor" — las palabras extra hacen que
+                   salga OTRA persona).
 - "foto_evento"  → foto de un hecho/época. `query` = evento + año (ej. "Bogotazo 1948").
 - "foto_lugar"   → foto de un lugar. `query` = lugar (ej. "Cartagena Colombia").
 - "cuadro"       → pintura/obra de dominio público (historia/arte). `query` = obra o autor.

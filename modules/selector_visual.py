@@ -64,6 +64,26 @@ GATO_PNG = BASE_DIR / "assets" / "profesor_gato.png"
 # Tipos que se resuelven buscando una FOTO real en Wikimedia.
 _TIPOS_FOTO = {"foto_persona", "foto_evento", "foto_lugar", "cuadro"}
 
+_CONECTORES = {"de", "del", "la", "las", "los", "y", "da", "van", "von", "e"}
+
+
+def _nombre_limpio(query: str) -> str:
+    """Extrae el NOMBRE PROPIO (tokens capitalizados iniciales) de una query, para
+    que Wikimedia no traiga a otra persona por las palabras extra. Ej.: 'Gabriel
+    García Márquez joven escritor' → 'Gabriel García Márquez'."""
+    out = []
+    for t in (query or "").split():
+        if t[:1].isupper():
+            out.append(t)
+        elif t.lower() in _CONECTORES and out:
+            out.append(t)
+        else:
+            break
+    while out and out[-1].lower() in _CONECTORES:
+        out.pop()
+    nombre = " ".join(out)
+    return nombre if len(out) >= 2 else query
+
 
 # ─── Fuentes ──────────────────────────────────────────────────────────────────
 
@@ -201,7 +221,10 @@ def obtener_visual(visual: dict, tema: str, out_dir: Path, idx: int) -> dict:
 
     # 5) Fotos / cuadros (lo más común): Wikimedia → bancos stock → footage → escena_ia.
     if tipo in _TIPOS_FOTO:
-        r = _via_wikimedia(query, img_out)
+        # Para una PERSONA famosa, busca solo el nombre propio (las palabras extra
+        # tipo "joven escritor" hacen que Wikimedia traiga a otro señor).
+        q_wiki = _nombre_limpio(query) if tipo == "foto_persona" else query
+        r = _via_wikimedia(q_wiki, img_out)
         if r:
             return R(r, "wikimedia")
         rf, fuente = _stock_foto(query, img_out)
