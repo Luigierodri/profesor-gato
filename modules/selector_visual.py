@@ -25,6 +25,36 @@ try:
     from modules import pexels_fetcher
 except Exception:
     pexels_fetcher = None
+try:
+    from modules import pixabay_fetcher
+except Exception:
+    pixabay_fetcher = None
+try:
+    from modules import openverse_fetcher
+except Exception:
+    openverse_fetcher = None
+
+
+def _stock_video(query: str, out_mp4) -> str | None:
+    """B-roll de los bancos (Pexels → Pixabay), el primero que tenga key y resultado."""
+    for mod in (pexels_fetcher, pixabay_fetcher):
+        if mod and mod.disponible():
+            r = mod.buscar_video(query, out_mp4)
+            if r:
+                return r
+    return None
+
+
+def _stock_foto(query: str, out_jpg) -> tuple[str | None, str]:
+    """Foto de los bancos (Pexels → Pixabay → Openverse). Devuelve (ruta, fuente)."""
+    for mod, nombre in ((pexels_fetcher, "pexels_foto"),
+                        (pixabay_fetcher, "pixabay_foto"),
+                        (openverse_fetcher, "openverse_cc")):
+        if mod and mod.disponible():
+            r = mod.buscar_foto(query, out_jpg)
+            if r:
+                return r, nombre
+    return None, ""
 
 log = logging.getLogger("selector_visual")
 
@@ -103,15 +133,14 @@ def obtener_visual(visual: dict, tema: str, out_dir: Path, idx: int) -> dict:
     if tipo == "grafica":
         return R(None, None, tipo_real="grafica")
 
-    # 3) Footage / b-roll real. Pexels (banco grande, royalty-free, video) PRIMERO.
+    # 3) Footage / b-roll real. Bancos de stock (Pexels/Pixabay video) PRIMERO.
     if tipo == "footage":
-        if pexels_fetcher and pexels_fetcher.disponible():
-            r = pexels_fetcher.buscar_video(query, out_dir / f"seg_{idx:03d}.mp4")
-            if r:
-                return R(r, "pexels_video", es_video=True)
-            r = pexels_fetcher.buscar_foto(query, img_out)
-            if r:
-                return R(r, "pexels_foto")
+        r = _stock_video(query, out_dir / f"seg_{idx:03d}.mp4")
+        if r:
+            return R(r, "stock_video", es_video=True)
+        rf, fuente = _stock_foto(query, img_out)
+        if rf:
+            return R(rf, fuente)
         r = _via_footage(query, out_dir)
         if r:
             return R(r, "topical_footage_cc", es_video=True)
@@ -152,15 +181,14 @@ def obtener_visual(visual: dict, tema: str, out_dir: Path, idx: int) -> dict:
                   f"photorealistic, movie scene, shallow depth of field")
         return R(_via_escena(prompt, img_out), "escena_ia", tipo_real="escena_ia")
 
-    # 5) Fotos / cuadros (lo más común): Wikimedia → Pexels → footage → escena_ia.
+    # 5) Fotos / cuadros (lo más común): Wikimedia → bancos stock → footage → escena_ia.
     if tipo in _TIPOS_FOTO:
         r = _via_wikimedia(query, img_out)
         if r:
             return R(r, "wikimedia")
-        if pexels_fetcher and pexels_fetcher.disponible():
-            r = pexels_fetcher.buscar_foto(query, img_out)
-            if r:
-                return R(r, "pexels_foto")
+        rf, fuente = _stock_foto(query, img_out)
+        if rf:
+            return R(rf, fuente)
         r = _via_footage(query, out_dir)
         if r:
             return R(r, "topical_footage_cc", es_video=True, tipo_real="footage")
