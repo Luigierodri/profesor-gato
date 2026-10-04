@@ -64,30 +64,37 @@ CADA segmento dice qué se ve. Preferimos SIEMPRE lo real sobre lo generado. Tip
 - "foto_evento"  → foto de un hecho/época. `query` = evento + año (ej. "Bogotazo 1948").
 - "foto_lugar"   → foto de un lugar. `query` = lugar (ej. "Cartagena Colombia").
 - "cuadro"       → pintura/obra de dominio público (historia/arte). `query` = obra o autor.
-- "footage"      → clip real de b-roll o foto de un banco GRANDE royalty-free (Pexels):
-                   ciudad, naturaleza, gente, objetos, AMBIENTE y conceptos. `query` en
-                   INGLÉS y CONCRETA de una ESCENA (ej. "abandoned farmland aerial", "ballot
-                   box voting hands", "old documents archive", "colombian countryside dusk",
-                   "protest crowd silhouette"). ÚSALO para TODO lo abstracto/ambiente en vez
-                   de una foto (así nunca sale una imagen random incoherente).
+- "footage"      → b-roll/foto de un banco GRANDE royalty-free (Pixabay/Openverse) para
+                   AMBIENTE y CONCEPTOS GENÉRICOS: naturaleza, objetos, manos, multitudes en
+                   silueta, cielo, ruinas, documentos viejos. `query` en INGLÉS y CONCRETA de
+                   una ESCENA (ej. "abandoned farmland aerial", "old documents archive", "dark
+                   storm clouds", "hands holding soil", "protest crowd silhouette"). ÚSALO para
+                   lo abstracto/ambiente. NO lo uses para algo de un PAÍS o institución
+                   específicos (un acuerdo, una elección, una bandera) — el banco devuelve otro
+                   país (salió una bandera de Costa Rica); eso va por foto_evento real o novela/IA.
 - "mapa"         → mapa ESTILIZADO que resalta un país/lugar (identidad del canal, estilo
                    limpio tipo "Un Mundo Inmenso": país resaltado, resto atenuado, etiqueta).
                    USA mapa SIEMPRE que se nombre un país/región. `query` = lugar a resaltar.
 - "grafica"      → gráfica de datos animada CON IDENTIDAD del canal (paleta dorado/slate,
                    íconos, limpia). `query` = qué compara; llena también `datos` (ver abajo).
-- "foto_cultura" → still/imagen de CULTURA POP cuando el tema lo pide: un personaje de
-                   serie/película/videojuego, un póster, una escena icónica (ej. el Coronel
-                   Aureliano Buendía en la serie de Netflix "Cien años de soledad", un
-                   personaje de un juego). `query` = personaje/obra + medio (ej. "Coronel
-                   Aureliano Buendia Netflix Cien años de soledad"). Se permite material con
-                   posible Content ID (decisión del creador).
+- "novela"       → personaje o escena de una OBRA LITERARIA (Aureliano Buendía, Pilar
+                   Ternera, Macondo, la masacre de las bananeras de "Cien años de soledad").
+                   Sale una imagen CINEMATOGRÁFICA estilo serie (Netflix), hecha a la medida.
+                   `query` = el personaje/escena EXACTO (ej. "Aureliano Buendia", "Pilar
+                   Ternera", "Macondo town", "banana plantation massacre"). ÚSALO para TODO
+                   lo que sea de la novela — NUNCA una foto_* real para un personaje de ficción.
+- "foto_cultura" → still de CULTURA POP real (serie/película/juego ya existente). `query` =
+                   personaje/obra + medio. (Para "Cien años de soledad" usa "novela", no esto.)
 - "escena_ia"    → SOLO si NO existe imagen real posible (una metáfora, un concepto abstracto). `query` = descripción en inglés, estilo cinematográfico realista (NO pixel-art salvo que el tema lo pida).
 - "titulo"       → la TARJETA DE TÍTULO (ver estructura, punto 2). `query` = el título corto
                    que aparece en pantalla; va con narración de presentación y voz "luigi".
 - "gato_bumper"  → el Profesor Gato aparece como SELLO (intro, outro, o una reacción puntual). Úsalo POCO: máximo intro + outro + 1-2 reacciones. NO en cada segmento.
 
 Movimiento (campo "movimiento"): "parallax" (foto con profundidad, el default para fotos), "zoom_in" (acercar a una cara/detalle), "paneo", "corte_rapido".
-Tipografía cinética (campo "clave"): la PALABRA o cifra clave del segmento que salta en pantalla en dorado, o null si no aplica.
+Tipografía cinética (campo "clave"): la PALABRA o cifra dorada que salta en pantalla.
+REGLA ESTRICTA: solo 1-2 veces POR CAPÍTULO, cuando DE VERDAD vale la pena (una cifra
+bomba, un año clave). En la GRAN MAYORÍA de segmentos `clave` = null. NO en cada toma
+(Luigi lo odió). Prefiere ponerla en cifras/años.
 
 REGLAS DURAS DE VISUAL:
 - FOTOS SOLO PARA COSAS CONCRETAS CON NOMBRE (regla #1, la que más falla): usa
@@ -154,7 +161,7 @@ TODO dato debe ser REAL y verificable. Reglas:
       "voz": "luigi | narrador | alt (UNA sola por capítulo; luigi=Gato anfitrión manda; narrador=invitado solo 1-2 capítulos)",
       "narracion": "lo que se dice (2-4 frases; es un podcast, no un reel picado)",
       "visual": {
-        "tipo": "foto_persona|foto_evento|foto_lugar|cuadro|foto_cultura|footage|mapa|grafica|escena_ia|titulo|gato_podcast|gato_bumper",
+        "tipo": "foto_persona|foto_evento|foto_lugar|cuadro|novela|foto_cultura|footage|mapa|grafica|escena_ia|titulo|gato_podcast|gato_bumper",
         "query": "qué buscar (nombre/evento/lugar real; medio+personaje para foto_cultura; inglés para footage/escena_ia; el título corto para titulo)",
         "movimiento": "parallax|zoom_in|paneo|corte_rapido",
         "clave": "palabra/cifra dorada o null"

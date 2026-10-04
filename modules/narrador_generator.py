@@ -25,8 +25,8 @@ NARRADOR_MAX_TOKENS = 24000
 
 VOCES_VALIDAS = set(VOCES.keys()) if VOCES else {"narrador", "luigi", "alt"}
 VISUALES_VALIDOS = {"foto_persona", "foto_evento", "foto_lugar", "cuadro", "foto_cultura",
-                    "footage", "mapa", "grafica", "escena_ia", "titulo", "gato_podcast",
-                    "gato_bumper"}
+                    "novela", "footage", "mapa", "grafica", "escena_ia", "titulo",
+                    "gato_podcast", "gato_bumper"}
 # Nombres de capítulo que son del Gato anfitrión (cold open / título / cierre).
 _CAP_HOST = ("cold open", "cold-open", "titulo", "título", "intro", "apertura",
              "cierre", "outro", "despedida", "final")
@@ -92,54 +92,36 @@ def _sanear_visuales(script: dict):
     return script
 
 
+def _limitar_claves(script: dict, max_por_cap: int = 2):
+    """La palabra dorada (clave) SOLO 1-2 veces por capítulo, cuando de verdad vale
+    la pena (Luigi odió que saliera en cada frame). Se prefieren las que llevan
+    CIFRA/AÑO; el resto se pone en null."""
+    import re as _re
+    from collections import defaultdict
+    por_cap = defaultdict(list)
+    for s in script.get("segmentos", []):
+        v = s.get("visual") or {}
+        if v.get("clave"):
+            por_cap[s.get("capitulo", "")].append(s)
+    for cap, segs in por_cap.items():
+        # prioridad: las claves con número/año primero
+        segs.sort(key=lambda s: (0 if _re.search(r"\d", str((s.get("visual") or {}).get("clave", ""))) else 1))
+        for s in segs[max_por_cap:]:
+            (s.get("visual") or {})["clave"] = None
+    return script
+
+
 def _es_cap_host(cap: str) -> bool:
     c = (cap or "").lower()
     return any(k in c for k in _CAP_HOST)
 
 
 def _enforce_voces(script: dict):
-    """El Profesor Gato es el anfitrión. UNA voz por capítulo, sostenida:
-    - cold open / título / cierre → siempre "luigi" (el Gato).
-    - cada capítulo de contenido → UNA sola voz en el cuerpo; el Gato (luigi)
-      PRESENTA el capítulo en su primer segmento. Casi todos luigi; máximo 2
-      capítulos con voz invitada "narrador". Nunca se alterna dentro del capítulo."""
-    from collections import Counter
-    segs = script.get("segmentos", [])
-    orden = []
-    for s in segs:
-        c = s.get("capitulo", "")
-        if c and c not in orden:
-            orden.append(c)
-
-    desired = {}
-    for cap in orden:
-        if _es_cap_host(cap):
-            desired[cap] = "luigi"
-            continue
-        votos = Counter((s.get("voz") or "luigi") for s in segs if s.get("capitulo") == cap)
-        tot = sum(votos.values())
-        narr = votos.get("narrador", 0)
-        desired[cap] = "narrador" if (tot and narr / tot >= 0.6) else "luigi"
-    # máximo 2 capítulos invitados (narrador); el resto vuelve al Gato
-    invitados = [c for c in orden if desired[c] == "narrador"]
-    for extra in invitados[2:]:
-        desired[extra] = "luigi"
-
-    content_caps = {c for c in orden if not _es_cap_host(c)}
-    ya_presento = set()
-    for s in segs:
-        cap = s.get("capitulo", "")
-        voz_cap = desired.get(cap, "luigi")
-        tipo = (s.get("visual") or {}).get("tipo")
-        if tipo == "titulo":
-            s["voz"] = "luigi"
-        elif cap in content_caps and cap not in ya_presento:
-            ya_presento.add(cap)
-            s["voz"] = "luigi"               # el Gato presenta el capítulo
-        else:
-            s["voz"] = voz_cap
-        if s.get("gato") and s["voz"] != "luigi":
-            s["gato"] = None                 # el Gato solo aparece cuando habla él
+    """SOLO EL PROFESOR GATO habla (voz "luigi") en TODO el video. Nada de voces
+    invitadas ni cambios — Luigi fue claro: una sola voz, la del Gato, de principio
+    a fin. (narrador/alt quedan sin usar por ahora.)"""
+    for s in script.get("segmentos", []):
+        s["voz"] = "luigi"
     return script
 
 
@@ -259,6 +241,8 @@ def generar_largo(tema: str, outline=None, ficha_datos: str = "") -> dict:
     _enforce_voces(script)
     # Evita imágenes incoherentes/repetidas (abstractas → el Gato las narra).
     _sanear_visuales(script)
+    # Palabra dorada SOLO 1-2 por capítulo (cuando vale la pena).
+    _limitar_claves(script, max_por_cap=2)
 
     total_words = sum(len(s["narracion"].split()) for s in segs)
     n_graf = sum(1 for s in segs if s["visual"]["tipo"] == "grafica")

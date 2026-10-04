@@ -171,6 +171,24 @@ def obtener_visual(visual: dict, tema: str, out_dir: Path, idx: int) -> dict:
         return R(_via_escena(f"map of {query}, clean stylized", img_out),
                  "escena_ia", tipo_real="escena_ia")
 
+    # 4a) NOVELA: personaje/escena de la obra (Aureliano, Pilar Ternera, Macondo, las
+    #     bananeras) con estilo CINE. Primero un asset generado por Luigi en
+    #     assets/novela/<slug>.(png|jpg); si no existe, se GENERA cinematográfico.
+    if tipo == "novela":
+        import re as _re
+        slug = _re.sub(r"[^\w]+", "_", (query or "").lower()).strip("_")[:50]
+        nov_dir = BASE_DIR / "assets" / "novela"
+        for ext in (".png", ".jpg", ".jpeg", ".webp"):
+            cand = nov_dir / f"{slug}{ext}"
+            if cand.exists():
+                dest = out_dir / f"seg_{idx:03d}{ext}"
+                shutil.copy(cand, dest)
+                return R(dest, "novela_asset", tipo_real="novela")
+        prompt = (f"{query}, One Hundred Years of Solitude Netflix series style, "
+                  f"cinematic film still, dramatic warm lighting, photorealistic, "
+                  f"Colombian magical realism, shallow depth of field")
+        return R(_via_escena(prompt, img_out), "escena_ia", tipo_real="escena_ia")
+
     # 4b) Cultura pop (personaje de serie/película/juego): Wikimedia (actor/obra) →
     #     si no hay, se GENERA un "film still" cinematográfico coherente con la escena.
     if tipo == "foto_cultura":
