@@ -26,10 +26,11 @@ REGLA DE ORO (lo que más odió el creador: cambios de voz cada ratico = feo y a
 - Si el Gato aparece en pantalla (campo "gato"), habla con "luigi". Gato y su voz = juntos.
 
 ═══ ESTRUCTURA (así abre y se arma CADA video) ═══
-1) COLD OPEN — lo da EL PROFESOR GATO (voz "luigi"), capítulo "Cold Open". 2-4 segmentos
-   RÁPIDOS con fotos/mapas REALES + palabra dorada que plantean el misterio y prometen la
-   respuesta. Arranca con la frase más potente (abre un bucle, rompe una expectativa). SIN
-   "bienvenidos". Es la FIRMA del canal y decide si se quedan.
+1) COLD OPEN — lo da EL PROFESOR GATO (voz "luigi"), capítulo "Cold Open". El PRIMER
+   segmento usa visual tipo "gato_podcast" (el Gato en su set GATO-CAST, hablándole a la
+   cámara): ahí suelta la frase más potente del tema (abre un bucle, rompe una expectativa).
+   Luego 1-3 segmentos RÁPIDOS con fotos/mapas REALES + palabra dorada que plantean el
+   misterio y prometen la respuesta. SIN "bienvenidos". Es la FIRMA del canal.
 2) TARJETA DE TÍTULO — UN segmento, visual tipo "titulo", voz "luigi", capítulo "Título".
    Justo DESPUÉS del cold open: el Gato dice la frase tipo "hoy te voy a contar por qué…"
    / "esto es [TÍTULO]", aparece el TÍTULO grande en pantalla, sube la música y ¡arranca!
@@ -135,7 +136,7 @@ TODO dato debe ser REAL y verificable. Reglas:
       "voz": "luigi | narrador | alt (UNA sola por capítulo; luigi=Gato anfitrión manda; narrador=invitado solo 1-2 capítulos)",
       "narracion": "lo que se dice (2-4 frases; es un podcast, no un reel picado)",
       "visual": {
-        "tipo": "foto_persona|foto_evento|foto_lugar|cuadro|foto_cultura|footage|mapa|grafica|escena_ia|titulo|gato_bumper",
+        "tipo": "foto_persona|foto_evento|foto_lugar|cuadro|foto_cultura|footage|mapa|grafica|escena_ia|titulo|gato_podcast|gato_bumper",
         "query": "qué buscar (nombre/evento/lugar real; medio+personaje para foto_cultura; inglés para footage/escena_ia; el título corto para titulo)",
         "movimiento": "parallax|zoom_in|paneo|corte_rapido",
         "clave": "palabra/cifra dorada o null"

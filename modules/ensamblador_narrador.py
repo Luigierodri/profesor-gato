@@ -39,6 +39,32 @@ W, H = 1920, 1080
 GATO_DIR = BASE_DIR / "images" / "personajes" / "gato"
 GATO_POSES = {"gancho", "explica", "revela", "cierre", "senala", "indignado", "piensa", "dinero"}
 
+# HERO CLIPS reutilizables del set GATO-CAST (video animado del Gato). Se usan a
+# pantalla completa: 'gato_podcast' = el Gato hablando (ENTRADA); las reacciones se
+# cortan en los momentos clave (campo "gato"). El audio del clip se descarta (va la voz).
+HERO_DIR = BASE_DIR / "assets" / "hero"
+GATO_TALK = HERO_DIR / "gato hablando set.mp4"
+# pose del guion → clip de reacción (las que no tengan match usan 'enfasis' genérico)
+_POSE_A_CLIP = {
+    "indignado": "gato_react_enojado.mp4",
+    "revela":    "gato_react_enfasis.mp4",
+    "senala":    "gato_react_enfasis.mp4",
+    "explica":   "gato_react_enfasis.mp4",
+    "gancho":    "gato_react_enfasis.mp4",
+    "dinero":    "gato_react_enojado.mp4",
+    "piensa":    "gato_react_enfasis.mp4",
+    "cierre":    "gato_react_enfasis.mp4",
+}
+
+
+def _gato_clip_para(pose: str):
+    """Devuelve el HERO CLIP de reacción para una pose, si existe el archivo."""
+    nombre = _POSE_A_CLIP.get(pose or "")
+    if not nombre:
+        return None
+    p = HERO_DIR / nombre
+    return p if p.exists() else None
+
 
 def _run(cmd):
     subprocess.run(cmd, check=True, capture_output=True, text=True,
@@ -247,7 +273,20 @@ def _clip_segmento(seg: dict, idx: int, tema: str, work: Path) -> tuple:
 
     clip = work / f"c{idx:03d}.mp4"
     visual = seg.get("visual") or {}
-    if visual.get("tipo") == "titulo":
+    tipo = visual.get("tipo")
+    # HERO CLIP del Gato a pantalla completa: la ENTRADA (gato_podcast) o un CORTE
+    # a reacción cuando el segmento lo pide (campo "gato"). El audio del clip se descarta.
+    hero_clip = None
+    if tipo == "gato_podcast" and GATO_TALK.exists():
+        hero_clip = GATO_TALK
+    elif tipo != "titulo" and seg.get("gato"):
+        hero_clip = _gato_clip_para(seg.get("gato"))
+    usou_hero = False
+
+    if hero_clip:
+        _video_a_duracion(Path(hero_clip), d, clip)   # cubre 16:9, loopea/corta, mudo
+        usou_hero = True
+    elif tipo == "titulo":
         card = work / f"titulo_{idx:03d}.png"
         _titulo_card(visual.get("query") or texto, card)
         movimiento.foto_a_clip(str(card), str(clip), dur=d, movimiento="zoom_in", w=W, h=H)
@@ -268,8 +307,9 @@ def _clip_segmento(seg: dict, idx: int, tema: str, work: Path) -> tuple:
 
     # El PROFESOR GATO aparece recortado en una pose (si el segmento lo pide),
     # deslizándose desde la derecha. Ocasional — lo marca el guion con "gato".
+    # (Si ya se usó un HERO CLIP a pantalla completa, NO va además el sprite.)
     gato_pose = seg.get("gato")
-    if gato_pose in GATO_POSES:
+    if (not usou_hero) and tipo not in ("titulo", "gato_podcast") and gato_pose in GATO_POSES:
         sprite = GATO_DIR / f"gato_{gato_pose}.png"
         if sprite.exists():
             clip_g = work / f"cg{idx:03d}.mp4"

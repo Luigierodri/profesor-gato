@@ -25,7 +25,8 @@ NARRADOR_MAX_TOKENS = 24000
 
 VOCES_VALIDAS = set(VOCES.keys()) if VOCES else {"narrador", "luigi", "alt"}
 VISUALES_VALIDOS = {"foto_persona", "foto_evento", "foto_lugar", "cuadro", "foto_cultura",
-                    "footage", "mapa", "grafica", "escena_ia", "titulo", "gato_bumper"}
+                    "footage", "mapa", "grafica", "escena_ia", "titulo", "gato_podcast",
+                    "gato_bumper"}
 # Nombres de capítulo que son del Gato anfitrión (cold open / título / cierre).
 _CAP_HOST = ("cold open", "cold-open", "titulo", "título", "intro", "apertura",
              "cierre", "outro", "despedida", "final")
