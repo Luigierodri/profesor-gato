@@ -56,19 +56,24 @@ _POSE_A_CLIP = {
     "gancho":    "gato_react_sorprendido.mp4",
     "piensa":    "gato_react_pensativo.mp4",
     "cierre":    "gato_react_rie.mp4",
-    "senala":    "gato_react_enfasis.mp4",
-    "explica":   "gato_react_enfasis.mp4",
+    "senala":    "gato_react_ojo.mp4",
+    "explica":   "gato_react_asiente.mp4",
 }
 # Si el clip preferido no existe aún, se usa el primero disponible de esta lista.
 _FALLBACK_CLIPS = ["gato_react_enfasis.mp4", "gato_react_enojado.mp4"]
 
+# Clips de ENTRADA/hablando del Gato: se ROTAN para que la intro no sea idéntica.
+def _talk_clips():
+    opciones = [GATO_TALK, HERO_DIR / "gato_hablando_2.mp4", HERO_DIR / "gato_hablando_3.mp4"]
+    return [p for p in opciones if p.exists()]
 
-def _prep_sting(work: Path) -> Path:
-    """Prepara el sting (GATO-CAST) a ~1.4s, 1080p, con audio SILENCIOSO (para que el
-    concat/transiciones tengan pista de audio). Se inserta entre capítulos."""
-    out = work / "sting_prep.mp4"
-    dur = min(1.5, _dur(STING) or 1.5)
-    _run([FF, "-y", "-loglevel", "error", "-i", str(STING),
+
+def _prep_sting(work: Path, src: Path, nombre: str) -> Path:
+    """Prepara un sting a ~1.4s, 1080p, con audio SILENCIOSO (para que el concat/
+    transiciones tengan pista de audio). Se inserta entre capítulos."""
+    out = work / f"sting_prep_{nombre}.mp4"
+    dur = min(1.5, _dur(src) or 1.5)
+    _run([FF, "-y", "-loglevel", "error", "-i", str(src),
           "-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo",
           "-t", f"{dur:.3f}",
           "-filter_complex",
@@ -77,6 +82,11 @@ def _prep_sting(work: Path) -> Path:
           "-map", "[v]", "-map", "1:a", "-c:v", "libx264", "-crf", "20",
           "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-shortest", str(out)])
     return out
+
+
+def _stings_disponibles() -> list:
+    """Todos los stings GATO-CAST (se alternan entre capítulos)."""
+    return sorted(HERO_DIR.glob("sting_gatocast*.mp4"))
 
 
 def _cap_es_host(cap: str) -> bool:
@@ -348,8 +358,10 @@ def _clip_segmento(seg: dict, idx: int, tema: str, work: Path) -> tuple:
             k in cap for k in ("cierre", "outro", "despedida", "final"))
         if es_cierre and GATO_OUTRO.exists():
             hero_clip = GATO_OUTRO          # el cierre usa el clip de despedida
-        elif GATO_TALK.exists():
-            hero_clip = GATO_TALK
+        else:
+            talks = _talk_clips()           # rota las variantes de "hablando"
+            if talks:
+                hero_clip = talks[idx % len(talks)]
     elif tipo == "bastet":
         # Bastet corresponsal: clip propio (assets/hero/bastet_<algo>.mp4) por keyword.
         hero_clip = _bastet_clip_para(visual.get("query", ""))
@@ -447,15 +459,19 @@ def armar_video(script: dict, out_path, tema: str = None, work: Path = None,
     caps = [seg.get("capitulo", "") for seg in segs]
     items = [{"clip": clips[i], "dur": durs[i], "flavor": flavors[i], "cap": caps[i]}
              for i in range(len(clips))]
-    if STING.exists():
+    stings_src = _stings_disponibles()
+    if stings_src:
         try:
-            sting_clip = _prep_sting(work)
-            sting_dur = _dur(sting_clip)
-            nuevos = []
+            # prepara cada sting una vez; se ALTERNAN entre capítulos
+            preps = [(_prep_sting(work, s, s.stem)) for s in stings_src]
+            preps = [(p, _dur(p)) for p in preps]
+            nuevos, sidx = [], 0
             for i, it in enumerate(items):
                 if (i > 0 and it["cap"] != items[i - 1]["cap"]
                         and not _cap_es_host(it["cap"]) and not _cap_es_host(items[i - 1]["cap"])):
-                    nuevos.append({"clip": sting_clip, "dur": sting_dur,
+                    sclip, sdur = preps[sidx % len(preps)]
+                    sidx += 1
+                    nuevos.append({"clip": sclip, "dur": sdur,
                                    "flavor": items[i - 1]["flavor"], "cap": "__sting__"})
                 nuevos.append(it)
             items = nuevos
