@@ -845,5 +845,13 @@
     "categoria": "economia",
     "geo": "latam",
     "trend": "por qué el dinero vale algo si es solo papel"
+  },
+  {
+    "fecha": "2026-10-05",
+    "angulo": "¿Por qué casi todo cuesta $9.99 y no $10? Alguien se está quedando con esa diferencia",
+    "evento": "precios_psicologicos",
+    "categoria": "psicologia",
+    "geo": "latam",
+    "trend": "por qué casi todo cuesta 9.99 y no 10"
   }
 ]
