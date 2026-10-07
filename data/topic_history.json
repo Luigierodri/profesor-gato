@@ -853,5 +853,13 @@
     "categoria": "psicologia",
     "geo": "latam",
     "trend": "por qué casi todo cuesta 9.99 y no 10"
+  },
+  {
+    "fecha": "2026-10-07",
+    "angulo": "¿Por qué dos personas que vivieron lo mismo recuerdan cosas completamente distintas?",
+    "evento": "memoria_falsa_ciencia",
+    "categoria": "ciencia",
+    "geo": "latam",
+    "trend": "por qué dos personas recuerdan distinto la misma cosa"
   }
 ]
