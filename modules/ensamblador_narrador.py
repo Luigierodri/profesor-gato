@@ -67,8 +67,8 @@ _TONO_OSCURO = False
 
 # Clips de ENTRADA/hablando del Gato: se ROTAN para que la intro no sea idéntica.
 def _talk_clips():
-    serios = [HERO_DIR / n for n in ("gato_hablando_serio.mp4", "gato_oscuro.mp4",
-                                     "gato_hablando_3.mp4")]
+    serios = [HERO_DIR / n for n in ("gato_hablando_serio.mp4", "gato_serio.mp4",
+                                     "gato_oscuro.mp4", "gato_hablando_3.mp4")]
     serios = [p for p in serios if p.exists()]
     if _TONO_OSCURO and serios:
         return serios          # en temas oscuros, solo las variantes serias
@@ -242,12 +242,16 @@ def _tts(texto: str, voz: str, out: Path):
     out.write_bytes(r.content)
 
 
-def _video_a_duracion(src: Path, dur: float, out: Path):
-    """Loopea/corta un clip (footage o gráfica) a `dur`, cubre 16:9, sin audio."""
-    _run([FF, "-y", "-loglevel", "error", "-stream_loop", "-1", "-i", str(src),
-          "-t", f"{dur:.3f}",
-          "-vf", f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},setsar=1,format=yuv420p",
-          "-an", "-c:v", "libx264", "-preset", "medium", "-crf", "20", str(out)])
+def _video_a_duracion(src: Path, dur: float, out: Path, offset: float = 0.0):
+    """Loopea/corta un clip a `dur`, cubre 16:9, sin audio. `offset` = segundos desde
+    donde empieza a reproducir (para encadenar clips del Gato de forma CONTINUA)."""
+    cmd = [FF, "-y", "-loglevel", "error", "-stream_loop", "-1", "-i", str(src)]
+    if offset > 0.01:
+        cmd += ["-ss", f"{offset:.3f}"]          # seek de salida dentro del loop
+    cmd += ["-t", f"{dur:.3f}",
+            "-vf", f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},setsar=1,format=yuv420p",
+            "-an", "-c:v", "libx264", "-preset", "medium", "-crf", "20", str(out)]
+    _run(cmd)
 
 
 def _grafica_de_datos(datos: dict, out_mp4: Path, tema: str):
@@ -328,8 +332,11 @@ def _titulo_card(titulo: str, out_png: Path):
     img.save(out_png)
 
 
-def _clip_segmento(seg: dict, idx: int, tema: str, work: Path) -> tuple:
-    """Devuelve (clip_con_audio, audio, dur, texto). El clip ya trae la palabra dorada."""
+def _clip_segmento(seg: dict, idx: int, tema: str, work: Path,
+                   talk_clip: Path = None, talk_offset: float = 0.0) -> tuple:
+    """Devuelve (clip_con_audio, audio, dur, texto). El clip ya trae la palabra dorada.
+    `talk_clip`/`talk_offset`: para segmentos del Gato hablando SEGUIDOS, usa el MISMO
+    clip reproduciéndolo CONTINUO (sin reiniciar) → se ve fluido, sin saltos."""
     texto = seg.get("narracion", "").strip()
     voz = seg.get("voz", "narrador")
     # Si el Gato APARECE en este segmento, habla SÍ o SÍ con su voz (nunca se mezcla).
@@ -362,12 +369,16 @@ def _clip_segmento(seg: dict, idx: int, tema: str, work: Path) -> tuple:
     # HERO CLIP del Gato a pantalla completa: la ENTRADA (gato_podcast) o un CORTE
     # a reacción cuando el segmento lo pide (campo "gato"). El audio del clip se descarta.
     hero_clip = None
+    hero_offset = 0.0
     if tipo in ("gato_podcast", "gato_outro"):
         cap = (seg.get("capitulo") or "").lower()
         es_cierre = tipo == "gato_outro" or any(
             k in cap for k in ("cierre", "outro", "despedida", "final"))
         if es_cierre and GATO_OUTRO.exists():
             hero_clip = GATO_OUTRO          # el cierre usa el clip de despedida
+        elif talk_clip is not None:
+            hero_clip = talk_clip           # mismo clip CONTINUO entre segmentos seguidos
+            hero_offset = talk_offset
         else:
             talks = _talk_clips()           # rota las variantes de "hablando"
             if talks:
@@ -380,8 +391,9 @@ def _clip_segmento(seg: dict, idx: int, tema: str, work: Path) -> tuple:
     usou_hero = False
 
     if hero_clip:
-        # loop ping-pong (va y vuelve) para que sea CONTINUO, sin "reinicio" visible
-        _video_a_duracion(_hero_pingpong(Path(hero_clip)), d, clip)
+        # loop ping-pong (va y vuelve) para que sea CONTINUO, sin "reinicio" visible;
+        # con offset, los segmentos del Gato hablando seguidos NO saltan (fluido)
+        _video_a_duracion(_hero_pingpong(Path(hero_clip)), d, clip, offset=hero_offset)
         usou_hero = True
     elif tipo == "titulo":
         card = work / f"titulo_{idx:03d}.png"
@@ -461,12 +473,30 @@ def armar_video(script: dict, out_path, tema: str = None, work: Path = None,
     mus_default = (script.get("musica_global") or
                    "warm cinematic documentary score, strings and piano, emotional")
     clips, audios, textos, durs, flavors = [], [], [], [], []
+    run_clip, run_offset, run_idx = None, 0.0, 0   # Gato hablando CONTINUO entre seguidos
     for i, seg in enumerate(segs, 1):
         seg["_tema_texto"] = tema_texto
         log.info(f"  Seg {i}/{len(segs)} [{seg.get('voz')}] {(seg.get('visual') or {}).get('tipo')}")
-        c, a, d, t = _clip_segmento(seg, i, tema, work)
+        tipo = (seg.get("visual") or {}).get("tipo")
+        cap = (seg.get("capitulo") or "").lower()
+        es_talk = tipo == "gato_podcast" and not any(
+            k in cap for k in ("cierre", "outro", "despedida", "final"))
+        if es_talk:
+            if run_clip is None:                 # arranca una tanda de Gato hablando
+                talks = _talk_clips()
+                run_clip = talks[run_idx % len(talks)] if talks else None
+                run_idx += 1
+                run_offset = 0.0
+            c, a, d, t = _clip_segmento(seg, i, tema, work,
+                                        talk_clip=run_clip, talk_offset=run_offset)
+        else:
+            run_clip = None                      # corta la tanda
+            c, a, d, t = _clip_segmento(seg, i, tema, work)
         clips.append(c); audios.append(a); textos.append(t)
-        durs.append(_dur(c))
+        cd = _dur(c)
+        durs.append(cd)
+        if es_talk and run_clip is not None:
+            run_offset += cd                     # el siguiente continúa desde aquí
         flavors.append((seg.get("musica") or "").strip() or mus_default)
 
     # Unificamos en items y, si hay STING, lo insertamos entre capítulos de CONTENIDO
@@ -474,6 +504,21 @@ def armar_video(script: dict, out_path, tema: str = None, work: Path = None,
     caps = [seg.get("capitulo", "") for seg in segs]
     items = [{"clip": clips[i], "dur": durs[i], "flavor": flavors[i], "cap": caps[i]}
              for i in range(len(clips))]
+
+    # Transición de EXPEDIENTE (case file) UNA vez, al abrir el primer capítulo de
+    # contenido — da el toque true crime. Solo si Luigi la generó.
+    _EXPEDIENTE = HERO_DIR / "transicion_expediente.mp4"
+    if _EXPEDIENTE.exists():
+        try:
+            exp = _prep_sting(work, _EXPEDIENTE, "expediente")
+            for i, it in enumerate(items):
+                if not _cap_es_host(it["cap"]):
+                    items.insert(i, {"clip": exp, "dur": _dur(exp),
+                                     "flavor": it["flavor"], "cap": "__sting__"})
+                    break
+        except Exception as e:
+            log.warning(f"  expediente omitido: {e}")
+
     stings_src = _stings_disponibles()
     if stings_src:
         try:
