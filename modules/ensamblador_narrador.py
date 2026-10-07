@@ -67,11 +67,17 @@ _TONO_OSCURO = False
 
 # Clips de ENTRADA/hablando del Gato: se ROTAN para que la intro no sea idéntica.
 def _talk_clips():
-    serios = [HERO_DIR / n for n in ("gato_hablando_serio.mp4", "gato_serio.mp4",
-                                     "gato_oscuro.mp4", "gato_hablando_3.mp4")]
-    serios = [p for p in serios if p.exists()]
-    if _TONO_OSCURO and serios:
-        return serios          # en temas oscuros, solo las variantes serias
+    if _TONO_OSCURO:
+        # SOLO clips claramente serios/oscuros (gato_hablando_3 todavía sonríe → fuera);
+        # si no hay ninguno explícito, cae a hablando_3 como última opción seria.
+        dark = [HERO_DIR / n for n in ("gato_hablando_serio.mp4", "gato_serio.mp4",
+                                       "gato_oscuro.mp4", "gato_molesto.mp4")]
+        dark = [p for p in dark if p.exists()]
+        if dark:
+            return dark
+        h3 = HERO_DIR / "gato_hablando_3.mp4"
+        if h3.exists():
+            return [h3]
     opciones = [GATO_TALK, HERO_DIR / "gato_hablando_2.mp4", HERO_DIR / "gato_hablando_3.mp4"]
     return [p for p in opciones if p.exists()]
 
