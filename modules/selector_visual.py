@@ -109,6 +109,50 @@ def _via_footage(query: str, out_dir: Path) -> str | None:
 _IMAGENES_DIR = BASE_DIR / "assets" / "imagenes"
 
 
+def _componer_sprite(src: Path, dest: Path, w: int = 1920, h: int = 1080) -> bool:
+    """Si `src` es un SPRITE sobre fondo BLANCO (personaje de cuerpo entero), le quita
+    el blanco y lo compone centrado sobre un fondo oscuro cálido 16:9. Devuelve True si
+    lo hizo; False si la imagen NO parece sprite-sobre-blanco (se usa tal cual)."""
+    try:
+        from PIL import Image, ImageDraw, ImageFilter
+        im = Image.open(src).convert("RGBA")
+        px = im.load()
+        # ¿las 4 esquinas son casi blancas? → es un sprite sobre blanco
+        W0, H0 = im.size
+        esquinas = [px[0, 0], px[W0 - 1, 0], px[0, H0 - 1], px[W0 - 1, H0 - 1]]
+        if not all(c[0] > 238 and c[1] > 238 and c[2] > 238 for c in esquinas):
+            return False
+        # quita el blanco (umbral) → transparente
+        datos = im.getdata()
+        nuevos = []
+        for r, g, b, a in datos:
+            nuevos.append((r, g, b, 0) if (r > 236 and g > 236 and b > 236) else (r, g, b, a))
+        im.putdata(nuevos)
+        bbox = im.getbbox()
+        if bbox:
+            im = im.crop(bbox)
+        # fondo oscuro cálido con viñeta (somero, sobrio para true crime)
+        fondo = Image.new("RGB", (w, h), (14, 12, 11))
+        grad = Image.new("L", (w, h), 0)
+        gd = ImageDraw.Draw(grad)
+        cx, cy, rmax = int(w * 0.5), int(h * 0.42), int(w * 0.75)
+        for r in range(rmax, 0, -6):
+            gd.ellipse([cx - r, cy - r, cx + r, cy + r], fill=int(48 * (1 - r / rmax)))
+        luz = Image.new("RGB", (w, h), (120, 86, 48))
+        fondo = Image.composite(luz, fondo, grad)
+        # escala el personaje a ~0.9 de alto y lo centra
+        ph = int(h * 0.92)
+        pw = max(1, int(im.width * ph / im.height))
+        im = im.resize((pw, ph), Image.LANCZOS)
+        fondo = fondo.convert("RGBA")
+        fondo.alpha_composite(im, ((w - pw) // 2, h - ph - int(h * 0.02)))
+        fondo.convert("RGB").save(dest)
+        return True
+    except Exception as e:
+        log.warning(f"  [sprite] no se pudo componer {Path(src).name}: {e}")
+        return False
+
+
 def _drop_in(query: str):
     """Busca en assets/imagenes/ una imagen cuyo NOMBRE (keyword) aparezca en la query.
     Ej.: 'christa_pike.png' se usa para cualquier query que diga 'christa pike'."""
@@ -168,9 +212,14 @@ def obtener_visual(visual: dict, tema: str, out_dir: Path, idx: int) -> dict:
     if tipo != "grafica":
         dropin = _drop_in(query)
         if dropin:
-            dest = out_dir / f"seg_{idx:03d}{dropin.suffix}"
-            shutil.copy(dropin, dest)
-            return R(dest, "buzon_imagenes")
+            dest = out_dir / f"seg_{idx:03d}.png"
+            # Si es un SPRITE sobre fondo blanco (personaje de cuerpo entero), lo
+            # recorto y lo pongo sobre un fondo oscuro cinematográfico (llena el 16:9).
+            if _componer_sprite(dropin, dest):
+                return R(dest, "buzon_imagenes")
+            dest2 = out_dir / f"seg_{idx:03d}{dropin.suffix}"
+            shutil.copy(dropin, dest2)
+            return R(dest2, "buzon_imagenes")
 
     # 1) Gato como sello
     if tipo == "gato_bumper":
