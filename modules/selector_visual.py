@@ -106,6 +106,27 @@ def _via_footage(query: str, out_dir: Path) -> str | None:
         return None
 
 
+_IMAGENES_DIR = BASE_DIR / "assets" / "imagenes"
+
+
+def _drop_in(query: str):
+    """Busca en assets/imagenes/ una imagen cuyo NOMBRE (keyword) aparezca en la query.
+    Ej.: 'christa_pike.png' se usa para cualquier query que diga 'christa pike'."""
+    qlow = (query or "").lower()
+    if not _IMAGENES_DIR.exists() or not qlow:
+        return None
+    mejor = None
+    for f in sorted(_IMAGENES_DIR.glob("*.*")):
+        if f.suffix.lower() not in (".png", ".jpg", ".jpeg", ".webp"):
+            continue
+        clave = f.stem.lower().replace("_", " ").strip()
+        if clave and clave in qlow:
+            # el keyword más largo (más específico) gana
+            if mejor is None or len(clave) > len(mejor[1]):
+                mejor = (f, clave)
+    return mejor[0] if mejor else None
+
+
 def _via_escena(query: str, out_jpg: Path) -> str | None:
     try:
         return background_generator.generar_imagen_essay(query, out_jpg)
@@ -140,6 +161,16 @@ def obtener_visual(visual: dict, tema: str, out_dir: Path, idx: int) -> dict:
             "clave":       visual.get("clave"),
             "query":       query,
         }
+
+    # 0) BUZÓN DE IMÁGENES de Luigi: assets/imagenes/<keyword>.(png|jpg). Si el nombre
+    #    del archivo aparece en la query, se usa ESA imagen (tu pixel-art de una persona/
+    #    cosa). Manda sobre todo lo demás (menos gráfica, que la dibuja el motor).
+    if tipo != "grafica":
+        dropin = _drop_in(query)
+        if dropin:
+            dest = out_dir / f"seg_{idx:03d}{dropin.suffix}"
+            shutil.copy(dropin, dest)
+            return R(dest, "buzon_imagenes")
 
     # 1) Gato como sello
     if tipo == "gato_bumper":

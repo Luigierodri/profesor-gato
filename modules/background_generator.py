@@ -91,16 +91,22 @@ def _construir_prompt(visual_pizarron: str, location: str = "classroom") -> str:
     )
 
 
-def _generar_con_nano_banana(prompt: str, aspect: str, model: str) -> bytes:
+def _generar_con_nano_banana(prompt: str, aspect: str, model: str,
+                             ref_b64: str = None, ref_mime: str = "image/jpeg") -> bytes:
     """
     Genera una imagen con un modelo Gemini image (Nano Banana) vía Vertex AI
     generateContent. Devuelve los bytes de la imagen (PNG/JPEG inline).
 
     `aspect`: "1:1" (paneles Shorts) o "16:9" (ensayo).  `model`: ID de Vertex.
+    `ref_b64`: si se pasa una imagen de referencia (base64), hace IMAGE-TO-IMAGE
+    (redibuja la foto real en el estilo pedido) en vez de texto-a-imagen.
     """
     url = vertex_url(model, "generateContent")
+    parts = [{"text": prompt}]
+    if ref_b64:
+        parts.append({"inlineData": {"mimeType": ref_mime, "data": ref_b64}})
     payload = {
-        "contents": [{"role": "user", "parts": [{"text": prompt}]}],
+        "contents": [{"role": "user", "parts": parts}],
         "generationConfig": {
             # TEXT+IMAGE es lo más compatible entre 2.5 y 3.x (el parser ignora el texto).
             "responseModalities": ["TEXT", "IMAGE"],
@@ -122,6 +128,45 @@ def _generar_con_nano_banana(prompt: str, aspect: str, model: str) -> bytes:
         if inline and inline.get("data"):
             return base64.b64decode(inline["data"])
     raise ValueError(f"{model} sin imagen. Parts: {[list(p.keys()) for p in parts]}")
+
+
+def estilizar_referencia(ref_path, output_path, aspect: str = "16:9") -> str:
+    """PIXEL-ARTEADOR: toma una FOTO REAL y la redibuja en el estilo pixel-art
+    cinematográfico del canal (recreación transformativa → coherente y sin copiar la
+    foto, evitando copyright). Devuelve la ruta de salida, o None si falla.
+    """
+    ref_path = Path(ref_path)
+    if not ref_path.exists():
+        return None
+    ref_b64 = base64.b64encode(ref_path.read_bytes()).decode()
+    mime = "image/png" if ref_path.suffix.lower() == ".png" else "image/jpeg"
+    prompt = (
+        "Redraw this image as an ORIGINAL detailed pixel-art cinematic illustration in the "
+        "style of a cozy retro video-game: same subject, pose and composition, warm dramatic "
+        "cinematic lighting. Do NOT copy the photo pixel for pixel — REINTERPRET it as new "
+        "pixel-art artwork. Keep it tasteful and respectful. "
+        "NO text, NO letters, NO numbers, NO watermarks anywhere in the image."
+    )
+    candidatos = []
+    for m in [GEMINI_IMG_MODEL, *_GEMINI_FALLBACKS]:
+        if m not in candidatos:
+            candidatos.append(m)
+    for model in candidatos:
+        for i in range(2):
+            try:
+                img = _generar_con_nano_banana(prompt, aspect, model, ref_b64, mime)
+                Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+                Path(output_path).write_bytes(img)
+                cost_tracker.registrar_imagen(model, n=1, ctx=f"pixelart ref {ref_path.name}")
+                log.info(f"  [pixel-art] {ref_path.name} → {Path(output_path).name}")
+                return str(output_path)
+            except Exception as e:
+                log.warning(f"    estilizar {model} intento {i+1} falló: {e}")
+                if "404" in str(e):
+                    break
+                if i < 1:
+                    time.sleep(2)
+    return None
 
 
 def _nano_banana_con_reintentos(prompt: str, aspect: str, ctx: str,
