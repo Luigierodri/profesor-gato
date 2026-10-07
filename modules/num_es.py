@@ -99,6 +99,18 @@ def _normalizar_siglas(texto: str) -> str:
     return texto
 
 
+# Decimal con COMA (español): "7,2" / "7,25" → palabras. NO toca "1,234" (miles).
+_RE_DEC_ES = re.compile(r"\$?(\d{1,3}|\d+),(\d{1,2})(?!\d)")
+
+
+def _decimal_es(m) -> str:
+    ent = int(m.group(1))
+    dec = m.group(2)
+    ent_p = _entero_a_palabras(ent) if ent >= 1000 else (_centenas(ent) or "cero")
+    dec_p = " ".join(_U[int(d)] for d in dec)
+    return f"{ent_p} punto {dec_p}"
+
+
 def normalizar_numeros_es(texto: str) -> str:
     """Prepara el texto para TTS: siglas (EEUU→Estados Unidos), decimales a palabras,
     % → 'por ciento', y enteros ≥1000 deletreados (para que la voz no se trabe)."""
@@ -107,7 +119,8 @@ def normalizar_numeros_es(texto: str) -> str:
 
     texto = _normalizar_siglas(texto)
     texto = _miles_latin(texto)                              # 200.000 → 200000 (miles latino)
-    texto = _RE_DEC.sub(_decimal_a_palabras, texto)          # decimales primero
+    texto = _RE_DEC_ES.sub(_decimal_es, texto)               # 7,2 → siete punto dos (coma ES)
+    texto = _RE_DEC.sub(_decimal_a_palabras, texto)          # decimales con punto
     texto = re.sub(r"\s*%", " por ciento", texto)            # 3.6% → ... por ciento
 
     def _repl(m):
