@@ -62,8 +62,16 @@ _POSE_A_CLIP = {
 # Si el clip preferido no existe aún, se usa el primero disponible de esta lista.
 _FALLBACK_CLIPS = ["gato_react_enfasis.mp4", "gato_react_enojado.mp4"]
 
+# Si el video es OSCURO (true crime), el Gato usa sus clips SERIOS, no los alegres.
+_TONO_OSCURO = False
+
 # Clips de ENTRADA/hablando del Gato: se ROTAN para que la intro no sea idéntica.
 def _talk_clips():
+    serios = [HERO_DIR / n for n in ("gato_hablando_serio.mp4", "gato_oscuro.mp4",
+                                     "gato_hablando_3.mp4")]
+    serios = [p for p in serios if p.exists()]
+    if _TONO_OSCURO and serios:
+        return serios          # en temas oscuros, solo las variantes serias
     opciones = [GATO_TALK, HERO_DIR / "gato_hablando_2.mp4", HERO_DIR / "gato_hablando_3.mp4"]
     return [p for p in opciones if p.exists()]
 
@@ -438,6 +446,9 @@ def armar_video(script: dict, out_path, tema: str = None, work: Path = None,
     aplicar_tema(tema)
     # Mood de las escenas generadas (true crime = sombrío; curiosidad = cálido…)
     selector_visual.ESTILO_ESCENA = (script.get("estilo_escena") or "").strip()
+    global _TONO_OSCURO
+    _TONO_OSCURO = any(k in selector_visual.ESTILO_ESCENA.lower()
+                       for k in ("grim", "noir", "true crime", "dark", "bleak", "oscuro"))
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     work = Path(work) if work else (BASE_DIR / "tmp" / "ensamblador")
