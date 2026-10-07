@@ -105,6 +105,10 @@ def _bastet_clip_para(query: str):
         clave = f.stem.lower().replace("bastet", "").replace("_", " ").strip()
         if clave and clave in qlow:
             return f
+    # por defecto, la genérica "en vivo" (comodín); si no, la primera disponible
+    envivo = HERO_DIR / "bastet_envivo.mp4"
+    if envivo.exists():
+        return envivo
     return bastets[0] if bastets else None
 
 
