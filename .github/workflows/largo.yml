@@ -1,0 +1,107 @@
+name: Profesor Gato - Largo (narrador)
+
+# MANUAL: los largos se revisan antes de publicar. Este workflow GENERA el video
+# (ficha + guion con Opus + ensamblador) y lo sube como ARTEFACTO para descargar.
+# NO publica. Dispáralo desde la pestaña Actions con el tema.
+
+on:
+  workflow_dispatch:
+    inputs:
+      tema:
+        description: "Tema del largo (ej. 'Christa Pike: la mujer que sobrevivió a su ejecución')"
+        required: true
+        type: string
+      tema_color:
+        description: "Tema de color (negro_oro | azul_noche | vino | verde_bosque | cafe)"
+        required: false
+        default: "negro_oro"
+        type: string
+      sin_ficha:
+        description: "Saltar la búsqueda web (sin verificar datos)"
+        type: boolean
+        default: false
+
+jobs:
+  largo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    permissions:
+      contents: read
+      id-token: write   # Workload Identity Federation (Vertex / Nano Banana)
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Instalar Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Instalar ffmpeg
+        run: |
+          for i in 1 2 3; do
+            sudo apt-get update --fix-missing && \
+            sudo apt-get install -y --fix-missing ffmpeg fonts-dejavu && break
+            echo "Intento $i fallido, reintentando en 15s..."; sleep 15
+          done
+
+      - name: Instalar dependencias Python
+        run: pip install -r requirements.txt
+
+      - name: Cache de modelos faster-whisper (karaoke)
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-faster-whisper-small
+
+      - name: Descargar HERO CLIPS (GitHub Release)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p assets/hero
+          if gh release download hero-assets --pattern "hero_assets.zip" --dir /tmp 2>/dev/null; then
+            unzip -o /tmp/hero_assets.zip -d . && echo "Hero clips OK."
+          else
+            echo "::warning::No hay release 'hero-assets' — el Gato/Bastet saldrán degradados."
+          fi
+
+      - name: Autenticar en GCP (Workload Identity Federation)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: 'projects/195684257108/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider'
+          service_account: 'profesor-gato@project-71cbc30b-23ca-40b4-a93.iam.gserviceaccount.com'
+
+      - name: Generar el largo
+        env:
+          PYTHONIOENCODING: utf-8
+          GOOGLE_CLOUD_PROJECT: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
+          GOOGLE_CLOUD_LOCATION: ${{ secrets.GOOGLE_CLOUD_LOCATION }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+        run: |
+          EXTRA=""
+          if [ "${{ inputs.sin_ficha }}" = "true" ]; then EXTRA="--sin-ficha"; fi
+          python run_largo.py "${{ inputs.tema }}" --tema "${{ inputs.tema_color }}" $EXTRA
+
+      - name: Subir el video como artefacto
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: largo-${{ github.run_id }}
+          path: videos_largos/**/*.mp4
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: Subir guion y ficha
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: guion-${{ github.run_id }}
+          path: |
+            videos_largos/**/guion.json
+            videos_largos/**/ficha.txt
+          retention-days: 30
+          if-no-files-found: warn
