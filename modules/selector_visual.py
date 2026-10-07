@@ -171,9 +171,15 @@ def _drop_in(query: str):
     return mejor[0] if mejor else None
 
 
-def _via_escena(query: str, out_jpg: Path) -> str | None:
+# Mood/estilo de las escenas generadas (lo fija el ensamblador desde el guion:
+# script["estilo_escena"], ej. true crime = "grim noir, muted desaturated cold colors").
+ESTILO_ESCENA = ""
+
+
+def _via_escena(query: str, out_jpg: Path, con_personaje: bool = False) -> str | None:
     try:
-        return background_generator.generar_imagen_essay(query, out_jpg)
+        return background_generator.generar_imagen_essay(
+            query, out_jpg, estilo=ESTILO_ESCENA, con_personaje=con_personaje)
     except Exception as e:
         log.warning(f"  [escena_ia] '{query[:40]}': {e}")
         return None
@@ -325,7 +331,10 @@ def obtener_visual(visual: dict, tema: str, out_dir: Path, idx: int) -> dict:
         r = _via_footage(query, out_dir)
         if r:
             return R(r, "topical_footage_cc", es_video=True, tipo_real="footage")
-        return R(_via_escena(query, img_out), "escena_ia", tipo_real="escena_ia")
+        # Persona sin foto real → SILUETA en sombra (no inventamos su cara ni un paisaje).
+        es_persona = tipo == "foto_persona"
+        return R(_via_escena(query, img_out, con_personaje=es_persona),
+                 "escena_ia", tipo_real="escena_ia")
 
     # 6) escena_ia explícita o cualquier otro tipo: IA, con último respaldo Wikimedia del tema.
     r = _via_escena(query, img_out)

@@ -292,15 +292,26 @@ def generar_imagenes_por_paneles(
 
 # ─── ENSAYO LARGO (16:9) — aditivo, los Shorts no usan nada de esto ──────────
 
-def _construir_prompt_essay(location: str) -> str:
-    """Prompt del fondo 16:9 del ensayo: misma identidad pixel art del canal,
-    plano cinematográfico amplio, sin seres vivos ni texto (el personaje y las
-    tarjetas de datos se superponen en el assembler)."""
+def _construir_prompt_essay(location: str, estilo: str = "", con_personaje: bool = False) -> str:
+    """Prompt del fondo 16:9 del ensayo: misma identidad pixel art del canal.
+    `estilo`: mood/paleta extra (ej. para true crime: 'grim noir, muted desaturated
+    cold colors'). `con_personaje`: permite UNA silueta/figura anónima en sombra
+    (para reemplazar a una persona de la que no hay foto, sin inventar su cara)."""
+    lighting = estilo.strip() if estilo.strip() else "dramatic cinematic lighting"
+    if con_personaje:
+        return (
+            f"{_PIXEL_STYLE}. "
+            f"Cinematic shot: {location}. A SINGLE anonymous human figure seen in "
+            "SHADOW or silhouette, face obscured and not identifiable. "
+            f"Mood and palette: {lighting}. "
+            "Only ONE figure, no crowd. NO readable words, NO names, NO logos, NO text, "
+            "NO numbers, NO letters anywhere in the image."
+        )
     return (
         f"{_PIXEL_STYLE}. "
         f"WIDE CINEMATIC ESTABLISHING SHOT of this setting: {location}. "
-        "Clean scenery, landscape and architecture only — like an empty postcard or backdrop. "
-        "Vivid atmospheric colors, dramatic cinematic lighting. "
+        "Clean scenery, landscape and architecture only — an empty backdrop. "
+        f"Mood, colors and lighting MUST match the scene described: {lighting}. "
         "Completely empty of living beings: NO people, NO cats, NO animals, "
         "NO characters, NO silhouettes, NO crowds, NO figures anywhere. "
         "NO floating objects, NO diagrams, NO icons. "
@@ -311,9 +322,10 @@ def _construir_prompt_essay(location: str) -> str:
     )
 
 
-def generar_imagen_essay(location: str, output_path) -> str:
+def generar_imagen_essay(location: str, output_path, estilo: str = "",
+                         con_personaje: bool = False) -> str:
     """Genera UN fondo 16:9 para el ensayo con Nano Banana (gemini-3.1-flash-image)."""
-    prompt = _construir_prompt_essay(location)
+    prompt = _construir_prompt_essay(location, estilo, con_personaje)
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 

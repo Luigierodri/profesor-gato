@@ -69,18 +69,16 @@ def _talk_clips():
 
 
 def _prep_sting(work: Path, src: Path, nombre: str) -> Path:
-    """Prepara un sting a ~1.4s, 1080p, con audio SILENCIOSO (para que el concat/
-    transiciones tengan pista de audio). Se inserta entre capítulos."""
+    """Prepara un sting a ~2.3s, 1080p, CON su propio sonido (el whoosh del neón).
+    Se inserta entre capítulos como transición de marca."""
     out = work / f"sting_prep_{nombre}.mp4"
-    dur = min(1.5, _dur(src) or 1.5)
-    _run([FF, "-y", "-loglevel", "error", "-i", str(src),
-          "-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo",
-          "-t", f"{dur:.3f}",
-          "-filter_complex",
-          f"[0:v]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},"
-          f"setsar=1,format=yuv420p[v]",
-          "-map", "[v]", "-map", "1:a", "-c:v", "libx264", "-crf", "20",
-          "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-shortest", str(out)])
+    dur = min(2.4, _dur(src) or 2.0)
+    _run([FF, "-y", "-loglevel", "error", "-i", str(src), "-t", f"{dur:.3f}",
+          "-vf", f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},"
+                 f"setsar=1,format=yuv420p",
+          "-af", "aformat=sample_rates=48000:channel_layouts=stereo",
+          "-c:v", "libx264", "-crf", "20", "-pix_fmt", "yuv420p",
+          "-c:a", "aac", "-b:a", "192k", str(out)])
     return out
 
 
@@ -438,6 +436,8 @@ def armar_video(script: dict, out_path, tema: str = None, work: Path = None,
     """Arma el video completo del guion-narrador. Devuelve la ruta del .mp4."""
     tema = tema or script.get("tema", "negro_oro")
     aplicar_tema(tema)
+    # Mood de las escenas generadas (true crime = sombrío; curiosidad = cálido…)
+    selector_visual.ESTILO_ESCENA = (script.get("estilo_escena") or "").strip()
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     work = Path(work) if work else (BASE_DIR / "tmp" / "ensamblador")
