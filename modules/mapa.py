@@ -78,16 +78,44 @@ def _anillos(geom):
     return out
 
 
-def generar_mapa(pais: str, out_path, w: int = 1920, h: int = 1080) -> str | None:
-    if not GEOJSON.exists():
-        log.warning(f"  [mapa] falta {GEOJSON}")
-        return None
-    features = _cargar()
-    objetivo = _buscar_pais(features, pais)
-    if objetivo is None:
-        log.warning(f"  [mapa] país no encontrado: '{pais}'")
-        return None
+US_STATES_GEOJSON = BASE_DIR / "assets" / "geo" / "us_states.geojson"
 
+# Estados de EE.UU. en español → como vienen en el GeoJSON (inglés).
+_ESTADO_ALIAS = {
+    "nueva york": "New York", "carolina del norte": "North Carolina",
+    "carolina del sur": "South Carolina", "dakota del norte": "North Dakota",
+    "dakota del sur": "South Dakota", "nuevo mexico": "New Mexico",
+    "nueva jersey": "New Jersey", "nuevo hampshire": "New Hampshire",
+    "pensilvania": "Pennsylvania", "luisiana": "Louisiana", "hawai": "Hawaii",
+    "virginia occidental": "West Virginia",
+}
+
+
+def _cargar_estados():
+    if not US_STATES_GEOJSON.exists():
+        return []
+    return json.loads(US_STATES_GEOJSON.read_text(encoding="utf-8"))["features"]
+
+
+def _estados_en_query(estados, query: str):
+    """Devuelve los features de estado cuyo nombre aparece en la query."""
+    q = _norm(query)
+    # primero aplica alias ES→EN sobre la query
+    for es, en in _ESTADO_ALIAS.items():
+        if es in q:
+            q += " " + _norm(en)
+    hits = []
+    for ft in estados:
+        nombre = _norm(ft["properties"].get("name", ""))
+        # nombre de >=4 chars como palabra/substring (evita falsos tipo 'ohio' en otra palabra)
+        if nombre and len(nombre) >= 4 and nombre in q:
+            hits.append(ft)
+    return hits
+
+
+def _pintar(features, objetivos, label, out_path, w, h, prop_nombre="NAME"):
+    """Dibuja el mapa: `features` de fondo atenuado, `objetivos` en dorado, encuadrando
+    sobre los objetivos con contexto. `objetivos` = lista de features a resaltar."""
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -96,26 +124,28 @@ def generar_mapa(pais: str, out_path, w: int = 1920, h: int = 1080) -> str | Non
 
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
+    objset = set(id(o) for o in objetivos)
 
     fig = plt.figure(figsize=(w / 100, h / 100), dpi=100)
     fig.patch.set_facecolor(_BG)
     try:
         from modules.graficas_animadas import pintar_fondo_gradiente
-        pintar_fondo_gradiente(fig)   # luz cálida arriba-izq (profundidad)
+        pintar_fondo_gradiente(fig)
     except Exception:
         pass
     ax = fig.add_axes([0, 0, 1, 1]); ax.set_facecolor("none"); ax.axis("off")
 
-    # bbox del país objetivo (para encuadrar con contexto)
     tx, ty = [], []
     patches_otros, patches_obj = [], []
     for ft in features:
-        es_obj = ft is objetivo
+        es_obj = id(ft) in objset
         for xs, ys in _anillos(ft["geometry"]):
             poly = MplPoly(list(zip(xs, ys)), closed=True)
             (patches_obj if es_obj else patches_otros).append(poly)
             if es_obj:
                 tx += xs; ty += ys
+    if not tx:
+        plt.close(fig); return None
 
     ax.add_collection(PatchCollection(patches_otros, facecolor=_OTROS,
                                       edgecolor=_BORDE, linewidths=0.5, zorder=1))
@@ -123,23 +153,41 @@ def generar_mapa(pais: str, out_path, w: int = 1920, h: int = 1080) -> str | Non
                                       edgecolor=_GOLD_HL, linewidths=2.2, zorder=3))
 
     cx, cy = (min(tx) + max(tx)) / 2, (min(ty) + max(ty)) / 2
-    span = max(max(tx) - min(tx), max(ty) - min(ty)) * 2.4 + 6  # contexto alrededor
+    span = max(max(tx) - min(tx), max(ty) - min(ty)) * 2.4 + 6
     yhalf = span / 2
     xhalf = yhalf * (w / h)
     ax.set_xlim(cx - xhalf, cx + xhalf)
     ax.set_ylim(cy - yhalf, cy + yhalf)
-    # corrige la distorsión lon/lat según latitud (si no, los países salen "aplastados")
     ax.set_aspect(1.0 / max(0.25, math.cos(math.radians(cy))))
 
-    nombre = objetivo["properties"].get("NAME_ES") or objetivo["properties"].get("NAME") or pais
-    ax.text(cx, max(ty) + yhalf * 0.10, nombre.upper(), color=_TEXTO, ha="center",
-            va="bottom", fontsize=42, fontweight="bold", zorder=4,
-            family="DejaVu Sans")
-
+    ax.text(cx, max(ty) + yhalf * 0.10, label.upper(), color=_TEXTO, ha="center",
+            va="bottom", fontsize=42, fontweight="bold", zorder=4, family="DejaVu Sans")
     fig.savefig(out_path, facecolor=_BG, dpi=100)
     plt.close(fig)
-    log.info(f"  [mapa] {nombre} → {out_path.name}")
+    log.info(f"  [mapa] {label} → {out_path.name}")
     return str(out_path)
+
+
+def generar_mapa(pais: str, out_path, w: int = 1920, h: int = 1080) -> str | None:
+    # 1) ¿la query menciona uno o más ESTADOS de EE.UU.? → mapa de estados (dentro de USA)
+    estados = _cargar_estados()
+    if estados:
+        hits = _estados_en_query(estados, pais)
+        if hits:
+            label = hits[0]["properties"]["name"] if len(hits) == 1 else "ESTADOS UNIDOS"
+            return _pintar(estados, hits, label, out_path, w, h, prop_nombre="name")
+
+    # 2) mapa de PAÍS (mundo)
+    if not GEOJSON.exists():
+        log.warning(f"  [mapa] falta {GEOJSON}")
+        return None
+    features = _cargar()
+    objetivo = _buscar_pais(features, pais)
+    if objetivo is None:
+        log.warning(f"  [mapa] país no encontrado: '{pais}'")
+        return None
+    nombre = objetivo["properties"].get("NAME_ES") or objetivo["properties"].get("NAME") or pais
+    return _pintar(features, [objetivo], nombre, out_path, w, h)
 
 
 if __name__ == "__main__":
